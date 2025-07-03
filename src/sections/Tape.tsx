@@ -9,7 +9,6 @@ const words = [
   "Next.js",
   "Apollo",
   "GraphQL",
-  "WebSockets",
   "REST",
 
   // Backend Development
