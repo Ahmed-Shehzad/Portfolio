@@ -158,13 +158,7 @@ export const AboutSection = () => {
               <CardHeader
                 className="px-6 py-6"
                 title="Beyond the Code"
-                description="I love to read, write, and play games. I am a huge fan of
-                science fiction movies, board games, and exploring new
-                technologies. When I&#39;m not coding, you can find me
-                experimenting with new recipes in the kitchen, hiking outdoors,
-                or diving into a good book. I believe in the power of continuous
-                learning and growth, and I&#39;m always eager to take on new
-                challenges and make meaningful connections."
+                description="Explore my interests and hobbies beyond to digital realm."
               />
               <div className="relative flex-1">
                 {hobbies.map((hobby) => {
