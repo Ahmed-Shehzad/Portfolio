@@ -121,7 +121,7 @@ const hobbies: Hobby[] = [
 
 export const AboutSection = () => {
   return (
-    <div className="py-20">
+    <div className="py-20 lg:py-28">
       <div className="container">
         <SectionHeader
           title="A Glimpse into my world"
@@ -129,64 +129,78 @@ export const AboutSection = () => {
           eyebrow="About Me"
         />
         <div className="mt-20 flex flex-col gap-8">
-          <Card className="h-[320px]">
-            <CardHeader
-              title="My Reads"
-              description="Explore the books shaping my experiences."
-            />
-            <div className="w-40 mx-auto mt-8">
-              <Image src={BookImage} alt="Book Cover" />
-            </div>
-          </Card>
-          <Card className="h-[320px] p-0">
-            <CardHeader
-              className="px-6 pt-6"
-              title="My Toolbox"
-              description="Explore the technologies in tools used to craft digital
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
+            <Card className="h-[320px] md:col-span-2 lg:col-span-1">
+              <CardHeader
+                title="My Reads"
+                description="Explore the books shaping my experiences."
+              />
+              <div className="w-40 mx-auto mt-2 md:mt-0">
+                <Image src={BookImage} alt="Book Cover" />
+              </div>
+            </Card>
+            <Card className="h-[320px] md:col-span-3 lg:col-span-2">
+              <CardHeader
+                className=""
+                title="My Toolbox"
+                description="Explore the technologies in tools used to craft digital
                 experiences."
-            />
-            <ToolboxItems
-              items={toolboxItems}
-              className="mt-6"
-              itemsWrapperClassName="-translate-x-1/2"
-            />
-          </Card>
-          <Card className="h-[320px] p-0 flex flex-col">
-            <CardHeader
-              className="px-6 py-6"
-              title="Beyond the Code"
-              description="I love to read, write, and play games. I am a huge fan of
+              />
+              <ToolboxItems
+                items={toolboxItems}
+                className="mt-6"
+                itemsWrapperClassName="-translate-x-1/2"
+              />
+            </Card>
+          </div>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
+            <Card className="h-[320px] p-0 flex flex-col col-span-3 lg:col-span-2">
+              <CardHeader
+                className="px-6 py-6"
+                title="Beyond the Code"
+                description="I love to read, write, and play games. I am a huge fan of
                 science fiction movies, board games, and exploring new
                 technologies. When I&#39;m not coding, you can find me
                 experimenting with new recipes in the kitchen, hiking outdoors,
                 or diving into a good book. I believe in the power of continuous
                 learning and growth, and I&#39;m always eager to take on new
                 challenges and make meaningful connections."
-            />
-            <div className="relative flex-1">
-              {hobbies.map((hobby) => {
-                return (
-                  <div
-                    key={hobby.title}
-                    style={{
-                      left: hobby.left,
-                      top: hobby.top,
-                    }}
-                    className="inline-flex items-center gap-2 px-6 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full py-1.5 absolute"
-                  >
-                    <span>{hobby.emoji}</span>
-                    <span className="font-medium text-gray-950">
-                      {hobby.title}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-          <Card>
-            <Image src={MapImage} alt="Map" />
-            <Image src={SmileMemoji} alt="Smile Memoji" />
-          </Card>
+              />
+              <div className="relative flex-1">
+                {hobbies.map((hobby) => {
+                  return (
+                    <div
+                      key={hobby.title}
+                      style={{
+                        left: hobby.left,
+                        top: hobby.top,
+                      }}
+                      className="inline-flex items-center gap-2 px-6 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full py-1.5 absolute"
+                    >
+                      <span>{hobby.emoji}</span>
+                      <span className="font-medium text-gray-950">
+                        {hobby.title}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+            <Card className="h-[320px] p-0 relative col-span-2 lg:col-span-1">
+              <Image
+                className="h-full w-full object-cover object-left-top"
+                src={MapImage}
+                alt="Map"
+              />
+              <div className="absolute bg-gradient-to-r from-emerald-400 after:content-[''] after:absolute after:inset-0 after:outline after:-outline-offset-2 after:rounded-full after:outline-gray-950/30 to-sky-400 rounded-full size-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <Image
+                  className="size-20"
+                  src={SmileMemoji}
+                  alt="Smile Memoji"
+                />
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

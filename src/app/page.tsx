@@ -8,12 +8,16 @@ import { TestimonialsSection } from "@/sections/Testimonials";
 export default function Home() {
   return (
     <div>
-      <Header />
-      <HeroSection />
-      <ProjectsSection />
+      <div className="md:p-8  items-centerjustify-center">
+        <Header />
+        <HeroSection />
+        <ProjectsSection />
+      </div>
       <TapeSection />
-      <TestimonialsSection />
-      <AboutSection />
+      <div className="md:p-8 items-center justify-center">
+        <TestimonialsSection />
+        <AboutSection />
+      </div>
     </div>
   );
 }
