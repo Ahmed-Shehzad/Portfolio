@@ -10,6 +10,18 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      use: [
+        {
+          loader: require.resolve("@svgr/webpack"),
+        },
+      ],
+    });
+    return config;
+  },
   devIndicators:
     process.env.NODE_ENV === "development"
       ? {
