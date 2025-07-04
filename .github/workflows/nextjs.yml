@@ -50,6 +50,18 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Check for symlinks in out/
+        run: |
+          if find out/ -type l | grep .; then
+            echo "Symlinks found in out/. Deployment will fail."
+            exit 1
+          else
+            echo "No symlinks found in out/."
+          fi
+
+      - name: List contents of out/
+        run: find out/
+
       # Optional: Upload build artifacts
       - name: Upload production build
         uses: actions/upload-artifact@v4
