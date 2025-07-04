@@ -9,9 +9,50 @@
     @apply absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5;
   }
 
+  .animation-ping {
+    animation: ping-large 1s ease-in-out infinite;
+    animation-duration: 10s;
+  }
+
+  .animation-move-left {
+    animation: move-left 1s linear infinite;
+    animation-duration: 30s;
+  }
+
+  .animation-move-right {
+    animation: move-right 1s linear infinite;
+    animation-duration: 10s;
+  }
+
   @layer utilities {
     .container {
       @apply lg:max-w-5xl;
+    }
+  }
+
+  @keyframes ping-large {
+    75%,
+    100% {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  @keyframes move-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes move-right {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0%);
     }
   }
 }

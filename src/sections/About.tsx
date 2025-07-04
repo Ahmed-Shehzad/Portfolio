@@ -121,7 +121,7 @@ const hobbies: Hobby[] = [
 
 export const AboutSection = () => {
   return (
-    <div className="py-20 lg:py-28">
+    <div className="py-20 md:px-24 lg:py-28">
       <div className="container">
         <SectionHeader
           title="A Glimpse into my world"
@@ -149,7 +149,7 @@ export const AboutSection = () => {
               <ToolboxItems
                 items={toolboxItems}
                 className="mt-6"
-                itemsWrapperClassName="-translate-x-1/2"
+                itemsWrapperClassName="-translate-x-1/2 md:-translate-x-1 md:gap-8 animation-move-right"
               />
             </Card>
           </div>
@@ -163,18 +163,19 @@ export const AboutSection = () => {
               <div className="relative flex-1">
                 {hobbies.map((hobby) => {
                   return (
-                    <div
-                      key={hobby.title}
-                      style={{
-                        left: hobby.left,
-                        top: hobby.top,
-                      }}
-                      className="inline-flex items-center gap-2 px-6 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full py-1.5 absolute"
-                    >
-                      <span>{hobby.emoji}</span>
-                      <span className="font-medium text-gray-950">
-                        {hobby.title}
-                      </span>
+                    <div key={hobby.title}>
+                      <div
+                        style={{
+                          left: hobby.left,
+                          top: hobby.top,
+                        }}
+                        className="inline-flex items-center gap-2 px-6 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full py-1.5 absolute"
+                      >
+                        <span>{hobby.emoji}</span>
+                        <span className="font-medium text-gray-950">
+                          {hobby.title}
+                        </span>
+                      </div>
                     </div>
                   );
                 })}
@@ -187,6 +188,8 @@ export const AboutSection = () => {
                 alt="Map"
               />
               <div className="absolute bg-gradient-to-r from-emerald-400 after:content-[''] after:absolute after:inset-0 after:outline after:-outline-offset-2 after:rounded-full after:outline-gray-950/30 to-sky-400 rounded-full size-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-20 animate-ping [animation-duration:2s]"></div>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-10"></div>
                 <Image
                   className="size-20"
                   src={SmileMemoji}

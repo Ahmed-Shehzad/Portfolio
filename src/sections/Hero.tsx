@@ -8,7 +8,7 @@ import SparkleIcon from "@/assets/icons/sparkle.svg";
 
 export const HeroSection = () => {
   return (
-    <div className="container py-32 md:py-48 lg:py-60 relative z-0 overflow-x-clip">
+    <div className="container py-32 md:py-48 md:px-24 lg:py-60 relative z-0 overflow-x-clip">
       <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
         <div
           className="absolute inset-0 -z-30 opacity-5"
@@ -30,7 +30,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <SparkleIcon className="size-8 rounded-full text-emerald-300/20" />
+          <SparkleIcon className="size-8 text-emerald-300/20" />
         </HeroOrbit>
         <HeroOrbit
           size={440}
@@ -40,7 +40,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <SparkleIcon className="size-5 rounded-full text-emerald-300/20" />
+          <SparkleIcon className="size-5 text-emerald-300/20" />
         </HeroOrbit>
         <HeroOrbit
           size={520}
@@ -60,7 +60,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <SparkleIcon className="size-10 rounded-full text-emerald-300/20" />
+          <SparkleIcon className="size-10 text-emerald-300/20" />
         </HeroOrbit>
         <HeroOrbit
           size={550}
@@ -70,7 +70,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <StarIcon className="size-12 rounded-full text-emerald-300" />
+          <StarIcon className="size-12 text-emerald-300" />
         </HeroOrbit>
         <HeroOrbit
           size={590}
@@ -80,7 +80,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <StarIcon className="size-8 rounded-full text-emerald-300" />
+          <StarIcon className="size-8 text-emerald-300" />
         </HeroOrbit>
         <HeroOrbit
           size={650}
@@ -90,7 +90,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <StarIcon className="size-28 rounded-full text-emerald-300/20" />
+          <StarIcon className="size-28 text-emerald-300/20" />
         </HeroOrbit>
         <HeroOrbit
           size={710}
@@ -100,7 +100,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <SparkleIcon className="size-14 rounded-full text-emerald-300/20" />
+          <SparkleIcon className="size-14 text-emerald-300/20" />
         </HeroOrbit>
         <HeroOrbit
           size={720}
@@ -110,7 +110,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <StarIcon className="size-3 rounded-full text-emerald-300/20" />
+          <StarIcon className="size-3 text-emerald-300/20" />
         </HeroOrbit>
         <HeroOrbit
           size={800}
@@ -120,7 +120,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <StarIcon className="size-3 rounded-full text-emerald-300" />
+          <StarIcon className="size-3 text-emerald-300" />
         </HeroOrbit>
         <HeroOrbit
           size={800}
@@ -130,7 +130,7 @@ export const HeroSection = () => {
           shouldSpin
           spinDuration="6s"
         >
-          <StarIcon className="size-[28px] rounded-full text-emerald-300" />
+          <StarIcon className="size-[28px] text-emerald-300" />
         </HeroOrbit>
       </div>
       <div className="container">
@@ -138,7 +138,7 @@ export const HeroSection = () => {
           <Image src={MemojiImage} alt="memoji" className="size-[100px]" />
           <div className="bg-gray-950 border border-gray-800 px-4 py-1.5 inline-flex items-center gap-4 rounded-lg">
             <div className="bg-green-500 size-2.5 rounded-full relative">
-              <div className="bg-green-500 absolute inset-0 rounded-full animate-ping animate-infinite animate-delay-[1ms] animate-ease-in-out animate-normal animate-fill-both [animation-duration:1s]"></div>
+              <div className="bg-green-500 absolute inset-0 rounded-full animation-ping animate-spin"></div>
             </div>
             <div className="text-sm font-medium">
               Available for new projects
