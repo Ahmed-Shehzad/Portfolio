@@ -13,12 +13,30 @@ const nextConfig: NextConfig = {
     },
   },
   webpack(config) {
+    // Remove the default Next.js svg loader if present
+    config.module.rules = config.module.rules.map((rule: any) => {
+      if (rule?.test?.toString().includes("svg")) {
+        return { ...rule, exclude: /\.svg$/ };
+      }
+      return rule;
+    });
+    // Add SVGR loader for all SVG imports
     config.module.rules.push({
       test: /\.svg$/,
-      issuer: /\.[jt]sx?$/,
       use: [
         {
           loader: require.resolve("@svgr/webpack"),
+          options: {
+            prettier: false,
+            svgo: true,
+            svgoConfig: {
+              plugins: [
+                "preset-default",
+                { name: "removeViewBox", active: false },
+              ],
+            },
+            titleProp: true,
+          },
         },
       ],
     });

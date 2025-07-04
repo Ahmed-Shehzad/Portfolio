@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start --turbopack",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "browserslist": "^4.25.1",
+    "lightningcss": "^1.30.1",
     "motion": "^12.23.0",
     "next": "15.3.5",
     "react": "^19.1.0",
@@ -19,7 +22,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@next/eslint-plugin-next": "^15.3.4",
-    "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^24.0.8",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
