@@ -62,11 +62,10 @@ jobs:
       - name: List contents of out/
         run: find out/
 
-      # Optional: Upload build artifacts
-      - name: Upload production build
-        uses: actions/upload-artifact@v4
+      # Upload GitHub Pages artifact (fix for deploy-pages issue)
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
           path: out/
 
   # Deployment job
