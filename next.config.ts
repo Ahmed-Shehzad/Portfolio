@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   ...(isProd && {
-    basePath: "/Portfolio/",
-    assetPrefix: "/Portfolio/",
+    basePath: "/Portfolio",
+    assetPrefix: "/Portfolio",
   }),
   turbopack: {
     rules: {
