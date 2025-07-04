@@ -50,10 +50,6 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Export static files (only if using `next export`)
-        run: npm run export
-        if: success()
-
       # Optional: Upload build artifacts
       - name: Upload production build
         uses: actions/upload-artifact@v4
