@@ -1,12 +1,16 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: process.env.DEPLOYED_GITHUB_PATH ?? "",
-  assetPrefix: process.env.DEPLOYED_GITHUB_PATH ?? "",
   images: {
     unoptimized: true,
   },
+  ...(isProd && {
+    basePath: "/Portfolio",
+    assetPrefix: "/Portfolio",
+  }),
   turbopack: {
     rules: {
       "*.svg": {
