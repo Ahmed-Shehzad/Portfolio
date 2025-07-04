@@ -6,7 +6,6 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start --turbopack",
-    "predeploy": "next build --turbopack && next export",
     "lint": "next lint"
   },
   "dependencies": {
