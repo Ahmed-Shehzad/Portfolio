@@ -15,8 +15,35 @@ const calistoga = Calistoga({
 });
 
 export const metadata: Metadata = {
-  title: "My Portfolio",
-  description: "Created with the help of Frontend Tribe",
+  title: "Muhammad Ahmed Shehzad - Full Stack Developer",
+  description:
+    "Full Stack Developer specializing in TypeScript, React, Next.js, C#, .NET, and modern web technologies. Building high-quality, user-friendly web applications.",
+  keywords: [
+    "Full Stack Developer",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "C#",
+    ".NET",
+    "Web Development",
+    "Muhammad Ahmed Shehzad",
+  ],
+  authors: [{ name: "Muhammad Ahmed Shehzad" }],
+  openGraph: {
+    title: "Muhammad Ahmed Shehzad - Full Stack Developer",
+    description: "Full Stack Developer specializing in modern web technologies",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Muhammad Ahmed Shehzad - Full Stack Developer",
+    description: "Full Stack Developer specializing in modern web technologies",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 /**

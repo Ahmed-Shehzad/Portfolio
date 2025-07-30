@@ -121,7 +121,7 @@ const hobbies: Hobby[] = [
 
 export const AboutSection = () => {
   return (
-    <div className="py-20 md:px-24 lg:py-28">
+    <div id="about" className="py-20 md:px-24 lg:py-28">
       <div className="container">
         <SectionHeader
           title="A Glimpse into my world"

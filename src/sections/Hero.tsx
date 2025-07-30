@@ -8,7 +8,10 @@ import SparkleIcon from "@/assets/icons/sparkle.svg";
 
 export const HeroSection = () => {
   return (
-    <div className="container py-32 md:py-48 md:px-24 lg:py-60 relative z-0 overflow-x-clip">
+    <section
+      id="home"
+      className="container py-32 md:py-48 md:px-24 lg:py-60 relative z-0 overflow-x-clip"
+    >
       <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
         <div
           className="absolute inset-0 -z-30 opacity-5"
@@ -167,6 +170,6 @@ export const HeroSection = () => {
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
