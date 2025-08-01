@@ -12,31 +12,31 @@ const testimonials = [
   {
     name: "Alex Turner",
     position: "Marketing Manager @ TechStartups",
-    text: "Alex was instrumental in transforming our website into a powerful marketing tool. His attention to detail and ability to understand our brand is exceptional. We're thrilled with the results!",
+    text: "Ahmed's full-stack expertise with React, TypeScript, and .NET transformed our entire platform. His ability to seamlessly integrate frontend and backend systems while maintaining clean architecture principles is exceptional. We're thrilled with the scalable solution!",
     avatar: memojiAvatar1,
   },
   {
     name: "Olivia Green",
     position: "Head of Design @ GreenLeaf",
-    text: "Working with Alex was a pleasure. His expertise in frontend development brought our designs to life in a way we never imagined. The website has exceeded our expectations.",
+    text: "Working with Ahmed was incredible. His mastery of React, Redux, and Tailwind CSS brought our designs to life perfectly, while his backend skills with C# and PostgreSQL ensured everything ran smoothly. The full-stack approach exceeded our expectations.",
     avatar: memojiAvatar2,
   },
   {
     name: "Daniel White",
     position: "CEO @ InnovateCo",
-    text: "Alex's ability to create seamless user experiences is unmatched. Our website has seen a significant increase in conversions since launching the new design. We couldn't be happier.",
+    text: "Ahmed's expertise in microservices architecture, Docker, and AWS helped us build a robust, scalable platform. His knowledge of CQRS, Domain Driven Design, and Test Driven Development resulted in a maintainable codebase that our team loves working with.",
     avatar: memojiAvatar3,
   },
   {
     name: "Emily Carter",
     position: "Product Manager @ GlobalTech",
-    text: "Alex is a true frontend wizard. He took our complex product and transformed it into an intuitive and engaging user interface. We're already seeing positive feedback from our customers.",
+    text: "Ahmed is a true full-stack wizard. His proficiency with Next.js, GraphQL, and Apollo on the frontend, combined with his .NET, MediatR, and Redis expertise on the backend, delivered an intuitive and high-performing application. Our customers are thrilled!",
     avatar: memojiAvatar4,
   },
   {
     name: "Michael Brown",
     position: "Director of IT @ MegaCorp",
-    text: "Alex's work on our website has been nothing short of exceptional. He's a talented developer who is also a great communicator. We highly recommend him.",
+    text: "Ahmed's comprehensive skills spanning React, TypeScript, C#, Kubernetes, and CI/CD pipelines made our digital transformation seamless. His Agile approach and clean architecture methodology delivered exceptional results. We highly recommend his full-stack expertise.",
     avatar: memojiAvatar5,
   },
 ];
@@ -52,12 +52,16 @@ export const TestimonialsSection = () => {
         />
         <div className="mt-12 lg:mt-24 flex overflow-x-clip [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] py-4 -my-4">
           <div className="flex gap-8 pr-8 flex-none animate animation-move-left hover:[animation-play-state:paused]">
-            {[...new Array(2)].fill(0).map((_, index) => (
-              <Fragment key={`card-fragment-${index}`}>
+            {[...new Array(2)].fill(0).map((_, repeatIndex) => (
+              <Fragment
+                key={`card-fragment-repeat-${repeatIndex}-${testimonials
+                  .map((t) => t.name)
+                  .join("-")}`}
+              >
                 {testimonials.map((testimonial) => {
                   return (
                     <Card
-                      key={testimonial.name}
+                      key={`${testimonial.name}-${repeatIndex}`}
                       className="max-w-xs md:max-w-md p-6 md:p-8 hover:-rotate-3 transition duration-300"
                     >
                       <div className="flex gap-4 items-center">

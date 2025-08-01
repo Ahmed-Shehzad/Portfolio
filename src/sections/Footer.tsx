@@ -1,18 +1,21 @@
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 
 const footerLinks = [
-  { href: "#YouTube", label: "YouTube" },
-  { href: "#X", label: "X" },
-  { href: "#Instagram", label: "Instagram" },
-  { href: "#LinkedIn", label: "LinkedIn" },
+  { href: "https://github.com/Ahmed-Shehzad", label: "Github" },
+  { href: "https://x.com/AhmedShehzad1", label: "X" },
+  { href: "https://www.instagram.com/iahmedshehzad/", label: "Instagram" },
+  {
+    href: "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/",
+    label: "LinkedIn",
+  },
 ];
 
 export const Footer = () => {
   return (
-    <footer className="relative -z-10 md:px-24 overflow-x-clip">
+    <footer className="relative md:px-24 overflow-x-clip">
       <div className="absolute h-[400px] w-[1600px] bottom-0 left-1/2 -translate-x-1/2 bg-emerald-300/30 [mask-image:radial-gradient(50%_50%_at_bottom_center,black,transparent)] -z-10"></div>
 
-      <div className="container">
+      <div className="container relative z-10">
         <div className="border-t border-white/15 py-6 text-sm flex flex-col md:flex-row  md:justify-between items-center gap-8">
           <div>&copy; 2025. All rights reserved.</div>
           <nav className="flex flex-col md:flex-row items-center gap-8">
@@ -20,6 +23,8 @@ export const Footer = () => {
               <a
                 key={link.label}
                 href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5"
               >
                 <span className="font-semibold">{link.label}</span>

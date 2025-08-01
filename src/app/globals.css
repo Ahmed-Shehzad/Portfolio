@@ -47,16 +47,35 @@
       transform: translateX(0%);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translateX(-33.333%);
     }
   }
 
   @keyframes move-right {
     0% {
-      transform: translateX(-50%);
+      transform: translateX(-33.333%);
     }
     100% {
       transform: translateX(0%);
     }
+  }
+
+  /* Custom Leaflet zoom control styles */
+  .leaflet-control-zoom a {
+    @apply bg-white/10 backdrop-blur-sm border-white/20 text-white;
+    @apply hover:bg-white/20 transition-all duration-200;
+    @apply rounded-md;
+  }
+
+  .leaflet-control-zoom {
+    @apply border-0 shadow-lg;
+  }
+
+  .leaflet-control-zoom a:first-child {
+    @apply rounded-t-md rounded-b-none;
+  }
+
+  .leaflet-control-zoom a:last-child {
+    @apply rounded-b-md rounded-t-none;
   }
 }

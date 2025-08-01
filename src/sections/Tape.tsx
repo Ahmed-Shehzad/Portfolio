@@ -42,15 +42,18 @@ const words = [
 
 export const TapeSection = () => {
   return (
-    <div className="py-16 lg:py-24 overflow-x-clip ">
+    <div className="py-16 lg:py-24 overflow-x-clip">
       <div className="bg-gradient-to-r from-emerald-300 to-sky-400 -rotate-3 -mx-1">
         <div className="flex [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-          <div className="flex flex-none gap-4 py-3 animate animation-move-left hover:[animation-play-state:paused]">
-            {...new Array(2).fill(0).map((_, idx) => {
-              return (
-                <Fragment key={`tape-fragment-${words.join("-")}-${idx}`}>
+          <div className="flex flex-none gap-4 py-3 pr-4 animate-[move-left_30s_linear_infinite] hover:[animation-play-state:paused]">
+            {["tape-section-1", "tape-section-2", "tape-section-3"].map(
+              (section) => (
+                <Fragment key={section}>
                   {words.map((word) => (
-                    <div key={word} className="inline-flex gap-4 items-center">
+                    <div
+                      key={`${word}-${section}`}
+                      className="inline-flex gap-4 items-center"
+                    >
                       <span className="text-gray-900 uppercase font-extrabold text-sm">
                         {word}
                       </span>
@@ -58,8 +61,8 @@ export const TapeSection = () => {
                     </div>
                   ))}
                 </Fragment>
-              );
-            })}
+              )
+            )}
           </div>
         </div>
       </div>

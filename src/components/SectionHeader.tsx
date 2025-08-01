@@ -15,12 +15,14 @@ export const SectionHeader: FC<SectionHeaderProps> = (props) => {
           {eyebrow}
         </p>
       </div>
-      <h2 className="font-serif text-3xl md:text-5xl text-center mt-6">
-        {title}
-      </h2>
-      <p className="text-center md:text-lg lg:text-xl text-white/60 mt-4 max-w-md mx-auto">
-        {description}
-      </p>
+      <div className="container px-10">
+        <h2 className="font-serif text-3xl md:text-5xl text-center mt-6">
+          {title}
+        </h2>
+        <p className="text-center md:text-lg lg:text-xl text-white/60 mt-4 max-w-md mx-auto">
+          {description}
+        </p>
+      </div>
     </>
   );
 };

@@ -28,20 +28,22 @@ export const ToolboxItems: FC<ToolboxItemsProps> = (props) => {
           itemsWrapperClassName
         )}
       >
-        {[...new Array(2)].fill(0).map((_, index) => (
-          <Fragment key={`toolbox-fragment-${index}`}>
-            {items.map((item) => {
-              return (
-                <div
-                  key={`${item.title}-${index}`}
-                  className="inline-flex items-center gap-4 py-2 px-3 outline outline-white/10 rounded-lg"
-                >
-                  <TechIcon component={item.iconType} alt={item.title} />
-                </div>
-              );
-            })}
-          </Fragment>
-        ))}
+        {["toolbox-item-1", "toolbox-item-2", "toolbox-item-3"].map(
+          (section) => (
+            <Fragment key={section}>
+              {items.map((item) => {
+                return (
+                  <div
+                    key={`${item.title}-${section}`}
+                    className="inline-flex items-center gap-4 py-2 px-3 outline outline-white/10 rounded-lg"
+                  >
+                    <TechIcon component={item.iconType} alt={item.title} />
+                  </div>
+                );
+              })}
+            </Fragment>
+          )
+        )}
       </div>
     </div>
   );

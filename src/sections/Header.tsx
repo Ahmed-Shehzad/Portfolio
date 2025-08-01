@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, FC } from "react";
 
 interface HeaderOption {
   title: string;
@@ -51,7 +51,8 @@ const headerOptions: HeaderOption[] = [
 /**
  * Individual navigation item component
  */
-const NavigationItem = ({ option, isActive, onClick }: NavigationItemProps) => {
+const NavigationItem: FC<NavigationItemProps> = (props) => {
+  const { option, isActive, onClick } = props;
   const className = `nav-item ${
     isActive
       ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900"

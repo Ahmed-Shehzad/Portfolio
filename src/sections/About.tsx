@@ -2,7 +2,6 @@ import Image from "next/image";
 import { Card } from "@/components/Card";
 import { SectionHeader } from "@/components/SectionHeader";
 import BookImage from "@/assets/images/book-cover.png";
-import MapImage from "@/assets/images/map.png";
 import SmileMemoji from "@/assets/images/memoji-smile.png";
 import { CardHeader } from "@/components/CardHeader";
 import DotnetIcon from "@/assets/icons/dotnet.svg";
@@ -14,6 +13,7 @@ import CSharpIcon from "@/assets/icons/csharp.svg";
 import ReactIcon from "@/assets/icons/react.svg";
 import DockerIcon from "@/assets/icons/docker.svg";
 import { ToolboxItems } from "@/components/ToolboxItems";
+import { DynamicMap } from "@/components/DynamicMap";
 
 type ToolboxItem = {
   title: string;
@@ -149,12 +149,12 @@ export const AboutSection = () => {
               <ToolboxItems
                 items={toolboxItems}
                 className="mt-6"
-                itemsWrapperClassName="-translate-x-1/2 md:-translate-x-1 md:gap-8 animation-move-right"
+                itemsWrapperClassName="-translate-x-1/3 md:-translate-x-1 md:gap-8 animate-[move-right_10s_linear_infinite] hover:[animation-play-state:paused]"
               />
             </Card>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
-            <Card className="h-[320px] p-0 flex flex-col col-span-3 lg:col-span-2">
+            <Card className="h-[320px] p-0 flex flex-col md:col-span-3 lg:col-span-2">
               <CardHeader
                 className="px-6 py-6"
                 title="Beyond the Code"
@@ -181,21 +181,12 @@ export const AboutSection = () => {
                 })}
               </div>
             </Card>
-            <Card className="h-[320px] p-0 relative col-span-2 lg:col-span-1">
-              <Image
-                className="h-full w-full object-cover object-left-top"
-                src={MapImage}
-                alt="Map"
+            <Card className="h-[320px] p-0 relative md:col-span-2 lg:col-span-1">
+              <DynamicMap
+                center={[50.0782, 8.2398]}
+                zoom={13}
+                markerImage={SmileMemoji}
               />
-              <div className="absolute bg-gradient-to-r from-emerald-400 after:content-[''] after:absolute after:inset-0 after:outline after:-outline-offset-2 after:rounded-full after:outline-gray-950/30 to-sky-400 rounded-full size-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-20 animate-ping [animation-duration:2s]"></div>
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-10"></div>
-                <Image
-                  className="size-20"
-                  src={SmileMemoji}
-                  alt="Smile Memoji"
-                />
-              </div>
             </Card>
           </div>
         </div>
