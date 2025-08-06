@@ -53,7 +53,7 @@ const ErrorPage: FC<IErrorPageProps> = ({ error, reset }) => {
               {error.digest && (
                 <div className="mb-2 text-xs text-gray-400">Error ID: {error.digest}</div>
               )}
-              <pre className="text-xs whitespace-pre-wrap text-gray-300">{error.stack}</pre>
+              <pre className="text-xs whitespace-pre-wrap text-gray-300 overflow-x-auto">{error.stack}</pre>
             </div>
           </details>
         )}
