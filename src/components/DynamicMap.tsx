@@ -12,12 +12,11 @@ interface IDynamicMapProps {
 
 // Dynamically import the OpenStreetMap component to avoid SSR issues
 const OpenStreetMap = dynamic(
-  () =>
-    import("./OpenStreetMap").then((mod) => ({ default: mod.OpenStreetMap })),
+  () => import("./OpenStreetMap").then((mod) => ({ default: mod.OpenStreetMap })),
   {
     ssr: false,
     loading: () => (
-      <div className="h-full w-full bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
+      <div className="flex h-full w-full animate-pulse items-center justify-center rounded-lg bg-gray-200">
         <span className="text-gray-500">Loading map...</span>
       </div>
     ),

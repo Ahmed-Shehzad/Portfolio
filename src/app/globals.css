@@ -6,7 +6,7 @@
   }
 
   .nav-item {
-    @apply px-4 py-0.5 rounded-full text-white/70 text-sm font-semibold hover:bg-white/10 hover:text-white transition duration-300;
+    @apply rounded-full px-4 py-0.5 text-sm font-semibold text-white/70 transition duration-300 hover:bg-white/10 hover:text-white;
   }
 
   .hero-ring {
@@ -62,8 +62,8 @@
 
   /* Custom Leaflet zoom control styles */
   .leaflet-control-zoom a {
-    @apply bg-white/10 backdrop-blur-sm border-white/20 text-white;
-    @apply hover:bg-white/20 transition-all duration-200;
+    @apply border-white/20 bg-white/10 text-white backdrop-blur-sm;
+    @apply transition-all duration-200 hover:bg-white/20;
     @apply rounded-md;
   }
 
@@ -76,6 +76,6 @@
   }
 
   .leaflet-control-zoom a:last-child {
-    @apply rounded-b-md rounded-t-none;
+    @apply rounded-t-none rounded-b-md;
   }
 }

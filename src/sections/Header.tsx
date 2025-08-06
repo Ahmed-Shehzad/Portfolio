@@ -54,9 +54,7 @@ const headerOptions: HeaderOption[] = [
 const NavigationItem: FC<NavigationItemProps> = (props) => {
   const { option, isActive, onClick } = props;
   const className = `nav-item ${
-    isActive
-      ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900"
-      : ""
+    isActive ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900" : ""
   }`;
 
   return (
@@ -80,9 +78,7 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
  * Features: Auto-scroll detection, URL sync, smooth scrolling
  */
 export const Header = () => {
-  const [activeOption, setActiveOption] = useState<HeaderOption>(
-    headerOptions[0]
-  );
+  const [activeOption, setActiveOption] = useState<HeaderOption>(headerOptions[0]);
   const [sectionElements, setSectionElements] = useState<SectionElement[]>([]);
 
   // Initialize section elements after component mounts (client-side only)
@@ -104,10 +100,7 @@ export const Header = () => {
   }, []);
 
   // Memoize contact section for bottom detection
-  const contactSection = useMemo(
-    () => headerOptions.find((option) => option.id === "contact"),
-    []
-  );
+  const contactSection = useMemo(() => headerOptions.find((option) => option.id === "contact"), []);
 
   // Optimized URL update function
   const updateURL = useCallback((section: HeaderOption) => {
@@ -139,9 +132,7 @@ export const Header = () => {
       for (let i = sectionElements.length - 1; i >= 0; i--) {
         const section = sectionElements[i];
         if (scrollPosition >= section.offsetTop) {
-          const matchingOption = headerOptions.find(
-            (option) => option.id === section.id
-          );
+          const matchingOption = headerOptions.find((option) => option.id === section.id);
           if (matchingOption) {
             currentSection = matchingOption;
             break;
@@ -205,12 +196,12 @@ export const Header = () => {
 
   return (
     <header
-      className="fixed top-0 w-full z-10 bg-black/10 backdrop-blur-sm border-b border-white/10"
+      className="fixed top-0 z-10 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm"
       role="banner"
     >
-      <div className="flex justify-center items-center w-full pt-8 pb-4 px-4 md:px-24">
+      <div className="flex w-full items-center justify-center px-4 pt-8 pb-4 md:px-24">
         <nav
-          className="flex gap-1 p-0.5 border border-white/15 rounded-full bg-white/10 backdrop-blur"
+          className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
           role="navigation"
           aria-label="Main navigation"
         >

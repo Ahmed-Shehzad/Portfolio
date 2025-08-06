@@ -6,8 +6,9 @@ import { HeroSection } from "@/sections/Hero";
 import { ProjectsSection } from "@/sections/Projects";
 import { TapeSection } from "@/sections/Tape";
 import { TestimonialsSection } from "@/sections/Testimonials";
+import { FC } from "react";
 
-export default function Home() {
+const Home: FC = () => {
   return (
     <>
       <Header />
@@ -20,4 +21,6 @@ export default function Home() {
       <Footer />
     </>
   );
-}
+};
+
+export default Home;

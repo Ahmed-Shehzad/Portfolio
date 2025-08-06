@@ -12,13 +12,13 @@ const footerLinks = [
 
 export const Footer = () => {
   return (
-    <footer className="relative md:px-24 overflow-x-clip">
-      <div className="absolute h-[400px] w-[1600px] bottom-0 left-1/2 -translate-x-1/2 bg-emerald-300/30 [mask-image:radial-gradient(50%_50%_at_bottom_center,black,transparent)] -z-10"></div>
+    <footer className="relative overflow-x-clip md:px-24">
+      <div className="absolute bottom-0 left-1/2 -z-10 h-[400px] w-[1600px] -translate-x-1/2 bg-emerald-300/30 [mask-image:radial-gradient(50%_50%_at_bottom_center,black,transparent)]"></div>
 
-      <div className="container relative z-10">
-        <div className="border-t border-white/15 py-6 text-sm flex flex-col md:flex-row  md:justify-between items-center gap-8">
+      <div className="relative z-10 container">
+        <div className="flex flex-col items-center gap-8 border-t border-white/15 py-6 text-sm md:flex-row md:justify-between">
           <div>&copy; 2025. All rights reserved.</div>
-          <nav className="flex flex-col md:flex-row items-center gap-8">
+          <nav className="flex flex-col items-center gap-8 md:flex-row">
             {footerLinks.map((link) => (
               <a
                 key={link.label}

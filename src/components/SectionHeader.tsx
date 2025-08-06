@@ -11,15 +11,13 @@ export const SectionHeader: FC<SectionHeaderProps> = (props) => {
   return (
     <>
       <div className="flex justify-center">
-        <p className="uppercase font-semibold tracking-widest bg-gradient-to-r from-emerald-300 to-sky-400 text-center text-transparent bg-clip-text">
+        <p className="bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-center font-semibold tracking-widest text-transparent uppercase">
           {eyebrow}
         </p>
       </div>
       <div className="container px-10">
-        <h2 className="font-serif text-3xl md:text-5xl text-center mt-6">
-          {title}
-        </h2>
-        <p className="text-center md:text-lg lg:text-xl text-white/60 mt-4 max-w-md mx-auto">
+        <h2 className="mt-6 text-center font-serif text-3xl md:text-5xl">{title}</h2>
+        <p className="mx-auto mt-4 max-w-md text-center text-white/60 md:text-lg lg:text-xl">
           {description}
         </p>
       </div>

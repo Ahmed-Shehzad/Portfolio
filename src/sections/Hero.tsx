@@ -10,7 +10,7 @@ export const HeroSection = () => {
   return (
     <section
       id="home"
-      className="container py-32 md:py-48 md:px-24 lg:py-60 relative z-0 overflow-x-clip"
+      className="relative z-0 container overflow-x-clip py-32 md:px-24 md:py-48 lg:py-60"
     >
       <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_70%,transparent)]">
         <div
@@ -19,11 +19,11 @@ export const HeroSection = () => {
             backgroundImage: `url(${GrainImage.src})`,
           }}
         ></div>
-        <div className="size-[620px] hero-ring"></div>
-        <div className="size-[820px] hero-ring"></div>
-        <div className="size-[1020px] hero-ring"></div>
-        <div className="size-[1220px] hero-ring"></div>
-        <div className="size-[1480px] hero-ring"></div>
+        <div className="hero-ring size-[620px]"></div>
+        <div className="hero-ring size-[820px]"></div>
+        <div className="hero-ring size-[1020px]"></div>
+        <div className="hero-ring size-[1220px]"></div>
+        <div className="hero-ring size-[1480px]"></div>
 
         <HeroOrbit
           size={430}
@@ -139,32 +139,29 @@ export const HeroSection = () => {
       <div className="container">
         <div className="flex flex-col items-center">
           <Image src={MemojiImage} alt="memoji" className="size-[100px]" />
-          <div className="bg-gray-950 border border-gray-800 px-4 py-1.5 inline-flex items-center gap-4 rounded-lg">
-            <div className="bg-green-500 size-2.5 rounded-full relative">
-              <div className="bg-green-500 absolute inset-0 rounded-full animation-ping"></div>
+          <div className="inline-flex items-center gap-4 rounded-lg border border-gray-800 bg-gray-950 px-4 py-1.5">
+            <div className="relative size-2.5 rounded-full bg-green-500">
+              <div className="animation-ping absolute inset-0 rounded-full bg-green-500"></div>
             </div>
-            <div className="text-sm font-medium">
-              Available for new projects
-            </div>
+            <div className="text-sm font-medium">Available for new projects</div>
           </div>
         </div>
-        <div className="p-8 max-w-lg mx-auto">
-          <div className="container rounded-4xl p-8 pt-2 bg-neutral-400/20 hover:bg-neutral-400/30 text-neutral-300 backdrop-blur-[1px] border border-neutral-400/20 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)] transition-all duration-300">
-            <h1 className="font-serif text-3xl md:text-5xl text-center mt-8 tracking-wide">
+        <div className="mx-auto max-w-lg p-8">
+          <div className="container rounded-4xl border border-neutral-400/20 bg-neutral-400/20 p-8 pt-2 text-neutral-300 backdrop-blur-[1px] transition-all duration-300 hover:bg-neutral-400/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)]">
+            <h1 className="mt-8 text-center font-serif text-3xl tracking-wide md:text-5xl">
               Muhammad Ahmed Shehzad
             </h1>
           </div>
           <p className="mt-4 text-center text-white/60 md:text-lg">
-            I am a Full Stack Developer with a passion for building web
-            applications and services.
+            I am a Full Stack Developer with a passion for building web applications and services.
           </p>
         </div>
-        <div className="flex flex-col md:flex-row justify-center items-center mt-8 gap-4">
-          <button className="inline-flex items-center gap-2 border border-white/15 px-6 h-12 rounded-xl">
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row">
+          <button className="inline-flex h-12 items-center gap-2 rounded-xl border border-white/15 px-6">
             <span className="font-semibold">Explore My Work</span>
             <ArrowDown className="size-4" />
           </button>
-          <button className="inline-flex items-center gap-2 border border-white bg-white text-gray-900 h-12 px-6 rounded-xl">
+          <button className="inline-flex h-12 items-center gap-2 rounded-xl border border-white bg-white px-6 text-gray-900">
             <span>👋</span>
             <span className="font-semibold">Let&apos;s Connect</span>
           </button>
