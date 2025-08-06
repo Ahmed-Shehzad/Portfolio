@@ -30,7 +30,8 @@ export class ErrorBoundary extends Component<IProps, IState> {
 
   // Sanitize log data to prevent log injection vulnerabilities
   private readonly sanitizeLog = (input: string): string => {
-    return input
+    const safeInput = typeof input === "string" ? input : String(input ?? "");
+    return safeInput
       .split(String.fromCharCode(13))
       .join(" ") // \r
       .split(String.fromCharCode(10))

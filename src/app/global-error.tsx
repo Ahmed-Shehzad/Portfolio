@@ -14,7 +14,13 @@ const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
   // Sanitize error message to remove sensitive information
   const sanitizeErrorMessage = (message: string | undefined): string => {
     if (!message) return "An unexpected error occurred";
-    return message.replace(/\b(?:password|token|key|secret|api[_-]?key)\b/gi, "[REDACTED]");
+    // Expanded regex to include more sensitive patterns: auth, bearer, session, email, phone
+    return message
+      .replace(/\b(?:password|token|key|secret|api[_-]?key|auth|bearer|session)\b/gi, "[REDACTED]")
+      // Email addresses
+      .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED_EMAIL]")
+      // Phone numbers (simple patterns, e.g., (123) 456-7890, 123-456-7890, +1 123 456 7890)
+      .replace(/(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?){1,2}\d{3,4}/g, "[REDACTED_PHONE]");
   };
 
   // Sanitize stack trace to remove sensitive paths and internal details
