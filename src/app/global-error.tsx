@@ -11,6 +11,27 @@ interface IGlobalErrorProps {
 const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
   const router = useRouter();
 
+  // Sanitize error message to remove sensitive information
+  const sanitizeErrorMessage = (message: string | undefined): string => {
+    if (!message) return "An unexpected error occurred";
+    return message.replace(/\b(?:password|token|key|secret|api[_-]?key)\b/gi, "[REDACTED]");
+  };
+
+  // Sanitize stack trace to remove sensitive paths and internal details
+  const sanitizeErrorStack = (stack: string | undefined): string => {
+    if (!stack) return "";
+    return stack
+      .split("\n")
+      .filter(
+        (line) =>
+          !line.includes("node_modules") && !line.includes("webpack") && !line.includes("file://")
+      )
+      .join("\n");
+  };
+
+  const safeMessage = sanitizeErrorMessage(error.message);
+  const safeStack = sanitizeErrorStack(error.stack);
+
   return (
     <html lang="en">
       <body className="bg-gray-900 font-sans text-white antialiased">
@@ -47,11 +68,11 @@ const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
                   Show Error Details (Development)
                 </summary>
                 <div className="overflow-auto rounded-lg bg-gray-800 p-4 text-sm">
-                  <div className="mb-2 font-mono text-red-400">{error.message}</div>
+                  <div className="mb-2 font-mono text-red-400">{safeMessage}</div>
                   {error.digest && (
                     <div className="mb-2 text-xs text-gray-400">Error ID: {error.digest}</div>
                   )}
-                  <pre className="text-xs whitespace-pre-wrap text-gray-300">{error.stack}</pre>
+                  <pre className="text-xs whitespace-pre-wrap text-gray-300">{safeStack}</pre>
                 </div>
               </details>
             )}

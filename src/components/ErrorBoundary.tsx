@@ -28,10 +28,32 @@ export class ErrorBoundary extends Component<IProps, IState> {
     return { hasError: true, error };
   }
 
+  // Sanitize log data to prevent log injection vulnerabilities
+  private readonly sanitizeLog = (input: string): string => {
+    return input
+      .split(String.fromCharCode(13))
+      .join(" ") // \r
+      .split(String.fromCharCode(10))
+      .join(" ") // \n
+      .split(String.fromCharCode(9))
+      .join(" ") // \t
+      .split("")
+      .filter((char) => {
+        const code = char.charCodeAt(0);
+        return !(code <= 31 || (code >= 127 && code <= 159));
+      })
+      .join("");
+  };
+
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log the error to console or error reporting service
-    console.error("ErrorBoundary caught an error:", error);
-    console.error("Error info:", errorInfo);
+    const safeErrorMessage = this.sanitizeLog(error.message || "Unknown error");
+    const safeErrorStack = this.sanitizeLog(error.stack || "");
+    const safeComponentStack = this.sanitizeLog(errorInfo.componentStack || "");
+
+    // Log the sanitized error to console or error reporting service
+    console.error("ErrorBoundary caught an error:", safeErrorMessage);
+    console.error("Error stack:", safeErrorStack);
+    console.error("Component stack:", safeComponentStack);
 
     this.setState({
       error,
@@ -39,7 +61,7 @@ export class ErrorBoundary extends Component<IProps, IState> {
     });
 
     // You can also log the error to an error reporting service here
-    // Example: logErrorToService(error, errorInfo);
+    // Example: logErrorToService({ message: safeErrorMessage, stack: safeErrorStack }, { componentStack: safeComponentStack });
   }
 
   handleRetry = () => {
