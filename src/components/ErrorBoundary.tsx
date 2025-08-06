@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
 
 interface IProps {
   children: ReactNode;
@@ -113,7 +113,7 @@ export class ErrorBoundary extends Component<IProps, IState> {
                 <div className="overflow-auto rounded-lg bg-gray-800 p-4 text-sm">
                   <div className="mb-2 font-mono text-red-400">{this.state.error.toString()}</div>
                   {this.state.errorInfo && (
-                    <pre className="text-xs whitespace-pre-wrap text-gray-300">
+                    <pre className="overflow-auto text-xs whitespace-pre-wrap text-gray-300">
                       {this.state.errorInfo.componentStack}
                     </pre>
                   )}

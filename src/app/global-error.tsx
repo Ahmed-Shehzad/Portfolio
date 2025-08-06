@@ -14,18 +14,60 @@ const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
   // Sanitize error message to remove sensitive information
   const sanitizeErrorMessage = (message: string | undefined): string => {
     if (!message) return "An unexpected error occurred";
-    // Expanded regex to include more sensitive patterns: auth, bearer, session, email, phone
-    return (
-      message
-        .replace(
-          /\b(?:password|token|key|secret|api[_-]?key|auth|bearer|session)\b/gi,
-          "[REDACTED]"
-        )
-        // Email addresses
-        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[REDACTED_EMAIL]")
-        // Phone numbers (simple patterns, e.g., (123) 456-7890, 123-456-7890, +1 123 456 7890)
-        .replace(/(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?){1,2}\d{3,4}/g, "[REDACTED_PHONE]")
+
+    let sanitized = message;
+
+    // Remove sensitive keywords
+    sanitized = sanitized.replace(
+      /\b(?:password|token|key|secret|api[_-]?key|auth|bearer|session|jwt|refresh[_-]?token)\b/gi,
+      "[REDACTED]"
     );
+
+    // Enhanced email detection - covers most practical cases
+    // Standard format: user@domain.tld
+    sanitized = sanitized.replace(
+      /\b[A-Za-z\d][\w.-]*[A-Za-z\d]@[A-Za-z\d][\w.-]*\.[A-Za-z]{2,}\b/g,
+      "[REDACTED_EMAIL]"
+    );
+
+    // Quoted email format: "user name"@domain.tld
+    sanitized = sanitized.replace(
+      /"[^"]+"\s*@\s*[A-Za-z\d][\w.-]*\.[A-Za-z]{2,}\b/g,
+      "[REDACTED_EMAIL]"
+    );
+
+    // Simplified phone patterns - multiple passes for different formats
+    // International format: +1 234 567 8900
+    sanitized = sanitized.replace(
+      /\+\d{1,3}[\s.-]?\d{3,4}[\s.-]?\d{3,4}[\s.-]?\d{3,4}/g,
+      "[REDACTED_PHONE]"
+    );
+
+    // US format: (123) 456-7890
+    sanitized = sanitized.replace(/\(\d{3}\)[\s.-]?\d{3}[\s.-]?\d{4}/g, "[REDACTED_PHONE]");
+
+    // Simple format: 123-456-7890 or 123.456.7890
+    sanitized = sanitized.replace(/\d{3}[\s.-]\d{3}[\s.-]\d{4}/g, "[REDACTED_PHONE]");
+
+    // Extension format: 1234 ext 567
+    sanitized = sanitized.replace(/\d{4,}\s+(?:ext|extension|x)\s+\d{1,5}/gi, "[REDACTED_PHONE]");
+
+    // Credit card numbers (13-19 digits with separators)
+    sanitized = sanitized.replace(
+      /\b\d{4}[\s.-]?\d{4}[\s.-]?\d{4}[\s.-]?\d{1,4}\b/g,
+      "[REDACTED_CARD]"
+    );
+
+    // Social Security Numbers (US format: XXX-XX-XXXX)
+    sanitized = sanitized.replace(/\b\d{3}[\s.-]?\d{2}[\s.-]?\d{4}\b/g, "[REDACTED_SSN]");
+
+    // URLs with sensitive query parameters
+    sanitized = sanitized.replace(
+      /https?:\/\/[^\s]+[?&](?:token|key|password|auth|secret|jwt)=[^&\s]*/gi,
+      "[REDACTED_URL]"
+    );
+
+    return sanitized;
   };
 
   // Sanitize stack trace to remove sensitive paths and internal details
