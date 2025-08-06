@@ -56,30 +56,30 @@ export const ProjectsSection = () => {
           description="Here are some of my recent projects that showcase my skills in
           creating high-quality, user-friendly web applications."
         />
-        <div className="mt-10 md:mt-20 flex flex-col gap-20">
+        <div className="mt-10 flex flex-col gap-20 md:mt-20">
           {portfolioProjects.map((project, projectIndex) => {
             return (
               <Card
                 key={project.title}
-                className="px-8 pt-8 pb-0 md:px-10 md:pt-12 lg:pt-16 lg:px-20 sticky"
+                className="sticky px-8 pt-8 pb-0 md:px-10 md:pt-12 lg:px-20 lg:pt-16"
                 style={{ top: `calc(64px + ${projectIndex * 40}px` }}
               >
                 <div className="lg:grid lg:grid-cols-2 lg:gap-16">
                   <div className="lg:pb-16">
-                    <div className="bg-gradient-to-r from-emerald-300 to-sky-400 inline-flex font-bold uppercase tracking-widest text-sm text-transparent bg-clip-text">
+                    <div className="inline-flex bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-sm font-bold tracking-widest text-transparent uppercase">
                       <span>{project.company}</span>
                       <span>&bull;</span>
                       <span>{project.year}</span>
                     </div>
-                    <h3 className="font-serif text-2xl md:text-4xl md:mt-5 mt-2">
+                    <h3 className="mt-2 font-serif text-2xl md:mt-5 md:text-4xl">
                       {project.title}
                     </h3>
-                    <hr className="border-t-2 border-white/5 mt-4 md:mt-5" />
-                    <ul className="flex flex-col gap-4 mt-4 md:mt-5">
+                    <hr className="mt-4 border-t-2 border-white/5 md:mt-5" />
+                    <ul className="mt-4 flex flex-col gap-4 md:mt-5">
                       {project.results.map((result) => (
                         <li
                           key={result.title}
-                          className="flex gap-2 text-sm md:text-base text-white/50"
+                          className="flex gap-2 text-sm text-white/50 md:text-base"
                         >
                           <CheckCircleIcon className="size-5 md:size-6" />
                           <span>{result.title}</span>
@@ -92,7 +92,7 @@ export const ProjectsSection = () => {
                       rel="noopener noreferrer"
                       className="link"
                     >
-                      <button className="bg-neutral-400/20 hover:bg-neutral-400/30 backdrop-blur-[1px] border border-neutral-400/20 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)] transition-all duration-300 text-shadow-white h-12 w-full md:w-auto px-6 rounded-xl font-semibold inline-flex items-center justify-center gap-2 mt-8">
+                      <button className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-neutral-400/20 bg-neutral-400/20 px-6 font-semibold backdrop-blur-[1px] transition-all duration-300 text-shadow-white hover:bg-neutral-400/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)] md:w-auto">
                         <span>View Project</span>
                         <ArrowUpRightIcon className="size-4" />
                       </button>
@@ -102,7 +102,7 @@ export const ProjectsSection = () => {
                     <Image
                       src={project.image}
                       alt={`${project.title} screenshot`}
-                      className="mt-8 -mb-4 md:-mb-0 lg:mt-0 lg:absolute lg:h-full lg:w-auto lg:max-w-none"
+                      className="mt-8 -mb-4 md:-mb-0 lg:absolute lg:mt-0 lg:h-full lg:w-auto lg:max-w-none"
                     />
                   </div>
                 </div>

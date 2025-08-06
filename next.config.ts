@@ -37,10 +37,7 @@ const nextConfig: NextConfig = {
             prettier: false,
             svgo: true,
             svgoConfig: {
-              plugins: [
-                "preset-default",
-                { name: "removeViewBox", active: false },
-              ],
+              plugins: ["preset-default", { name: "removeViewBox", active: false }],
             },
             titleProp: true,
           },

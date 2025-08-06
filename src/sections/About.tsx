@@ -135,7 +135,7 @@ export const AboutSection = () => {
                 title="My Reads"
                 description="Explore the books shaping my experiences."
               />
-              <div className="w-40 mx-auto mt-2 md:mt-0">
+              <div className="mx-auto mt-2 w-40 md:mt-0">
                 <Image src={BookImage} alt="Book Cover" />
               </div>
             </Card>
@@ -154,7 +154,7 @@ export const AboutSection = () => {
             </Card>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
-            <Card className="h-[320px] p-0 flex flex-col md:col-span-3 lg:col-span-2">
+            <Card className="flex h-[320px] flex-col p-0 md:col-span-3 lg:col-span-2">
               <CardHeader
                 className="px-6 py-6"
                 title="Beyond the Code"
@@ -169,24 +169,18 @@ export const AboutSection = () => {
                           left: hobby.left,
                           top: hobby.top,
                         }}
-                        className="inline-flex items-center gap-2 px-6 bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full py-1.5 absolute"
+                        className="absolute inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 px-6 py-1.5"
                       >
                         <span>{hobby.emoji}</span>
-                        <span className="font-medium text-gray-950">
-                          {hobby.title}
-                        </span>
+                        <span className="font-medium text-gray-950">{hobby.title}</span>
                       </div>
                     </div>
                   );
                 })}
               </div>
             </Card>
-            <Card className="h-[320px] p-0 relative md:col-span-2 lg:col-span-1">
-              <DynamicMap
-                center={[50.0782, 8.2398]}
-                zoom={13}
-                markerImage={SmileMemoji}
-              />
+            <Card className="relative h-[320px] p-0 md:col-span-2 lg:col-span-1">
+              <DynamicMap center={[50.0782, 8.2398]} zoom={13} markerImage={SmileMemoji} />
             </Card>
           </div>
         </div>

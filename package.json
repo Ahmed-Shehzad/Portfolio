@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write --list-different .",
+    "lint:fix": "next lint --fix",
+    "check": "npm run format:check && npm run lint",
+    "fix": "npm run format:fix && npm run lint:fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@svgr/webpack": "^8.1.0",
@@ -30,9 +37,22 @@
     "eslint": "^9.32.0",
     "eslint-config-next": "15.4.5",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.4",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3",
     "webpack": "^5.101.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,html,css,scss}": [
+      "prettier --write"
+    ]
   }
 }
