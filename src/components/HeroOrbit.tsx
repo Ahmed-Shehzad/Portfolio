@@ -22,7 +22,7 @@ export const HeroOrbit: FC<PropsWithChildren<HeroOrbitProps>> = (props) => {
   } = props;
 
   return (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-20">
+    <div className="absolute top-1/2 left-1/2 -z-20 -translate-x-1/2 -translate-y-1/2">
       <div
         className={twMerge(shouldOrbit === true && "animate-spin")}
         style={{
@@ -43,10 +43,7 @@ export const HeroOrbit: FC<PropsWithChildren<HeroOrbitProps>> = (props) => {
               animationDuration: spinDuration,
             }}
           >
-            <div
-              className="inline-flex"
-              style={{ transform: `rotate(${rotation * -1}deg)` }}
-            >
+            <div className="inline-flex" style={{ transform: `rotate(${rotation * -1}deg)` }}>
               {children}
             </div>
           </div>

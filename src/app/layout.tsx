@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Inter, Calistoga } from "next/font/google";
 import "./globals.css";
 import { twMerge } from "tailwind-merge";
+import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
+import { FC, ReactNode } from "react";
+
+interface IRootLayoutProps {
+  children: ReactNode;
+}
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,22 +59,20 @@ export const metadata: Metadata = {
  * @param children - The React node(s) to be rendered within the layout.
  * @returns The root HTML structure with applied class names and children content.
  */
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout: FC<IRootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body
         className={twMerge(
           inter.variable,
           calistoga.variable,
-          "bg-gray-900 text-white antialiased font-sans"
+          "bg-gray-900 font-sans text-white antialiased"
         )}
       >
-        {children}
+        <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
