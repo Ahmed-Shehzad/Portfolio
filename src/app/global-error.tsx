@@ -1,7 +1,7 @@
 "use client";
 
-import { FC } from "react";
 import { useRouter } from "next/navigation";
+import { FC } from "react";
 
 interface IGlobalErrorProps {
   error: Error & { digest?: string };
@@ -11,32 +11,33 @@ interface IGlobalErrorProps {
 const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
   const router = useRouter();
 
-  // Sanitize error message to remove sensitive information
-  const sanitizeErrorMessage = (message: string | undefined): string => {
-    if (!message) return "An unexpected error occurred";
-
-    let sanitized = message;
-
-    // Remove sensitive keywords
-    sanitized = sanitized.replace(
+  // Helper function to sanitize sensitive keywords
+  const sanitizeSensitiveKeywords = (text: string): string => {
+    return text.replace(
       /\b(?:password|token|key|secret|api[_-]?key|auth|bearer|session|jwt|refresh[_-]?token)\b/gi,
       "[REDACTED]"
     );
+  };
 
-    // Enhanced email detection - covers most practical cases
+  // Helper function to sanitize email addresses
+  const sanitizeEmails = (text: string): string => {
     // Standard format: user@domain.tld
-    sanitized = sanitized.replace(
+    const standardEmails = text.replace(
       /\b[A-Za-z\d][\w.-]*[A-Za-z\d]@[A-Za-z\d][\w.-]*\.[A-Za-z]{2,}\b/g,
       "[REDACTED_EMAIL]"
     );
 
     // Quoted email format: "user name"@domain.tld
-    sanitized = sanitized.replace(
+    return standardEmails.replace(
       /"[^"]+"\s*@\s*[A-Za-z\d][\w.-]*\.[A-Za-z]{2,}\b/g,
       "[REDACTED_EMAIL]"
     );
+  };
 
-    // Simplified phone patterns - multiple passes for different formats
+  // Helper function to sanitize phone numbers
+  const sanitizePhoneNumbers = (text: string): string => {
+    let sanitized = text;
+
     // International format: +1 234 567 8900
     sanitized = sanitized.replace(
       /\+\d{1,3}[\s.-]?\d{3,4}[\s.-]?\d{3,4}[\s.-]?\d{3,4}/g,
@@ -52,6 +53,13 @@ const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
     // Extension format: 1234 ext 567
     sanitized = sanitized.replace(/\d{4,}\s+(?:ext|extension|x)\s+\d{1,5}/gi, "[REDACTED_PHONE]");
 
+    return sanitized;
+  };
+
+  // Helper function to sanitize financial information
+  const sanitizeFinancialInfo = (text: string): string => {
+    let sanitized = text;
+
     // Credit card numbers (13-19 digits with separators)
     sanitized = sanitized.replace(
       /\b\d{4}[\s.-]?\d{4}[\s.-]?\d{4}[\s.-]?\d{1,4}\b/g,
@@ -61,13 +69,31 @@ const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
     // Social Security Numbers (US format: XXX-XX-XXXX)
     sanitized = sanitized.replace(/\b\d{3}[\s.-]?\d{2}[\s.-]?\d{4}\b/g, "[REDACTED_SSN]");
 
-    // URLs with sensitive query parameters
-    sanitized = sanitized.replace(
+    return sanitized;
+  };
+
+  // Helper function to sanitize URLs with sensitive parameters
+  const sanitizeUrls = (text: string): string => {
+    return text.replace(
       /https?:\/\/[^\s]+[?&](?:token|key|password|auth|secret|jwt)=[^&\s]*/gi,
       "[REDACTED_URL]"
     );
+  };
 
-    return sanitized;
+  // Main sanitization function that orchestrates all sanitization steps
+  const sanitizeErrorMessage = (message: string | undefined): string => {
+    if (!message) return "An unexpected error occurred";
+
+    // Apply all sanitization functions in sequence
+    const sanitizationPipeline = [
+      sanitizeSensitiveKeywords,
+      sanitizeEmails,
+      sanitizePhoneNumbers,
+      sanitizeFinancialInfo,
+      sanitizeUrls,
+    ];
+
+    return sanitizationPipeline.reduce((sanitized, sanitizeFn) => sanitizeFn(sanitized), message);
   };
 
   // Sanitize stack trace to remove sensitive paths and internal details
