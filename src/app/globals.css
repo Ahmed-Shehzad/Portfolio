@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .nav-item {
+    @apply px-4 py-0.5 rounded-full text-white/70 text-sm font-semibold hover:bg-white/10 hover:text-white transition duration-300;
+  }
+
+  .hero-ring {
+    @apply absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-emerald-300/5 shadow-[0_0_80px_inset] shadow-emerald-300/5;
+  }
+
+  .animation-ping {
+    animation: ping-large 1s ease-in-out infinite;
+    animation-duration: 10s;
+  }
+
+  .animation-move-left {
+    animation: move-left 1s linear infinite;
+    animation-duration: 30s;
+  }
+
+  .animation-move-right {
+    animation: move-right 1s linear infinite;
+    animation-duration: 10s;
+  }
+
+  @layer utilities {
+    .container {
+      @apply lg:max-w-5xl;
+    }
+  }
+
+  @keyframes ping-large {
+    75%,
+    100% {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  @keyframes move-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-33.333%);
+    }
+  }
+
+  @keyframes move-right {
+    0% {
+      transform: translateX(-33.333%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  /* Custom Leaflet zoom control styles */
+  .leaflet-control-zoom a {
+    @apply bg-white/10 backdrop-blur-sm border-white/20 text-white;
+    @apply hover:bg-white/20 transition-all duration-200;
+    @apply rounded-md;
+  }
+
+  .leaflet-control-zoom {
+    @apply border-0 shadow-lg;
+  }
+
+  .leaflet-control-zoom a:first-child {
+    @apply rounded-t-md rounded-b-none;
+  }
+
+  .leaflet-control-zoom a:last-child {
+    @apply rounded-b-md rounded-t-none;
+  }
+}
