@@ -1,19 +1,19 @@
-import Image from "next/image";
-import { Card } from "@/components/Card";
-import { SectionHeader } from "@/components/SectionHeader";
-import BookImage from "@/assets/images/book-cover.png";
-import SmileMemoji from "@/assets/images/memoji-smile.png";
-import { CardHeader } from "@/components/CardHeader";
+import CSharpIcon from "@/assets/icons/csharp.svg";
+import DockerIcon from "@/assets/icons/docker.svg";
 import DotnetIcon from "@/assets/icons/dotnet.svg";
-import TypeScriptIcon from "@/assets/icons/square-ts.svg";
 import NextJsIcon from "@/assets/icons/next-js.svg";
 import NpgsqlIcon from "@/assets/icons/postgresql.svg";
-import TailwindIcon from "@/assets/icons/tailwind.svg";
-import CSharpIcon from "@/assets/icons/csharp.svg";
 import ReactIcon from "@/assets/icons/react.svg";
-import DockerIcon from "@/assets/icons/docker.svg";
-import { ToolboxItems } from "@/components/ToolboxItems";
+import TypeScriptIcon from "@/assets/icons/square-ts.svg";
+import TailwindIcon from "@/assets/icons/tailwind.svg";
+import BookImage from "@/assets/images/book-cover.png";
+import SmileMemoji from "@/assets/images/memoji-smile.png";
+import { Card } from "@/components/Card";
+import { CardHeader } from "@/components/CardHeader";
 import { DynamicMap } from "@/components/DynamicMap";
+import { SectionHeader } from "@/components/SectionHeader";
+import { ToolboxItems } from "@/components/ToolboxItems";
+import Image from "next/image";
 
 type ToolboxItem = {
   title: string;

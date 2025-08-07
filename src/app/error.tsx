@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, FC } from "react";
 import { useRouter } from "next/navigation";
+import { FC, useEffect } from "react";
 
 interface IErrorPageProps {
   error: Error & { digest?: string };
@@ -30,14 +30,14 @@ const ErrorPage: FC<IErrorPageProps> = ({ error, reset }) => {
         <div className="space-y-4">
           <button
             onClick={reset}
-            className="w-full rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-600"
+            className="w-full cursor-pointer rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-600"
           >
             Try Again
           </button>
 
           <button
             onClick={() => router.push("/")}
-            className="w-full rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
+            className="w-full cursor-pointer rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
           >
             Go Home
           </button>

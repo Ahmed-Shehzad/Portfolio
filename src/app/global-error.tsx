@@ -128,14 +128,14 @@ const GlobalError: FC<IGlobalErrorProps> = ({ error, reset }) => {
             <div className="space-y-4">
               <button
                 onClick={reset}
-                className="w-full rounded-lg bg-red-500 px-6 py-3 font-medium text-white transition-colors hover:bg-red-600"
+                className="w-full cursor-pointer rounded-lg bg-red-500 px-6 py-3 font-medium text-white transition-colors hover:bg-red-600"
               >
                 Reset Application
               </button>
 
               <button
                 onClick={() => router.push("/")}
-                className="w-full rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
+                className="w-full cursor-pointer rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
               >
                 Reload Application
               </button>
