@@ -1,11 +1,11 @@
-import Image from "next/image";
+import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
+import CheckCircleIcon from "@/assets/icons/check-circle.svg";
+import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
 import darkSaasLandingPage from "@/assets/images/dark-saas-landing-page.png";
 import lightSaasLandingPage from "@/assets/images/light-saas-landing-page.png";
-import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
-import CheckCircleIcon from "@/assets/icons/check-circle.svg";
-import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
-import { SectionHeader } from "@/components/SectionHeader";
 import { Card } from "@/components/Card";
+import { SectionHeader } from "@/components/SectionHeader";
+import Image from "next/image";
 
 const portfolioProjects = [
   {
@@ -92,7 +92,7 @@ export const ProjectsSection = () => {
                       rel="noopener noreferrer"
                       className="link"
                     >
-                      <button className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-neutral-400/20 bg-neutral-400/20 px-6 font-semibold backdrop-blur-[1px] transition-all duration-300 text-shadow-white hover:bg-neutral-400/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)] md:w-auto">
+                      <button className="mt-8 inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-400/20 bg-neutral-400/20 px-6 font-semibold backdrop-blur-[1px] transition-all duration-300 text-shadow-white hover:bg-neutral-400/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)] md:w-auto">
                         <span>View Project</span>
                         <ArrowUpRightIcon className="size-4" />
                       </button>

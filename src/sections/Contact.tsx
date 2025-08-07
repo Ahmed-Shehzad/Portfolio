@@ -39,7 +39,7 @@ export const ContactSection = () => {
             <div>
               <button
                 onClick={handleOpenModal}
-                className="inline-flex h-12 w-max items-center gap-2 rounded-xl border border-gray-900 bg-gray-900 px-6 text-white backdrop-blur-[1px] transition-all duration-300 text-shadow-white hover:border hover:border-neutral-900/20 hover:bg-neutral-900/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)]"
+                className="inline-flex h-12 w-max cursor-pointer items-center gap-2 rounded-xl border border-gray-900 bg-gray-900 px-6 text-white backdrop-blur-[1px] transition-all duration-300 text-shadow-white hover:border hover:border-neutral-900/20 hover:bg-neutral-900/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)]"
               >
                 <span className="font-semibold">Contact Me</span>
                 <ArrowUpRightIcon className="size-4" />

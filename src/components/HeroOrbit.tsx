@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { twMerge } from "tailwind-merge";
 
 type HeroOrbitProps = {
@@ -22,7 +22,7 @@ export const HeroOrbit: FC<PropsWithChildren<HeroOrbitProps>> = (props) => {
   } = props;
 
   return (
-    <div className="absolute top-1/2 left-1/2 -z-20 -translate-x-1/2 -translate-y-1/2">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <div
         className={twMerge(shouldOrbit === true && "animate-spin")}
         style={{

@@ -1,7 +1,7 @@
 "use client";
 
 import GrainImage from "@/assets/images/grain.jpg";
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
 import { Modal } from "./Modal";
 
 interface IContactModalProps {
@@ -9,15 +9,21 @@ interface IContactModalProps {
   onClose: () => void;
 }
 
-export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
-  // Validation constants for easy configuration
-  const VALIDATION_RULES = {
-    name: { minLength: 2 },
-    subject: { minLength: 3 },
-    message: { minLength: 10 },
-    email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-  } as const;
+// Validation constants for easy configuration
+const VALIDATION_RULES = {
+  name: { minLength: 2, required: true },
+  subject: { minLength: 3, required: true },
+  message: { minLength: 10, required: true },
+  email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, required: true },
+} as const;
 
+type ValidationRule = {
+  minLength?: number;
+  pattern?: RegExp;
+  required: boolean;
+};
+
+export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -32,64 +38,33 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
     subject?: string;
     message?: string;
   }>({});
-  const [touched, setTouched] = useState<{
-    name?: boolean;
-    email?: boolean;
-    subject?: boolean;
-    message?: boolean;
-  }>({});
 
-  // Validation helper functions
-  const validateName = (value: string): string => {
+  // Generic validation function
+  const validateField = useCallback((fieldName: string, value: string): string => {
     const trimmedValue = value.trim();
-    if (!trimmedValue) return "Name is required";
-    if (trimmedValue.length < VALIDATION_RULES.name.minLength) {
-      return `Name must be at least ${VALIDATION_RULES.name.minLength} characters`;
+    const rules = VALIDATION_RULES[fieldName as keyof typeof VALIDATION_RULES] as ValidationRule;
+
+    if (!rules) return "";
+
+    // Check if field is required
+    if (rules.required && !trimmedValue) {
+      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
     }
-    return "";
-  };
 
-  const validateEmail = (value: string): string => {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return "Email is required";
-    if (!VALIDATION_RULES.email.pattern.test(trimmedValue)) {
-      return "Please enter a valid email address";
+    // Check minimum length
+    if (rules.minLength && trimmedValue.length < rules.minLength) {
+      return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${rules.minLength} characters`;
     }
-    return "";
-  };
 
-  const validateSubject = (value: string): string => {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return "Subject is required";
-    if (trimmedValue.length < VALIDATION_RULES.subject.minLength) {
-      return `Subject must be at least ${VALIDATION_RULES.subject.minLength} characters`;
+    // Check pattern (for email)
+    if (rules.pattern && !rules.pattern.test(trimmedValue)) {
+      return fieldName === "email" ? "Please enter a valid email address" : "Invalid format";
     }
+
     return "";
-  };
+  }, []);
 
-  const validateMessage = (value: string): string => {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return "Message is required";
-    if (trimmedValue.length < VALIDATION_RULES.message.minLength) {
-      return `Message must be at least ${VALIDATION_RULES.message.minLength} characters`;
-    }
-    return "";
-  };
-
-  // Field validators mapping for better maintainability
-  const fieldValidators: Record<string, (value: string) => string> = {
-    name: validateName,
-    email: validateEmail,
-    subject: validateSubject,
-    message: validateMessage,
-  };
-
-  const validateField = (name: string, value: string): string => {
-    const validator = fieldValidators[name];
-    return validator ? validator(value) : "";
-  };
-
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const newErrors: typeof errors = {};
     const formFields = Object.keys(formData) as (keyof typeof formData)[];
 
@@ -105,97 +80,83 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
 
     // Return true if no errors found
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData, validateField]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    const fieldName = name as keyof typeof formData;
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      const fieldName = name as keyof typeof formData;
 
-    // Update form data
-    setFormData((prev) => ({ ...prev, [name]: value }));
+      // Update form data
+      setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear existing error for this field
-    if (errors[fieldName]) {
-      setErrors((prev) => ({ ...prev, [fieldName]: "" }));
-    }
-
-    // Mark field as touched if not already
-    if (!touched[fieldName]) {
-      setTouched((prev) => ({ ...prev, [fieldName]: true }));
-    }
-
-    // Perform real-time validation for touched fields
-    if (touched[fieldName]) {
+      // Clear existing error for this field and perform real-time validation
       const error = validateField(name, value);
       setErrors((prev) => ({ ...prev, [fieldName]: error }));
-    }
-  };
+    },
+    [validateField]
+  );
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    const fieldName = name as keyof typeof formData;
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      const fieldName = name as keyof typeof formData;
 
-    // Mark field as touched and validate
-    setTouched((prev) => ({ ...prev, [fieldName]: true }));
+      // Validate field on blur
 
-    const error = validateField(name, value);
-    setErrors((prev) => ({ ...prev, [fieldName]: error }));
-  };
+      const error = validateField(name, value);
+      setErrors((prev) => ({ ...prev, [fieldName]: error }));
+    },
+    [validateField]
+  );
 
   // Utility function to reset form to initial state
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormData({ name: "", email: "", subject: "", message: "" });
     setErrors({});
-    setTouched({});
     setSubmitStatus("idle");
-  };
+  }, []);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     resetForm();
     onClose();
-  };
+  }, [resetForm, onClose]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
 
-    // Mark all fields as touched to show validation errors
-    const allFieldsTouched = {
-      name: true,
-      email: true,
-      subject: true,
-      message: true,
-    };
-    setTouched(allFieldsTouched);
+      // Validate the form
+      if (!validateForm()) {
+        return; // Don't submit if form is invalid
+      }
 
-    // Validate the form
-    if (!validateForm()) {
-      return; // Don't submit if form is invalid
-    }
+      setIsSubmitting(true);
+      setSubmitStatus("idle");
 
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
+      try {
+        // Simulate API call - replace with your actual endpoint
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    try {
-      // Simulate API call - replace with your actual endpoint
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Here you would typically send the data to your backend
+        console.log("Contact form data:", formData);
 
-      // Here you would typically send the data to your backend
-      console.log("Contact form data:", formData);
+        setSubmitStatus("success");
 
-      setSubmitStatus("success");
-
-      // Reset form and close modal after successful submission
-      setTimeout(() => {
-        resetForm();
-        onClose(); // Only close after successful submission
-      }, 2000);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+        // Reset form and close modal after successful submission
+        setTimeout(() => {
+          resetForm();
+          onClose(); // Only close after successful submission
+        }, 2000);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        setSubmitStatus("error");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [formData, validateForm, resetForm, onClose]
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={handleCancel}>
@@ -216,7 +177,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
             </h2>
             <button
               onClick={handleCancel}
-              className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
               aria-label="Close modal"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -360,7 +321,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                className="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
                 disabled={isSubmitting}
               >
                 Cancel
@@ -368,7 +329,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-emerald-400 to-sky-400 px-4 py-2 text-sm font-medium text-white transition-all hover:from-emerald-500 hover:to-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-gradient-to-r from-emerald-400 to-sky-400 px-4 py-2 text-sm font-medium text-white transition-all hover:from-emerald-500 hover:to-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
