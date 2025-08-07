@@ -92,14 +92,14 @@ export class ErrorBoundary extends Component<IProps, IState> {
             <div className="space-y-4">
               <button
                 onClick={this.handleRetry}
-                className="w-full rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-600"
+                className="w-full cursor-pointer rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-600"
               >
                 Try Again
               </button>
 
               <button
                 onClick={() => window.location.reload()}
-                className="w-full rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
+                className="w-full cursor-pointer rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
               >
                 Reload Page
               </button>
