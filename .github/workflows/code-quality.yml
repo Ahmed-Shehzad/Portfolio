@@ -38,14 +38,14 @@ jobs:
       - name: Validate AsciiDoc Documentation
         run: |
           echo "📚 Checking documentation completeness..."
-          
+
           # Count component files vs documentation files
           COMPONENTS=$(find src/components -name "*.tsx" | wc -l)
           COMPONENT_DOCS=$(find src/docs -name "*.adoc" -not -name "index.adoc" | wc -l)
-          
+
           echo "🔧 Components found: $COMPONENTS"
           echo "📄 Component docs found: $COMPONENT_DOCS"
-          
+
           if [ "$COMPONENT_DOCS" -lt 5 ]; then
             echo "⚠️  Consider adding more component documentation"
           else
