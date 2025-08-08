@@ -1,8 +1,6 @@
 "use client";
 
 import BookImage from "@/assets/images/book-cover.png";
-import BookImageWebP from "@/assets/images/book-cover.webp";
-import BookImageAvif from "@/assets/images/book-cover.avif";
 import SmileMemoji from "@/assets/images/memoji-smile.png";
 import { Card, CardHeader, OptimizedImage, SectionHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
@@ -138,8 +136,6 @@ export const AboutSection = memo(() => {
                 <div className="mx-auto mt-2 w-40 md:mt-0">
                   <OptimizedImage
                     src={BookImage}
-                    webpSrc={BookImageWebP}
-                    avifSrc={BookImageAvif}
                     alt="Professional Development Books"
                     width={160}
                     height={200}
@@ -186,16 +182,21 @@ export const AboutSection = memo(() => {
                   description="The principles that drive my approach to development and collaboration."
                 />
                 <div className="flex-1 overflow-y-auto p-6">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div className="space-y-3">
-                      <div className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-300 to-sky-300 px-4 py-3 transition-transform hover:scale-105">
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                    {/* Quality First */}
+                    <div className="w-full">
+                      <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-300 to-sky-300 px-4 py-3 transition-transform hover:scale-105">
                         <span>🎯</span>
                         <div className="text-sm">
                           <div className="font-semibold text-gray-950">Quality First</div>
                           <div className="text-xs text-gray-700">Clean, maintainable code</div>
                         </div>
                       </div>
-                      <div className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-purple-300 to-pink-300 px-4 py-3 transition-transform hover:scale-105">
+                    </div>
+
+                    {/* Innovation */}
+                    <div className="w-full">
+                      <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-purple-300 to-pink-300 px-4 py-3 transition-transform hover:scale-105">
                         <span>🚀</span>
                         <div className="text-sm">
                           <div className="font-semibold text-gray-950">Innovation</div>
@@ -203,15 +204,45 @@ export const AboutSection = memo(() => {
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-3">
-                      <div className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-300 to-red-300 px-4 py-3 transition-transform hover:scale-105">
+
+                    {/* Collaboration */}
+                    <div className="w-full">
+                      <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-orange-300 to-red-300 px-4 py-3 transition-transform hover:scale-105">
                         <span>🤝</span>
                         <div className="text-sm">
                           <div className="font-semibold text-gray-950">Collaboration</div>
                           <div className="text-xs text-gray-700">Team success over solo wins</div>
                         </div>
                       </div>
-                      <div className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-300 to-cyan-300 px-4 py-3 transition-transform hover:scale-105">
+                    </div>
+
+                    {/* Excellence */}
+                    <div className="w-full">
+                      <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-yellow-300 to-amber-300 px-4 py-3 transition-transform hover:scale-105">
+                        <span>⭐</span>
+                        <div className="text-sm">
+                          <div className="font-semibold text-gray-950">Excellence</div>
+                          <div className="text-xs text-gray-700">Exceeding expectations always</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Reliability */}
+                    <div className="w-full">
+                      <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-300 to-violet-300 px-4 py-3 transition-transform hover:scale-105">
+                        <span>🛡️</span>
+                        <div className="text-sm">
+                          <div className="font-semibold text-gray-950">Reliability</div>
+                          <div className="text-xs text-gray-700">
+                            Consistent delivery you can trust
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Growth */}
+                    <div className="w-full">
+                      <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-blue-300 to-cyan-300 px-4 py-3 transition-transform hover:scale-105">
                         <span>📚</span>
                         <div className="text-sm">
                           <div className="font-semibold text-gray-950">Growth</div>
