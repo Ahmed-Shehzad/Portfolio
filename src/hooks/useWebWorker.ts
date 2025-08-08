@@ -27,6 +27,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+// Web Worker configuration constants
+const WORKER_TASK_TIMEOUT_MS = 30000; // 30 seconds timeout for tasks
+
 interface WorkerTask {
   id: string;
   type: string;
