@@ -1,8 +1,8 @@
 "use client";
 
 import GrainImage from "@/assets/images/grain.jpg";
+import { Modal } from "@/components/ui";
 import { FormEvent, useCallback, useState } from "react";
-import { Modal } from "./Modal";
 
 interface IContactModalProps {
   isOpen: boolean;

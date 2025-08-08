@@ -3,9 +3,8 @@ import CheckCircleIcon from "@/assets/icons/check-circle.svg";
 import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
 import darkSaasLandingPage from "@/assets/images/dark-saas-landing-page.png";
 import lightSaasLandingPage from "@/assets/images/light-saas-landing-page.png";
-import { Card } from "@/components/Card";
-import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
-import { SectionHeader } from "@/components/SectionHeader";
+import { Card, SectionHeader } from "@/components/ui";
+import { ScrollAnimationWrapper } from "@/wrappers";
 import Image from "next/image";
 
 const portfolioProjects = [
@@ -55,8 +54,7 @@ export const ProjectsSection = () => {
           <SectionHeader
             eyebrow="Real World Results"
             title="Featured Projects"
-            description="Here are some of my recent projects that showcase my skills in
-            creating high-quality, user-friendly web applications."
+            description="Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications."
           />
         </ScrollAnimationWrapper>
         <div className="mt-10 flex flex-col gap-20 md:mt-20">
@@ -65,7 +63,7 @@ export const ProjectsSection = () => {
               <Card
                 key={project.title}
                 className="sticky px-8 pt-8 pb-0 md:px-10 md:pt-12 lg:px-20 lg:pt-16"
-                style={{ top: `calc(64px + ${projectIndex * 40}px` }}
+                style={{ top: `calc(64px + ${projectIndex * 40}px)` }}
               >
                 <ScrollAnimationWrapper
                   animation="fadeInUp"

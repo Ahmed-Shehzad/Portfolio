@@ -1,5 +1,7 @@
-import React, { FC } from "react";
+"use client";
+
 import StarIcon from "@/assets/icons/star.svg";
+import { FC } from "react";
 import { twMerge } from "tailwind-merge";
 
 type CardHeaderProps = {

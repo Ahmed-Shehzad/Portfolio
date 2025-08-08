@@ -1,5 +1,5 @@
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
-import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
+import { ScrollAnimationWrapper } from "@/wrappers";
 
 const footerLinks = [
   { href: "https://github.com/Ahmed-Shehzad", label: "Github" },

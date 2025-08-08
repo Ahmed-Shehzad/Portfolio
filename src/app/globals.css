@@ -46,24 +46,32 @@
         transform 0.6s ease-out;
     }
 
-    .animate-on-scroll.animate-fade-in {
+    .animate-on-scroll.animate-fadeIn {
       animation: fadeIn 0.8s ease-out forwards;
     }
 
-    .animate-on-scroll.animate-fade-in-up {
+    .animate-on-scroll.animate-fadeInUp {
       animation: fadeInUp 0.8s ease-out forwards;
     }
 
-    .animate-on-scroll.animate-fade-in-left {
+    .animate-on-scroll.animate-fadeInDown {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .animate-on-scroll.animate-fadeInLeft {
       animation: fadeInLeft 0.8s ease-out forwards;
     }
 
-    .animate-on-scroll.animate-fade-in-right {
+    .animate-on-scroll.animate-fadeInRight {
       animation: fadeInRight 0.8s ease-out forwards;
     }
 
-    .animate-on-scroll.animate-scale-in {
+    .animate-on-scroll.animate-scaleIn {
       animation: scaleIn 0.8s ease-out forwards;
+    }
+
+    .animate-on-scroll.animate-slideUp {
+      animation: fadeInUp 0.8s ease-out forwards;
     }
 
     /* Staggered animations for child elements */
@@ -75,31 +83,31 @@
         transform 0.6s ease-out;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > * {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > * {
       animation: fadeInUp 0.8s ease-out forwards;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > *:nth-child(1) {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > *:nth-child(1) {
       animation-delay: 0.1s;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > *:nth-child(2) {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > *:nth-child(2) {
       animation-delay: 0.2s;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > *:nth-child(3) {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > *:nth-child(3) {
       animation-delay: 0.3s;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > *:nth-child(4) {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > *:nth-child(4) {
       animation-delay: 0.4s;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > *:nth-child(5) {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > *:nth-child(5) {
       animation-delay: 0.5s;
     }
 
-    .animate-on-scroll.stagger-children.animate-fade-in-up > *:nth-child(6) {
+    .animate-on-scroll.stagger-children.animate-fadeInUp > *:nth-child(6) {
       animation-delay: 0.6s;
     }
   }

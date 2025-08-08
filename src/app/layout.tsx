@@ -1,9 +1,9 @@
+import { ErrorBoundaryWrapper } from "@/wrappers";
 import type { Metadata } from "next";
-import { Inter, Calistoga } from "next/font/google";
-import "./globals.css";
-import { twMerge } from "tailwind-merge";
-import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
+import { Calistoga, Inter } from "next/font/google";
 import { FC, ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
+import "./globals.css";
 
 interface IRootLayoutProps {
   children: ReactNode;
