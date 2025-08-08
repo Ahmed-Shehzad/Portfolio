@@ -6,13 +6,7 @@ import { Card, CardHeader, OptimizedImage, SectionHeader } from "@/components/ui
 import { ScrollAnimationWrapper } from "@/wrappers";
 import dynamic from "next/dynamic";
 import { memo } from "react";
-
-// Import only specific constants needed
-const MAP_CONFIG = {
-  CENTER: [33.6844, 73.0479] as [number, number],
-  ZOOM: 11,
-} as const;
-
+import { MAP_CONFIG } from "@/shared/constants";
 // Lazy load heavy components
 const DynamicMap = dynamic(
   () => import("@/components/features").then((mod) => ({ default: mod.DynamicMap })),
