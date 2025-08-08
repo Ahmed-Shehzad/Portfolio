@@ -1,4 +1,10 @@
-# Muhammad Ahmed Shehzad - Por### 🛠️ **Developer Experience**
+# Muhammad Ahmed Shehzad - Portfolio
+
+A modern, production-ready portfolio website built with Next.js 15, React 19, TypeScript, and Tailwind CSS v4. Features comprehensive performance optimization with Web Workers, robust error handling, and professional deployment workflows.
+
+## ✨ Features
+
+### 🛠️ **Developer Experience**
 
 - **Code Quality**: Automated ESLint, Prettier, and EditorConfig enforcement
 - **Pre-commit Hooks**: Automatic code formatting and linting before commits
@@ -39,13 +45,6 @@ A modern, production-ready portfolio website built with Next.js 15, React 19, Ty
 - **Error Boundaries**: Comprehensive error handling with graceful fallbacks
 - **Graceful Degradation**: Fallback UIs for network issues and component failures
 - **Development Debugging**: Detailed error reporting in development mode
-
-### � **Developer Experience**
-
-- **Code Quality**: Automated ESLint, Prettier, and EditorConfig enforcement
-- **Pre-commit Hooks**: Automatic code formatting and linting before commits
-- **CI/CD Pipeline**: GitHub Actions for automated testing and quality checks
-- **Cross-platform**: Consistent development experience across all editors
 
 ## 🛠️ Tech Stack
 

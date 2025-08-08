@@ -1,6 +1,8 @@
 "use client";
 
 import BookImage from "@/assets/images/book-cover.png";
+import BookImageWebP from "@/assets/images/book-cover.webp";
+import BookImageAvif from "@/assets/images/book-cover.avif";
 import SmileMemoji from "@/assets/images/memoji-smile.png";
 import { Card, CardHeader, OptimizedImage, SectionHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
@@ -136,6 +138,8 @@ export const AboutSection = memo(() => {
                 <div className="mx-auto mt-2 w-40 md:mt-0">
                   <OptimizedImage
                     src={BookImage}
+                    webpSrc={BookImageWebP}
+                    avifSrc={BookImageAvif}
                     alt="Professional Development Books"
                     width={160}
                     height={200}

@@ -1,12 +1,12 @@
 "use client";
 
-import Image, { ImageProps } from "next/image";
+import Image, { ImageProps, StaticImageData } from "next/image";
 import { useState } from "react";
 
 interface OptimizedImageProps extends ImageProps {
-  webpSrc?: string;
-  avifSrc?: string;
-  fallbackSrc?: string;
+  webpSrc?: string | StaticImageData;
+  avifSrc?: string | StaticImageData;
+  fallbackSrc?: string | StaticImageData;
 }
 
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -21,7 +21,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   // Extract src string from either string or import object
   const srcString = typeof src === "string" ? src : (src as any)?.src || src;
-  const finalFallbackSrc = fallbackSrc || srcString;
+  const webpString = typeof webpSrc === "string" ? webpSrc : (webpSrc as any)?.src;
+  const avifString = typeof avifSrc === "string" ? avifSrc : (avifSrc as any)?.src;
+  let finalFallbackSrc;
+  if (fallbackSrc) {
+    finalFallbackSrc = typeof fallbackSrc === "string" ? fallbackSrc : (fallbackSrc as any)?.src;
+  } else {
+    finalFallbackSrc = srcString;
+  }
 
   const handleImageError = () => {
     setImageError(true);
@@ -33,14 +40,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }
 
   // If custom next-gen formats are provided, use picture element
-  if (avifSrc || webpSrc) {
+  if (avifString || webpString) {
     return (
       <picture>
         {/* AVIF format - best compression */}
-        {avifSrc && <source srcSet={avifSrc} type="image/avif" />}
+        {avifString && <source srcSet={avifString} type="image/avif" />}
 
         {/* WebP format - good compression and wide support */}
-        {webpSrc && <source srcSet={webpSrc} type="image/webp" />}
+        {webpString && <source srcSet={webpString} type="image/webp" />}
 
         {/* Fallback to original format */}
         <Image src={finalFallbackSrc} alt={alt} onError={handleImageError} {...props} />
