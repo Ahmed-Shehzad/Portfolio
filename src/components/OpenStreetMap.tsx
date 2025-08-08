@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { StaticImageData } from "next/image";
+import { useEffect } from "react";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 
 interface IOpenStreetMapProps {
   center: [number, number];
@@ -48,22 +48,34 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
 
   const customIcon = createCustomMarker();
 
-  return (
-    <MapContainer
-      center={center}
-      zoom={zoom}
-      className={className}
-      scrollWheelZoom={true}
-      zoomControl={true}
-      attributionControl={false}
-      style={{ height: "100%", width: "100%" }}
-      zoomSnap={0.5}
-      zoomDelta={0.5}
-      minZoom={3}
-      maxZoom={18}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={center} icon={customIcon} />
-    </MapContainer>
-  );
+  try {
+    return (
+      <MapContainer
+        center={center}
+        zoom={zoom}
+        className={className}
+        scrollWheelZoom={true}
+        zoomControl={true}
+        attributionControl={false}
+        style={{ height: "100%", width: "100%" }}
+        zoomSnap={0.5}
+        zoomDelta={0.5}
+        minZoom={3}
+        maxZoom={18}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <Marker position={center} icon={customIcon} />
+      </MapContainer>
+    );
+  } catch (error) {
+    console.error("Map rendering error:", error);
+    return (
+      <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
+        <div className="text-center">
+          <div className="mb-2 text-2xl">🗺️</div>
+          <div className="text-sm">Map temporarily unavailable</div>
+        </div>
+      </div>
+    );
+  }
 };

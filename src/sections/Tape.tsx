@@ -1,4 +1,5 @@
 import StarIcon from "@/assets/icons/star.svg";
+import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 import { Fragment } from "react";
 
 const words = [
@@ -42,7 +43,7 @@ const words = [
 
 export const TapeSection = () => {
   return (
-    <div className="overflow-x-clip py-16 lg:py-24">
+    <ScrollAnimationWrapper animation="fadeIn" className="overflow-x-clip py-16 lg:py-24">
       <div className="-mx-1 -rotate-3 bg-gradient-to-r from-emerald-300 to-sky-400">
         <div className="flex [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
           <div className="flex flex-none animate-[move-left_30s_linear_infinite] gap-4 py-3 pr-4 hover:[animation-play-state:paused]">
@@ -59,6 +60,6 @@ export const TapeSection = () => {
           </div>
         </div>
       </div>
-    </div>
+    </ScrollAnimationWrapper>
   );
 };

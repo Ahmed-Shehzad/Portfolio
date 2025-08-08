@@ -11,6 +11,7 @@ import SmileMemoji from "@/assets/images/memoji-smile.png";
 import { Card } from "@/components/Card";
 import { CardHeader } from "@/components/CardHeader";
 import { DynamicMap } from "@/components/DynamicMap";
+import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ToolboxItems } from "@/components/ToolboxItems";
 import Image from "next/image";
@@ -58,64 +59,44 @@ const toolboxItems: ToolboxItem[] = [
 type Hobby = {
   title: string;
   emoji: string;
-  left: string;
-  top: string;
 };
 
 const hobbies: Hobby[] = [
   {
     title: "Reading",
     emoji: "📖",
-    left: "5%",
-    top: "5%",
   },
   {
     title: "Writing",
     emoji: "✍️",
-    left: "40%",
-    top: "5%",
   },
   {
     title: "Hiking",
     emoji: "🥾",
-    left: "10%",
-    top: "35%",
   },
   {
     title: "Cooking",
     emoji: "🍳",
-    left: "35%",
-    top: "40%",
   },
   {
     title: "Gaming",
     emoji: "🎮",
-    left: "70%",
-    top: "40%",
   },
   {
     title: "Traveling",
     emoji: "✈️",
-    left: "5%",
-    top: "65%",
   },
   {
     title: "Photography",
     emoji: "📷",
-    left: "40%",
-    top: "70%",
   },
   {
     title: "Learning",
     emoji: "🧠",
-    left: "65%",
-    top: "5%",
   },
   {
     title: "Music",
     emoji: "🎵",
-    left: "65%",
-    top: "70%",
   },
 ];
 
@@ -123,64 +104,73 @@ export const AboutSection = () => {
   return (
     <div id="about" className="py-20 md:px-24 lg:py-28">
       <div className="container">
-        <SectionHeader
-          title="A Glimpse into my world"
-          description="Learn more about who I am, what I do, and what inspires me."
-          eyebrow="About Me"
-        />
+        <ScrollAnimationWrapper animation="fadeInUp">
+          <SectionHeader
+            title="A Glimpse into my world"
+            description="Learn more about who I am, what I do, and what inspires me."
+            eyebrow="About Me"
+          />
+        </ScrollAnimationWrapper>
         <div className="mt-20 flex flex-col gap-8">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
             <Card className="h-[320px] md:col-span-2 lg:col-span-1">
-              <CardHeader
-                title="My Reads"
-                description="Explore the books shaping my experiences."
-              />
-              <div className="mx-auto mt-2 w-40 md:mt-0">
-                <Image src={BookImage} alt="Book Cover" />
-              </div>
+              <ScrollAnimationWrapper animation="fadeInLeft" delay={200}>
+                <CardHeader
+                  title="My Reads"
+                  description="Explore the books shaping my experiences."
+                />
+                <div className="mx-auto mt-2 w-40 md:mt-0">
+                  <Image src={BookImage} alt="Book Cover" />
+                </div>
+              </ScrollAnimationWrapper>
             </Card>
             <Card className="h-[320px] md:col-span-3 lg:col-span-2">
-              <CardHeader
-                className=""
-                title="My Toolbox"
-                description="Explore the technologies and tools used to craft digital
-                experiences."
-              />
-              <ToolboxItems
-                items={toolboxItems}
-                className="mt-6"
-                itemsWrapperClassName="-translate-x-1/3 md:-translate-x-1 md:gap-8 animate-[move-right_10s_linear_infinite] hover:[animation-play-state:paused]"
-              />
+              <ScrollAnimationWrapper animation="fadeInRight" delay={400}>
+                <CardHeader
+                  className=""
+                  title="My Toolbox"
+                  description="Explore the technologies and tools used to craft digital
+                  experiences."
+                />
+                <ToolboxItems
+                  items={toolboxItems}
+                  className="mt-6"
+                  itemsWrapperClassName="-translate-x-1/3 md:-translate-x-1 md:gap-8 animate-[move-right_10s_linear_infinite] hover:[animation-play-state:paused]"
+                />
+              </ScrollAnimationWrapper>
             </Card>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
             <Card className="flex h-[320px] flex-col p-0 md:col-span-3 lg:col-span-2">
-              <CardHeader
-                className="px-6 py-6"
-                title="Beyond the Code"
-                description="Explore my interests and hobbies beyond the digital realm."
-              />
-              <div className="relative flex-1">
-                {hobbies.map((hobby) => {
-                  return (
-                    <div key={hobby.title}>
-                      <div
-                        style={{
-                          left: hobby.left,
-                          top: hobby.top,
-                        }}
-                        className="absolute inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 px-6 py-1.5"
-                      >
-                        <span>{hobby.emoji}</span>
-                        <span className="font-medium text-gray-950">{hobby.title}</span>
-                      </div>
-                    </div>
-                  );
-                })}
+              <ScrollAnimationWrapper animation="fadeInLeft" delay={200}>
+                <CardHeader
+                  className="px-6 py-6"
+                  title="Beyond the Code"
+                  description="Explore my interests and hobbies beyond the digital realm."
+                />
+              </ScrollAnimationWrapper>
+              <div className="flex-1 p-6">
+                <ScrollAnimationWrapper animation="fadeIn" delay={400} className="h-full w-full">
+                  <div className="grid h-full grid-cols-2 content-start gap-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3">
+                    {hobbies.map((hobby) => {
+                      return (
+                        <div
+                          key={hobby.title}
+                          className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 px-3 py-1.5 text-xs font-medium text-gray-950 transition-all duration-300 hover:scale-105 hover:shadow-md md:gap-2 md:px-4 md:py-2 md:text-sm"
+                        >
+                          <span className="text-sm md:text-base">{hobby.emoji}</span>
+                          <span className="whitespace-nowrap">{hobby.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollAnimationWrapper>
               </div>
             </Card>
             <Card className="relative h-[320px] p-0 md:col-span-2 lg:col-span-1">
-              <DynamicMap center={[50.0782, 8.2398]} zoom={13} markerImage={SmileMemoji} />
+              <ScrollAnimationWrapper animation="scaleIn" delay={400} className="h-full w-full">
+                <DynamicMap center={[50.0782, 8.2398]} zoom={13} markerImage={SmileMemoji} />
+              </ScrollAnimationWrapper>
             </Card>
           </div>
         </div>

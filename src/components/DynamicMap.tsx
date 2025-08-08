@@ -24,5 +24,9 @@ const OpenStreetMap = dynamic(
 );
 
 export const DynamicMap: React.FC<IDynamicMapProps> = (props) => {
-  return <OpenStreetMap {...props} />;
+  return (
+    <div className="h-full w-full">
+      <OpenStreetMap {...props} />
+    </div>
+  );
 };
