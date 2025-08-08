@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "verification-token", // Add your Google verification token if you have one
+    // google: "verification-token", // Add your Google verification token if you have one
   },
 };
 
