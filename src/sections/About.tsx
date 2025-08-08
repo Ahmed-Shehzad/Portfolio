@@ -40,9 +40,6 @@ const LazyToolboxItems = dynamic(
   }
 );
 
-// Remove unused function
-// const getToolboxItems = () => import("@/shared/constants").then(mod => mod.TOOLBOX_ITEMS);
-
 export const AboutSection = memo(() => {
   return (
     <section id="about" className="py-20 md:px-24 lg:py-28">
