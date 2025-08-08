@@ -32,7 +32,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18]
+        node-version: [20]
 
     steps:
       - name: Checkout code
@@ -47,8 +47,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run code quality checks
+        run: npm run check
+
       - name: Build Next.js app
         run: npm run build
+
+      - name: Validate Web Worker files
+        run: |
+          if [ ! -f "out/worker.js" ]; then
+            echo "❌ Web Worker file missing from build output"
+            exit 1
+          fi
+          echo "✅ Web Worker files found in build output"
+
+      - name: Validate documentation structure
+        run: |
+          if [ ! -d "src/docs" ] || [ ! -f "src/docs/index.adoc" ]; then
+            echo "❌ Documentation structure missing"
+            exit 1
+          fi
+          echo "✅ AsciiDoc documentation structure validated"
 
       - name: Check for symlinks in out/
         run: |
