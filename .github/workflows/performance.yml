@@ -43,8 +43,20 @@ jobs:
           fi
 
           # Validate worker.js has required functionality
-          if ! grep -q "self.addEventListener.*message" public/worker.js; then
+          if ! grep -q "self\.onmessage.*function" public/worker.js; then
             echo "❌ Web Worker message handler not found"
+            exit 1
+          fi
+
+          # Check for essential worker functionality
+          if ! grep -q "postMessage" public/worker.js; then
+            echo "❌ Web Worker postMessage functionality not found"
+            exit 1
+          fi
+
+          # Validate worker has task processing
+          if ! grep -q "PROCESS_ANIMATIONS\|OPTIMIZE_SCROLL\|CALCULATE_PERFORMANCE" public/worker.js; then
+            echo "❌ Web Worker task processing not found"
             exit 1
           fi
 
