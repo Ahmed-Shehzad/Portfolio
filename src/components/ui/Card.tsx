@@ -1,5 +1,7 @@
-import React, { ComponentPropsWithoutRef, FC } from "react";
+"use client";
+
 import GrainImage from "@/assets/images/grain.jpg";
+import { ComponentPropsWithoutRef, FC } from "react";
 import { twMerge } from "tailwind-merge";
 
 export const Card: FC<ComponentPropsWithoutRef<"div">> = (props) => {

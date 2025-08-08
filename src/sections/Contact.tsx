@@ -2,8 +2,8 @@
 
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import GrainImage from "@/assets/images/grain.jpg";
-import { ContactModal } from "@/components/ContactModal";
-import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
+import { ContactModal } from "@/components/features";
+import { ScrollAnimationWrapper } from "@/wrappers";
 import { useState } from "react";
 
 export const ContactSection = () => {

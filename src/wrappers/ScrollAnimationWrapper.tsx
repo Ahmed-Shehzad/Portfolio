@@ -1,15 +1,12 @@
 "use client";
 
-import {
-  ScrollAnimationVariant,
-  scrollAnimationVariants,
-  useScrollAnimation,
-} from "@/hooks/useScrollAnimation";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { AnimationVariantName, scrollAnimationVariants } from "@/lib";
 import { ElementType, FC, ReactNode, RefObject } from "react";
 
 interface ScrollAnimationWrapperProps {
   children: ReactNode;
-  animation?: ScrollAnimationVariant;
+  animation?: AnimationVariantName;
   delay?: number;
   className?: string;
   staggerChildren?: boolean;
@@ -33,9 +30,9 @@ export const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = ({
     rootMargin: "0px 0px -20px 0px",
   });
 
-  const animationClass = scrollAnimationVariants[animation];
+  const animationVariant = animation ? scrollAnimationVariants[animation] : null;
   const staggerClass = staggerChildren ? "stagger-children" : "";
-  const visibilityClass = isVisible ? animationClass : "";
+  const visibilityClass = isVisible && animationVariant ? `animate-${animation}` : "";
 
   const combinedClassName = ["animate-on-scroll", staggerClass, visibilityClass, className]
     .filter(Boolean)

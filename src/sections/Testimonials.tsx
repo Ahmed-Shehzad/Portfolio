@@ -3,9 +3,8 @@ import memojiAvatar2 from "@/assets/images/memoji-avatar-2.png";
 import memojiAvatar3 from "@/assets/images/memoji-avatar-3.png";
 import memojiAvatar4 from "@/assets/images/memoji-avatar-4.png";
 import memojiAvatar5 from "@/assets/images/memoji-avatar-5.png";
-import { Card } from "@/components/Card";
-import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
-import { SectionHeader } from "@/components/SectionHeader";
+import { Card, SectionHeader } from "@/components/ui";
+import { ScrollAnimationWrapper } from "@/wrappers";
 import Image from "next/image";
 import { Fragment } from "react";
 
@@ -44,7 +43,7 @@ const testimonials = [
 
 export const TestimonialsSection = () => {
   return (
-    <div className="py-16 md:px-24 lg:py-24">
+    <section id="testimonials" className="py-16 md:px-24 lg:py-24">
       <div className="container">
         <ScrollAnimationWrapper animation="fadeInUp">
           <SectionHeader
@@ -91,6 +90,6 @@ export const TestimonialsSection = () => {
           </div>
         </ScrollAnimationWrapper>
       </div>
-    </div>
+    </section>
   );
 };

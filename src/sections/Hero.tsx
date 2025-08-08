@@ -6,7 +6,7 @@ import StarIcon from "@/assets/icons/star.svg";
 import GrainImage from "@/assets/images/grain.jpg";
 import PortraitImage from "@/assets/images/me.jpg";
 import MemojiImage from "@/assets/images/memoji-computer.png";
-import { HeroOrbit } from "@/components/HeroOrbit";
+import { HeroOrbit } from "@/components/layout";
 import Image from "next/image";
 
 export const HeroSection = () => {
