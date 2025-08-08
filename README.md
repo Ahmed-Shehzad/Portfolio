@@ -9,6 +9,7 @@ A modern, enterprise-grade portfolio website built with Next.js 15, React 19, Ty
 - **Modern Design**: Clean, professional design with beautiful animations
 - **Fully Responsive**: Optimized for all device sizes and screen resolutions
 - **Interactive Animations**: Smooth CSS animations and micro-interactions
+- **Scroll Animations**: Subtle fade-in, slide-in, and scale-in animations on scroll
 - **Smooth Navigation**: Seamless scrolling between sections with active state tracking
 
 ### ⚡ **Performance & Optimization**
