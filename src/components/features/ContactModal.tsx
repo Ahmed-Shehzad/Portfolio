@@ -2,6 +2,7 @@
 
 import GrainImage from "@/assets/images/grain.jpg";
 import { Modal } from "@/components/ui";
+import { useBfcacheCompatibleTimeout } from "@/hooks/useBfcacheCompatible";
 import { FormEvent, useCallback, useState } from "react";
 
 interface IContactModalProps {
@@ -32,6 +33,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const { setBfcacheTimeout } = useBfcacheCompatibleTimeout();
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
@@ -136,15 +138,15 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
 
       try {
         // Simulate API call - replace with your actual endpoint
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setBfcacheTimeout(() => resolve(undefined), 2000));
 
-        // Here you would typically send the data to your backend
-        console.log("Contact form data:", formData);
+        // Send the data to your backend endpoint
+        // await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) });
 
         setSubmitStatus("success");
 
         // Reset form and close modal after successful submission
-        setTimeout(() => {
+        setBfcacheTimeout(() => {
           resetForm();
           onClose(); // Only close after successful submission
         }, 2000);
@@ -155,7 +157,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
         setIsSubmitting(false);
       }
     },
-    [formData, validateForm, resetForm, onClose]
+    [validateForm, resetForm, onClose, setBfcacheTimeout]
   );
 
   return (

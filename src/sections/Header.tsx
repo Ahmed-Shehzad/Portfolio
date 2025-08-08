@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, FC } from "react";
+import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 interface HeaderOption {
   title: string;
@@ -146,32 +147,16 @@ export const Header = () => {
   }, [sectionElements, contactSection, updateURL]);
 
   // Throttled scroll handler
+  // Use bfcache-compatible scroll listener
+  useBfcacheCompatibleScrollListener(updateActiveSection);
+
+  // Set initial state after elements are loaded
   useEffect(() => {
     if (typeof window === "undefined") return; // SSR check
 
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateActiveSection();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    // Passive listener for better performance
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // Set initial state after elements are loaded
     if (sectionElements.length > 0) {
       updateActiveSection();
     }
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, [updateActiveSection, sectionElements]);
 
   // Optimized navigation click handler

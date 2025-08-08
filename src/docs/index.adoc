@@ -1,0 +1,268 @@
+= Portfolio Component Documentation
+:toc:
+:toc-placement: preamble
+:sectnums:
+:icons: font
+
+[.lead]
+Comprehensive documentation for all React components, hooks, and sections in the Muhammad Ahmed Shehzad Portfolio application.
+
+== Overview
+
+This documentation provides detailed technical specifications, usage examples, and best practices for all components in the portfolio application. The architecture follows modern React patterns with TypeScript, performance optimizations, and comprehensive accessibility features.
+
+== Documentation Structure
+
+=== Component Categories
+
+==== UI Components (`/components/ui/`)
+Generic, reusable UI components that form the design system foundation.
+
+* **link:components/ui/Card.adoc[Card]** - Glassmorphism card container with grain texture
+* **link:components/ui/CardHeader.adoc[CardHeader]** - Standardized card headers with star icon
+* **link:components/ui/Modal.adoc[Modal]** - Accessible modal dialog with portal rendering
+* **OptimizedImage** - Performance-optimized image component
+* **SectionHeader** - Consistent section title formatting
+* **TechIcon** - Technology icons with gradient effects
+
+==== Feature Components (`/components/features/`)
+Specialized components for specific application features.
+
+* **link:components/features/ContactModal.adoc[ContactModal]** - Contact form with validation
+* **DynamicMap** - Server-side rendering compatible map
+* **OpenStreetMap** - Interactive map implementation
+* **ToolboxItems** - Animated technology showcase
+
+==== Layout Components (`/components/layout/`)
+Components responsible for page layout and structure.
+
+* **HeroOrbit** - Orbital animation wrapper for hero section
+
+==== Page Sections (`/sections/`)
+Main content sections that compose the portfolio pages.
+
+* **link:sections/Hero.adoc[Hero]** - Landing section with animations
+* **About** - Personal information and skills
+* **Projects** - Portfolio project showcase
+* **Contact** - Contact information and form
+* **Testimonials** - Client testimonial carousel
+* **Header** - Navigation and branding
+* **Footer** - Site footer with links
+* **Tape** - Animated technology tape
+
+==== Custom Hooks (`/hooks/`)
+Reusable stateful logic and side effects.
+
+* **link:hooks/useWebWorker.adoc[useWebWorker]** - Web Worker integration
+* **useBfcacheCompatible** - Browser cache compatibility
+* **useScrollAnimation** - Scroll-based animations
+
+==== Wrapper Components (`/wrappers/`)
+Higher-order components and context providers.
+
+* **ErrorBoundary** - Error handling boundary
+* **ErrorBoundaryWrapper** - Client-side error wrapper
+* **ScrollAnimationWrapper** - Animation trigger wrapper
+
+== Architecture Patterns
+
+=== Design System
+The component library follows a consistent design system with:
+
+* **Glassmorphism Effects**: Semi-transparent backgrounds with blur
+* **Grain Textures**: Subtle noise overlays for visual depth
+* **Emerald Color Palette**: Consistent accent color throughout
+* **Typography Hierarchy**: Serif headings with sans-serif body text
+* **Responsive Design**: Mobile-first approach with breakpoint scaling
+
+=== Performance Optimization
+All components implement performance best practices:
+
+* **React.memo**: Memoized components to prevent unnecessary re-renders
+* **useCallback**: Memoized event handlers and functions
+* **Web Workers**: Background processing for heavy computations
+* **Lazy Loading**: Deferred loading of non-critical resources
+* **Bundle Splitting**: Code splitting at component level
+
+=== Accessibility Standards
+Comprehensive accessibility implementation:
+
+* **Semantic HTML**: Proper markup structure and landmarks
+* **ARIA Labels**: Screen reader support and descriptions
+* **Keyboard Navigation**: Full keyboard accessibility
+* **Focus Management**: Logical tab order and focus indicators
+* **Color Contrast**: WCAG 2.1 AA compliance
+
+== Technology Stack
+
+=== Core Technologies
+* **React 19**: Latest React features and concurrent rendering
+* **TypeScript 5.8+**: Strict type checking and modern syntax
+* **Next.js 15**: App Router, static export, and performance optimizations
+* **Tailwind CSS v4**: Utility-first CSS framework with latest features
+
+=== Performance Tools
+* **Web Workers**: Background processing for main-thread relief
+* **Image Optimization**: WebP/AVIF formats with responsive sizing
+* **Bundle Analysis**: Code splitting and tree-shaking optimization
+* **CSS Optimization**: Purged unused styles and critical path CSS
+
+=== Development Tools
+* **ESLint**: Code quality and consistency enforcement
+* **Prettier**: Automated code formatting
+* **Husky**: Git hooks for pre-commit quality checks
+* **TypeScript**: Static type checking and IntelliSense
+
+== Usage Guidelines
+
+=== Component Import Patterns
+[source,tsx]
+----
+// UI Components
+import { Card, CardHeader, Modal } from "@/components/ui";
+
+// Feature Components
+import { ContactModal } from "@/components/features";
+
+// Layout Components
+import { HeroOrbit } from "@/components/layout";
+
+// Sections
+import { Hero, About, Projects } from "@/sections";
+
+// Hooks
+import { useWebWorker, useScrollAnimation } from "@/hooks";
+
+// Wrappers
+import { ErrorBoundary } from "@/wrappers";
+----
+
+=== Common Usage Patterns
+[source,tsx]
+----
+// Basic component composition
+<Card>
+  <CardHeader
+    title="Project Title"
+    description="Project description"
+  />
+  <div className="p-6">
+    {/* Content */}
+  </div>
+</Card>
+
+// Modal implementation
+const [isOpen, setIsOpen] = useState(false);
+
+<Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+  <ContactModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+</Modal>
+
+// Hook usage
+const { processAnimation, isProcessing } = useAnimationWorker();
+----
+
+== Best Practices
+
+=== Component Development
+* **Single Responsibility**: Each component has a focused purpose
+* **Composition over Inheritance**: Prefer component composition
+* **Props Interface**: Well-defined TypeScript interfaces
+* **Default Props**: Sensible defaults for optional properties
+
+=== Performance Considerations
+* **Memoization**: Use React.memo for expensive components
+* **Callback Optimization**: useCallback for event handlers
+* **Lazy Loading**: Defer non-critical component loading
+* **Bundle Splitting**: Keep component bundles small
+
+=== Accessibility Requirements
+* **Semantic Markup**: Use proper HTML elements
+* **ARIA Support**: Include necessary ARIA attributes
+* **Keyboard Support**: Ensure full keyboard navigation
+* **Screen Reader**: Test with assistive technologies
+
+== Development Workflow
+
+=== Component Creation Checklist
+1. **Define Interface**: TypeScript props interface
+2. **Implement Component**: Following established patterns
+3. **Add Documentation**: AsciiDoc documentation file
+4. **Write Tests**: Unit and integration tests
+5. **Accessibility Review**: Manual and automated testing
+6. **Performance Audit**: Bundle size and runtime performance
+
+=== Documentation Standards
+* **AsciiDoc Format**: Consistent documentation formatting
+* **Code Examples**: Practical usage demonstrations
+* **Interface Documentation**: Complete props and types
+* **Best Practices**: Usage guidelines and recommendations
+
+== File Organization
+
+```
+src/
+├── docs/                  # Component documentation (this directory)
+│   ├── components/
+│   │   ├── ui/           # UI component docs
+│   │   ├── features/     # Feature component docs
+│   │   └── layout/       # Layout component docs
+│   ├── sections/         # Page section docs
+│   ├── hooks/            # Custom hook docs
+│   └── wrappers/         # Wrapper component docs
+├── components/           # React components
+├── sections/             # Page sections
+├── hooks/                # Custom hooks
+├── wrappers/            # HOCs and providers
+├── shared/              # Shared resources
+│   ├── constants/       # Application constants
+│   ├── types/           # TypeScript definitions
+│   └── utils/           # Utility functions
+└── assets/              # Static assets
+    ├── icons/           # SVG icons
+    └── images/          # Images and graphics
+```
+
+== Contributing
+
+=== Documentation Guidelines
+* Follow AsciiDoc formatting standards
+* Include comprehensive code examples
+* Document all props and interfaces
+* Provide accessibility information
+* Add performance considerations
+* Include best practice recommendations
+
+=== Component Guidelines
+* Use TypeScript with strict typing
+* Follow React best practices
+* Implement accessibility features
+* Add performance optimizations
+* Include comprehensive error handling
+* Write maintainable, readable code
+
+== Resources
+
+=== External Documentation
+* **React**: https://react.dev/
+* **Next.js**: https://nextjs.org/docs
+* **TypeScript**: https://www.typescriptlang.org/docs
+* **Tailwind CSS**: https://tailwindcss.com/docs
+* **AsciiDoc**: https://asciidoc.org/
+
+=== Internal Resources
+* **Design System**: Consistent visual patterns and components
+* **Performance Guide**: Optimization strategies and measurements
+* **Accessibility Checklist**: WCAG compliance requirements
+* **Testing Strategy**: Unit, integration, and e2e testing approaches
+
+== Change History
+
+[cols="1,1,3"]
+|===
+|*Version* |*Date* |*Changes*
+
+|1.0.0
+|Current
+|Initial documentation structure with component, hook, and section docs
+|===

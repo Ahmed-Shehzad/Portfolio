@@ -1,0 +1,344 @@
+= Hero Section Component
+:toc:
+:toc-placement: preamble
+:sectnums:
+:icons: font
+
+[.lead]
+The main hero section featuring personal introduction, animated orbital elements, and smooth navigation to other sections.
+
+== Overview
+
+The `HeroSection` component serves as the primary landing area of the portfolio, featuring a personal introduction with animated background elements, profile imagery, and call-to-action buttons for smooth navigation to contact and projects sections.
+
+== Component Details
+
+[cols="1,3"]
+|===
+|*File Location* |`src/sections/Hero.tsx`
+|*Component Type* |Functional Component (memo)
+|*Client/Server* |Client Component (`"use client"`)
+|*Export Type* |Named Export
+|===
+
+== Design Architecture
+
+=== Layout Structure
+* **Container**: Responsive padding with overflow management
+* **Background**: Grain texture with gradient masking
+* **Orbital Elements**: Animated floating icons around content
+* **Content Grid**: Two-column layout (text + image)
+* **Profile Display**: Avatar with memoji overlay
+* **Action Buttons**: Navigation to contact and projects
+
+=== Visual Hierarchy
+* **Hero Rings**: Concentric circles creating depth
+* **Orbital Icons**: Floating tech icons with animations
+* **Profile Image**: Circular avatar with border effects
+* **Typography**: Large headings with gradient text
+* **Call-to-Actions**: Primary and secondary button styles
+
+== Interactive Features
+
+=== Smooth Scrolling Navigation
+[source,typescript]
+----
+const handleConnectClick = useCallback(() => {
+  const contactSection = document.getElementById("contact");
+  if (contactSection) {
+    contactSection.scrollIntoView({ behavior: "smooth" });
+  }
+}, []);
+
+const handleExploreClick = useCallback(() => {
+  const projectsSection = document.getElementById("projects");
+  if (projectsSection) {
+    projectsSection.scrollIntoView({ behavior: "smooth" });
+  }
+}, []);
+----
+
+=== Orbital Animation System
+The section includes multiple `HeroOrbit` components creating floating animations:
+
+* **Icon Variety**: Star, Sparkle, Arrow icons
+* **Size Variations**: Different sizes for visual hierarchy
+* **Rotation Speeds**: Varying animation timing
+* **Positioning**: Strategic placement around content
+
+== Visual Components
+
+=== Background Elements
+[source,tsx]
+----
+{/* Grain texture overlay */}
+<div
+  className="absolute inset-0 -z-30 opacity-5"
+  style={{
+    backgroundImage: `url(${GrainImage.src})`,
+  }}
+></div>
+
+{/* Hero rings for depth */}
+<div className="hero-ring size-[620px]"></div>
+<div className="hero-ring size-[820px]"></div>
+<div className="hero-ring size-[1020px]"></div>
+<div className="hero-ring size-[1220px]"></div>
+----
+
+=== Profile Image Display
+[source,tsx]
+----
+<div className="relative">
+  <OptimizedImage
+    src={PortraitImage}
+    alt="Muhammad Ahmed Shehzad"
+    className="size-[120px] rounded-full border-4 border-white/10"
+  />
+  <div className="absolute -bottom-2 -right-2">
+    <div className="relative">
+      <div className="absolute inset-0 rounded-full bg-emerald-300/30 blur-sm"></div>
+      <OptimizedImage
+        src={MemojiImage}
+        alt="Coding memoji"
+        className="relative size-12 rounded-full"
+      />
+    </div>
+  </div>
+</div>
+----
+
+=== Typography System
+[source,tsx]
+----
+<h1 className="font-serif text-3xl tracking-wide text-center mt-8 md:text-5xl">
+  Building Exceptional Digital Experiences
+</h1>
+
+<p className="mt-4 text-center text-white/60 md:text-lg">
+  I specialize in transforming designs into functional, high-performing
+  web applications. Let's discuss your next project.
+</p>
+----
+
+== Responsive Design
+
+=== Breakpoint System
+[cols="1,2,2,2"]
+|===
+|*Breakpoint* |*Container Padding* |*Typography* |*Layout*
+
+|Mobile (default)
+|`py-32`
+|`text-3xl`
+|Single column
+
+|Medium (`md:`)
+|`px-24 py-48`
+|`text-5xl`
+|Two column grid
+
+|Large (`lg:`)
+|`py-60`
+|`text-5xl`
+|Enhanced spacing
+|===
+
+=== Responsive Features
+* **Adaptive Padding**: Scales with screen size
+* **Typography Scaling**: Font sizes adjust per breakpoint
+* **Image Sizing**: Profile images scale appropriately
+* **Button Layout**: Stacked on mobile, inline on desktop
+
+== Performance Optimizations
+
+=== Component Memoization
+```typescript
+export const HeroSection = memo(() => {
+  // Component implementation
+});
+```
+
+=== Callback Optimization
+```typescript
+const handleConnectClick = useCallback(() => {
+  // Navigation logic
+}, []);
+```
+
+=== Image Optimization
+* **OptimizedImage**: Uses custom image component for performance
+* **WebP Support**: Modern format fallbacks
+* **Lazy Loading**: Deferred loading for non-critical images
+* **Proper Sizing**: Responsive image scaling
+
+== Animation Elements
+
+=== Orbital Components
+[source,tsx]
+----
+{/* Various orbital elements with different properties */}
+<HeroOrbit size={430} rotation={-14} shouldOrbit orbitDuration="30s" shouldSpin spinDuration="3s">
+  <SparkleIcon className="size-8 text-emerald-300/20" />
+</HeroOrbit>
+
+<HeroOrbit size={440} rotation={79} shouldOrbit orbitDuration="32s" shouldSpin spinDuration="3s">
+  <SparkleIcon className="size-5 text-emerald-300/20" />
+</HeroOrbit>
+
+<HeroOrbit size={520} rotation={-41} shouldOrbit orbitDuration="34s">
+  <div className="size-2 rounded-full bg-emerald-300/20"></div>
+</HeroOrbit>
+----
+
+=== Animation Properties
+* **Orbit Duration**: 30s - 34s for varied timing
+* **Spin Duration**: 3s for consistent icon rotation
+* **Size Variations**: 2px dots to 14px icons
+* **Opacity**: 20% emerald for subtle presence
+* **Positioning**: Strategic rotation angles for balance
+
+== Content Strategy
+
+=== Headline Hierarchy
+1. **Primary**: "Building Exceptional Digital Experiences"
+2. **Secondary**: Specialization and service description
+3. **Call-to-Action**: Direct action prompts
+
+=== Action Flow
+1. **Explore Work**: Navigate to projects section
+2. **Let's Connect**: Jump to contact form
+3. **Smooth Scrolling**: Enhanced user experience
+
+== Accessibility Features
+
+=== Semantic Structure
+* **Section Element**: Proper landmark usage
+* **Heading Hierarchy**: Logical h1 structure
+* **Alt Text**: Descriptive image alternatives
+* **Button Labels**: Clear action descriptions
+
+=== Keyboard Navigation
+* **Tab Order**: Logical focus progression
+* **Skip Links**: Section navigation capabilities
+* **Focus Indicators**: Visible focus states
+
+=== Screen Reader Support
+* **Semantic Markup**: Proper HTML structure
+* **Descriptive Text**: Clear content descriptions
+* **Image Context**: Meaningful alt attributes
+
+== Styling Architecture
+
+=== CSS Custom Properties
+```css
+.hero-ring {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  @apply border border-emerald-300/5 rounded-full;
+}
+```
+
+=== Gradient Effects
+```css
+.gradient-text {
+  @apply bg-gradient-to-r from-emerald-300 to-sky-400;
+  @apply bg-clip-text text-transparent;
+}
+```
+
+=== Animation Classes
+```css
+.orbital-animation {
+  @apply animate-pulse;
+  animation-duration: var(--orbit-duration, 30s);
+}
+```
+
+== Usage Examples
+
+=== Basic Implementation
+[source,tsx]
+----
+import { HeroSection } from "@/sections/Hero";
+
+const HomePage = () => {
+  return (
+    <main>
+      <HeroSection />
+      {/* Other sections */}
+    </main>
+  );
+};
+----
+
+=== Custom Navigation
+[source,tsx]
+----
+// Custom scroll behavior
+const scrollToSection = (sectionId: string) => {
+  const section = document.getElementById(sectionId);
+  section?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+};
+----
+
+== Dependencies
+
+[cols="1,1,2"]
+|===
+|*Package* |*Import* |*Usage*
+
+|@/assets/icons/*
+|SVG Components
+|Orbital animation icons
+
+|@/assets/images/*
+|Image Assets
+|Profile photo and memoji
+
+|@/components/layout
+|HeroOrbit
+|Orbital animation wrapper
+
+|@/components/ui
+|OptimizedImage
+|Performance-optimized images
+
+|react
+|memo, useCallback
+|Performance optimizations
+|===
+
+== Related Components
+
+* **HeroOrbit**: Orbital animation component
+* **OptimizedImage**: Image optimization wrapper
+* **Header**: Navigation and section linking
+* **Contact**: Target section for smooth scrolling
+
+== Best Practices
+
+=== Content Guidelines
+* **Concise Headlines**: Clear, impactful messaging
+* **Action-Oriented**: Direct call-to-action phrasing
+* **Professional Tone**: Appropriate for portfolio context
+* **Personal Touch**: Authentic personality elements
+
+=== Performance Considerations
+* **Image Optimization**: Proper sizing and formats
+* **Animation Performance**: Hardware acceleration usage
+* **Lazy Loading**: Non-critical asset deferral
+* **Bundle Splitting**: Component-level code splitting
+
+== Change History
+
+[cols="1,1,3"]
+|===
+|*Version* |*Date* |*Changes*
+
+|1.0.0
+|Current
+|Initial implementation with orbital animations and smooth scrolling
+|===
