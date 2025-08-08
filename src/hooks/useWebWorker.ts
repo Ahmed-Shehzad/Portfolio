@@ -137,7 +137,7 @@ export const useWebWorker = () => {
             setIsProcessing(tasksRef.current.size > 0);
             reject(new Error("Task timeout"));
           }
-        }, 30000); // 30 second timeout
+        }, WORKER_TASK_TIMEOUT_MS);
       });
     },
     []
