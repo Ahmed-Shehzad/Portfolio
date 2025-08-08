@@ -117,13 +117,16 @@ pnpm dev
 portfolio/
 ├── .github/
 │   └── workflows/
-│       └── code-quality.yml    # CI/CD pipeline for quality checks
+│       ├── code-quality.yml   # Code quality and linting pipeline
+│       ├── nextjs.yml         # Next.js build and deployment to GitHub Pages
+│       └── performance.yml    # Performance monitoring and optimization
 ├── .husky/
-│   └── pre-commit             # Git pre-commit hooks
+│   └── pre-commit             # Git pre-commit hooks for code quality
 ├── public/                    # Static assets
 │   ├── worker.js              # Web Worker for performance optimization
-│   ├── *.svg                  # SVG icons and graphics
-│   └── ...
+│   ├── robots.txt             # SEO robots configuration
+│   ├── sitemap.xml            # SEO sitemap
+│   └── *.svg                  # SVG icons and graphics
 ├── src/
 │   ├── app/                   # Next.js App Router directory
 │   │   ├── globals.css        # Global styles and Tailwind CSS
@@ -134,29 +137,43 @@ portfolio/
 │   │   ├── not-found.tsx      # Custom 404 page
 │   │   ├── loading.tsx        # Loading component
 │   │   └── favicon.ico        # Site favicon
+│   ├── assets/                # Static assets (images, icons)
+│   │   ├── icons/             # SVG icons for technologies and UI
+│   │   └── images/            # Project images, avatars, and graphics
 │   ├── components/            # Reusable UI components
 │   │   ├── features/          # Feature-specific components
 │   │   │   ├── ContactModal.tsx      # Contact form modal
 │   │   │   ├── DynamicMap.tsx        # Dynamic map with SSR handling
 │   │   │   ├── OpenStreetMap.tsx     # Interactive map component
-│   │   │   └── ToolboxItems.tsx      # Animated technology showcase
+│   │   │   ├── ToolboxItems.tsx      # Animated technology showcase
+│   │   │   └── index.ts              # Feature components barrel export
 │   │   ├── layout/            # Layout components
-│   │   │   └── HeroOrbit.tsx         # Animated orbital elements
+│   │   │   ├── HeroOrbit.tsx         # Animated orbital elements
+│   │   │   └── index.ts              # Layout components barrel export
 │   │   └── ui/                # Generic UI components
 │   │       ├── Card.tsx              # Reusable card component
 │   │       ├── CardHeader.tsx        # Card header with icon and title
 │   │       ├── Modal.tsx             # Modal component
-│   │       ├── OptimizedImage.tsx    # Optimized image component
+│   │       ├── OptimizedImage.tsx    # Modern image formats component
 │   │       ├── SectionHeader.tsx     # Consistent section headers
-│   │       └── TechIcon.tsx          # Technology icons with gradients
+│   │       ├── TechIcon.tsx          # Technology icons with gradients
+│   │       └── index.ts              # UI components barrel export
+│   ├── docs/                  # AsciiDoc documentation
+│   │   ├── components/        # Component documentation
+│   │   ├── hooks/             # Hooks documentation
+│   │   ├── sections/          # Sections documentation
+│   │   ├── index.adoc         # Main documentation entry
+│   │   └── README.md          # Documentation overview
 │   ├── hooks/                 # Custom React hooks
 │   │   ├── useBfcacheCompatible.ts   # Back/forward cache compatibility
 │   │   ├── useScrollAnimation.ts     # Scroll-based animations
-│   │   └── useWebWorker.ts           # Web Worker integration hooks
+│   │   ├── useWebWorker.ts           # Web Worker integration hooks
+│   │   └── index.ts                  # Hooks barrel export
 │   ├── lib/                   # Utility libraries
-│   │   └── animations.ts             # Animation utilities
+│   │   ├── animations.ts             # Animation utilities and constants
+│   │   └── index.ts                  # Library functions barrel export
 │   ├── sections/              # Page sections (main content)
-│   │   ├── About.tsx          # About me section with skills
+│   │   ├── About.tsx          # About me section with core values
 │   │   ├── Contact.tsx        # Contact form and information
 │   │   ├── Footer.tsx         # Site footer with social links
 │   │   ├── Header.tsx         # Navigation header with smooth scrolling
@@ -166,24 +183,33 @@ portfolio/
 │   │   └── Testimonials.tsx   # Client testimonials carousel
 │   ├── shared/                # Shared resources
 │   │   ├── constants/         # Application constants
+│   │   │   ├── animations.ts         # Animation configuration
+│   │   │   ├── config.ts             # General app configuration
+│   │   │   ├── personal.ts           # Personal information
+│   │   │   ├── technologies.ts       # Tech stack and toolbox items
+│   │   │   └── index.ts              # Constants barrel export
 │   │   ├── types/             # TypeScript type definitions
+│   │   │   ├── content.ts            # Content-related types
+│   │   │   ├── ui.ts                 # UI component types
+│   │   │   └── index.ts              # Types barrel export
 │   │   └── utils/             # Utility functions
-│   ├── wrappers/              # Component wrappers
-│   │   ├── ErrorBoundary.tsx         # Main error boundary component
-│   │   ├── ErrorBoundaryWrapper.tsx  # Client wrapper for error boundary
-│   │   └── ScrollAnimationWrapper.tsx # Scroll animation wrapper
-│   └── assets/                # Static assets (images, icons)
-│       ├── icons/             # SVG icons for technologies
-│       └── images/            # Project images and graphics
+│   │       └── index.ts              # Utils barrel export
+│   └── wrappers/              # Component wrappers
+│       ├── ErrorBoundary.tsx         # Main error boundary component
+│       ├── ErrorBoundaryWrapper.tsx  # Client wrapper for error boundary
+│       ├── ScrollAnimationWrapper.tsx # Scroll animation wrapper
+│       └── index.ts                  # Wrappers barrel export
 ├── .editorconfig              # Cross-editor formatting rules
 ├── .prettierrc                # Prettier configuration
 ├── .prettierignore            # Files excluded from formatting
 ├── .gitignore                 # Git ignore patterns
 ├── eslint.config.mjs          # ESLint configuration (flat config)
+├── next-env.d.ts              # Next.js TypeScript declarations
 ├── next.config.ts             # Next.js configuration
 ├── tailwind.config.ts         # Tailwind CSS configuration
 ├── tsconfig.json              # TypeScript configuration
 ├── postcss.config.mjs         # PostCSS configuration
+├── svg.d.ts                   # SVG TypeScript declarations
 ├── package.json               # Dependencies and scripts
 └── README.md                  # Project documentation
 ```
