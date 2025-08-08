@@ -7,22 +7,23 @@ import GrainImage from "@/assets/images/grain.jpg";
 import PortraitImage from "@/assets/images/me.jpg";
 import MemojiImage from "@/assets/images/memoji-computer.png";
 import { HeroOrbit } from "@/components/layout";
-import Image from "next/image";
+import { OptimizedImage } from "@/components/ui";
+import { memo, useCallback } from "react";
 
-export const HeroSection = () => {
-  const handleConnectClick = () => {
+export const HeroSection = memo(() => {
+  const handleConnectClick = useCallback(() => {
     const contactSection = document.getElementById("contact");
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" });
     }
-  };
+  }, []);
 
-  const handleExploreClick = () => {
+  const handleExploreClick = useCallback(() => {
     const projectsSection = document.getElementById("projects");
     if (projectsSection) {
       projectsSection.scrollIntoView({ behavior: "smooth" });
     }
-  };
+  }, []);
 
   return (
     <section
@@ -155,7 +156,14 @@ export const HeroSection = () => {
       </div>
       <div className="relative z-10 container">
         <div className="flex flex-col items-center">
-          <Image src={MemojiImage} alt="memoji" className="size-[100px]" />
+          <OptimizedImage
+            src={MemojiImage}
+            alt="Muhammad Ahmed - Friendly cartoon avatar with computer, representing a full-stack developer"
+            width={100}
+            height={100}
+            className="size-[100px]"
+            priority
+          />
           <div className="inline-flex items-center gap-4 rounded-lg border border-gray-800 bg-gray-950 px-4 py-1.5">
             <div className="relative size-2.5 rounded-full bg-green-500">
               <div className="animation-ping absolute inset-0 rounded-full bg-green-500"></div>
@@ -168,22 +176,23 @@ export const HeroSection = () => {
             <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:gap-8">
               <div className="relative flex-shrink-0">
                 <div className="absolute inset-0 translate-y-2 transform rounded-full bg-gradient-to-b from-transparent to-black/50 blur-lg"></div>
-                <Image
+                <OptimizedImage
                   src={PortraitImage}
-                  alt="Portrait"
+                  alt="Muhammad Ahmed Shehzad - Professional headshot of a full-stack developer"
                   className="relative z-10 rounded-full border-4 border-transparent"
                   width={150}
                   height={150}
+                  priority
                 />
               </div>
               <div className="text-center md:text-right">
                 <h1 className="font-serif text-3xl tracking-wide md:text-5xl">
-                  Muhammad Ahmed Shehzad
+                  <span className="block">Muhammad Ahmed Shehzad</span>
                 </h1>
               </div>
             </div>
           </div>
-          <p className="mt-4 text-center text-white/60 md:text-lg">
+          <p className="mt-4 text-center text-gray-200 md:text-lg">
             I am a Full Stack Developer with a passion for building web applications and services.
           </p>
         </div>
@@ -206,4 +215,6 @@ export const HeroSection = () => {
       </div>
     </section>
   );
-};
+});
+
+HeroSection.displayName = "HeroSection";

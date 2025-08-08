@@ -5,13 +5,36 @@
     scroll-behavior: smooth;
   }
 
+  /* Font optimization for better LCP */
+  .font-serif {
+    font-display: swap;
+    text-rendering: optimizeSpeed;
+  }
+
+  /* Prevent layout shift for hero text */
+  h1 {
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1;
+    text-rendering: optimizeSpeed;
+  }
+
   /* Global button cursor pointer */
   button {
     cursor: pointer;
   }
 
   .nav-item {
-    @apply rounded-full px-4 py-0.5 text-sm font-semibold text-white/70 transition duration-300 hover:bg-white/10 hover:text-white;
+    @apply rounded-full px-4 py-0.5 text-sm font-semibold text-white/80 transition duration-300 hover:bg-white/10 hover:text-white;
+  }
+
+  /* Better contrast for accessibility */
+  .text-muted {
+    color: rgb(229 231 235); /* gray-200 for better contrast than white/60 */
+  }
+
+  .text-secondary {
+    color: rgb(209 213 219); /* gray-300 for better contrast */
   }
 
   .hero-ring {
