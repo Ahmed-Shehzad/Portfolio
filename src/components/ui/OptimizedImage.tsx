@@ -55,8 +55,10 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       alt={alt}
       onError={handleImageError}
       {...props}
-      // Enable Next.js image optimization
-      quality={85}
+      // Enable Next.js image optimization with enhanced settings
+      quality={props.quality || 85}
+      // Prevent layout shift with proper sizing
+      sizes={props.sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
     />
   );
 };

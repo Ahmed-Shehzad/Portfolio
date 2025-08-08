@@ -18,6 +18,9 @@ const portfolioProjects = [
     ],
     link: "https://youtu.be/4k7IdSLxh6w",
     image: darkSaasLandingPage,
+    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
+    imageWidth: 800,
+    imageHeight: 507,
   },
   {
     company: "Innovative Co",
@@ -30,6 +33,9 @@ const portfolioProjects = [
     ],
     link: "https://youtu.be/7hi5zwO75yc",
     image: lightSaasLandingPage,
+    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
+    imageWidth: 800,
+    imageHeight: 507,
   },
   {
     company: "Quantum Dynamics",
@@ -42,6 +48,9 @@ const portfolioProjects = [
     ],
     link: "https://youtu.be/Z7I5uSRHMHg",
     image: aiStartupLandingPage,
+    // Actual image dimensions: 1629 x 1032, aspect ratio: ~1.58
+    imageWidth: 1629,
+    imageHeight: 1032,
   },
 ];
 
@@ -107,10 +116,14 @@ export const ProjectsSection = () => {
                     <div className="relative">
                       <OptimizedImage
                         src={project.image}
-                        alt={`${project.title} screenshot`}
-                        width={600}
-                        height={400}
+                        alt={`${project.title} screenshot showcasing the ${project.company} project from ${project.year}`}
+                        width={project.imageWidth}
+                        height={project.imageHeight}
                         className="mt-8 -mb-4 md:-mb-0 lg:absolute lg:mt-0 lg:h-full lg:w-auto lg:max-w-none"
+                        priority={projectIndex === 0} // Prioritize loading the first image
+                        quality={90} // Higher quality for project showcase images
+                        placeholder="blur" // Add blur placeholder for better UX
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                       />
                     </div>
                   </div>
