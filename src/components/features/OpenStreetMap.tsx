@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import { StaticImageData } from "next/image";
 import { useEffect } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { escapeHtmlAttribute, sanitizeImageSrc } from "@/shared/utils";
 
 interface IOpenStreetMapProps {
   center: [number, number];
@@ -73,13 +74,23 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
     if (!markerImage) return undefined;
 
     try {
+      // Sanitize the image source to prevent XSS
+      const sanitizedSrc = sanitizeImageSrc(markerImage.src);
+      if (!sanitizedSrc) {
+        console.warn("Invalid or unsafe image source, falling back to default marker");
+        return undefined;
+      }
+
+      // Escape HTML attributes to prevent injection
+      const escapedSrc = escapeHtmlAttribute(sanitizedSrc);
+
       return L.divIcon({
         html: `
           <div class="relative">
             <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-20 animate-ping" style="animation-duration: 2s; width: 80px; height: 80px; left: -10px; top: -10px;"></div>
             <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-10" style="width: 80px; height: 80px; left: -10px; top: -10px;"></div>
             <div class="bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full flex items-center justify-center relative" style="width: 60px; height: 60px;">
-              <img src="${markerImage.src}" alt="Map marker indicating Muhammad Ahmed's location in Pakistan" style="width: 60px; height: 60px;" class="rounded-full" />
+              <img src="${escapedSrc}" alt="Map marker indicating Muhammad Ahmed's location in Pakistan" style="width: 60px; height: 60px;" class="rounded-full" />
               <div class="absolute inset-0 outline-2 outline-offset-2 outline-gray-950/30 rounded-full" style="outline: 2px solid rgba(3, 7, 18, 0.3);"></div>
             </div>
           </div>
