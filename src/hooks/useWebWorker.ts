@@ -48,6 +48,7 @@ interface WorkerResponse {
 export const useWebWorker = () => {
   const workerRef = useRef<Worker | null>(null);
   const tasksRef = useRef<Map<string, WorkerTask>>(new Map());
+  const idCounterRef = useRef(0); // fallback incremental counter
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState({
@@ -124,7 +125,19 @@ export const useWebWorker = () => {
         throw new Error("Web Worker not available");
       }
 
-      const id = `task_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+      // Use cryptographically strong UUID where available to avoid predictable / colliding IDs.
+      // Fallback: time component + incrementing counter (no Math.random usage to ensure determinism under tests).
+      const id = (() => {
+        try {
+          if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+            return `task_${crypto.randomUUID()}`;
+          }
+        } catch {
+          // crypto.randomUUID not available – fallback path below
+        }
+        idCounterRef.current += 1;
+        return `task_${Date.now().toString(36)}_${idCounterRef.current.toString(36)}`;
+      })();
 
       return new Promise((resolve, reject) => {
         tasksRef.current.set(id, { id, type, data, resolve, reject });
