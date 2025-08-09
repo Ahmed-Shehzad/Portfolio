@@ -59,9 +59,10 @@ jobs:
             exit 1
           fi
 
-          # Validate worker.js has required functionality
-          if ! grep -q "self\.onmessage.*function" public/worker.js; then
-            echo "❌ Web Worker message handler not found"
+          # Validate worker.js has required message handler (support classic function or arrow function)
+          if ! grep -Eq 'self\\.onmessage\\s*=\\s*(function|\\([^)]*\\)\\s*=>)' public/worker.js; then
+            echo "❌ Web Worker message handler (function or arrow) not found"
+            echo "Hint: expected pattern self.onmessage = function(...) { } or self.onmessage = (e) => { }"
             exit 1
           fi
 
