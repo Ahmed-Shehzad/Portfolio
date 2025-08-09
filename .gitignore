@@ -27,6 +27,7 @@
 sonar_data/
 sonar_logs/
 sonar_extensions/
+.cache_ggshield
 
 # debug
 npm-debug.log*
