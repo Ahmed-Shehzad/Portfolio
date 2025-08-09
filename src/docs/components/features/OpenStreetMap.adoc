@@ -1,0 +1,73 @@
+= OpenStreetMap Component
+:toc:
+:toc-placement: preamble
+:sectnums:
+:icons: font
+:revdate: 2025-08-09
+:revremark: Initial documentation
+
+[.lead]
+Leaflet + React-Leaflet map component with robust validation, custom marker rendering, and resilient error handling.
+
+== Overview
+`OpenStreetMap` renders an interactive map with optional custom gradient-emphasized marker. It validates incoming props, provides user-friendly fallback UI for invalid coordinates/zoom, and gracefully handles runtime and network errors.
+
+== Component Details
+[cols="1,3"]
+|===
+|*File Location* |`src/components/features/OpenStreetMap.tsx`
+|*Type* |Functional Component
+|*Client/Server* |Client (`"use client"`)
+|*Export* |Named Export
+|===
+
+== Props
+[cols="1,1,3,1"]
+|===
+|*Prop* |*Type* |*Description* |*Required*
+|center |`[number, number]` |Latitude/Longitude tuple |Yes
+|zoom |`number` |Initial zoom level (0–20) |Yes
+|className |`string` |Container classes (defaults responsive fill) |No
+|markerImage |`StaticImageData` |Custom circular marker image |No
+|===
+
+== Validation & Fallbacks
+* Coordinates must be a two-element numeric tuple.
+* Zoom constrained to 0–20 (component enforces 3–18 for viewing practicality).
+* Invalid input renders friendly diagnostic panel (dev mode shows details).
+
+== Custom Marker
+* Gradient halo (ping animation + solid ring)
+* Sanitized image src to mitigate XSS
+* Accessible alt text: contextual location description
+
+== Error Handling Strategy
+* Differentiates network, configuration, initialization, and generic errors.
+* Logs structured context (coordinates, zoom, marker presence, timestamp).
+* Presents user-friendly message while keeping detailed data in dev mode.
+
+== Usage
+[source,tsx]
+----
+<OpenStreetMap
+  center={[31.5204, 74.3587]}
+  zoom={6}
+  className="h-96 w-full rounded-xl overflow-hidden"
+/>
+----
+
+== Performance Notes
+* Map code only executed client-side.
+* Incremental zoom snapping (0.5) for smoother UX.
+* Avoids unnecessary re-renders by static prop usage.
+
+== Security Considerations
+* Sanitizes marker image URL and escapes attributes.
+* Limits external tile URL to trusted OSM pattern.
+
+== Change History
+[cols="1,1,3"]
+|===
+|*Version* |*Date* |*Changes*
+|1.0.0 |2025-08-09 |Initial documentation
+|===
