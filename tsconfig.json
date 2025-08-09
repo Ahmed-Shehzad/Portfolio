@@ -31,5 +31,6 @@
     "./svg.d.ts",
     "./images.d.ts"
   ],
+  "typeRoots": ["./src/types", "./node_modules/@types"],
   "exclude": ["node_modules"]
 }
