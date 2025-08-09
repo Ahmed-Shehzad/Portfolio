@@ -19,7 +19,8 @@
       }
     ],
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
+    "paths": { "@/*": ["./src/*"] },
+    "allowArbitraryExtensions": true
   },
   "include": [
     "next-env.d.ts",
@@ -28,6 +29,7 @@
     ".next/types/**/*.ts",
     "svg.d.ts",
     "images.d.ts",
+    "global.d.ts",
     "src/types/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
