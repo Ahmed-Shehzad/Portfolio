@@ -60,8 +60,7 @@ jobs:
             trace-card.txt
             trace-projects.txt
 
-      - name: Type check
-        run: npx tsc --noEmit
+  # Removed standalone tsc --noEmit; relying on Next.js build for type validation.
 
       - name: Build (compile validation)
         run: npm run build
