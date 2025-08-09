@@ -32,12 +32,19 @@ jobs:
       - name: Build (type + compile validation)
         run: npm run build
 
+      - name: Tests (coverage + junit)
+        run: npm run test:ci
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           # Optional: if using SonarCloud and not set in properties file
           SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >-
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.testExecutionReportPaths=coverage/sonar-report.xml
 
       - name: Quality Gate (wait)
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
