@@ -9,6 +9,8 @@ on:
 jobs:
   performance-check:
     runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
 
     steps:
       - name: Checkout code
@@ -20,11 +22,26 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('next.config.ts', 'tailwind.config.ts', 'tsconfig.json') }}
+          restore-keys: |
+            next-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
       - name: Install dependencies
         run: npm ci
 
       - name: Build application
         run: npm run build
+
+      - name: Save Next.js build cache
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('next.config.ts', 'tailwind.config.ts', 'tsconfig.json') }}
 
       - name: Validate Web Worker Implementation
         run: |
@@ -133,3 +150,10 @@ jobs:
           echo "✅ SEO optimization files included"
           echo "✅ Comprehensive AsciiDoc documentation"
           echo "✅ Production-ready build validated"
+
+      - name: Upload build output summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: out/
