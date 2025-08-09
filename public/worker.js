@@ -323,16 +323,29 @@ function processContactValidation(data) {
   const { fields } = data;
   const validation = {};
 
+  // Precompiled safe (linear) email pattern:
+  // - Single character classes with + (no nested quantifiers / backtracking hotspots)
+  // - Restricts local part (1-64) & domain labels (1-63) to mitigate extremely long inputs
+  // - Requires at least one dot in the domain
+  // NOTE: This is a pragmatic validation (not full RFC 5322) focused on safety & performance.
+  const SAFE_EMAIL_REGEX =
+    /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63})+$/;
+
+  // Hard length cap to avoid excessive processing (defense-in-depth)
+  const MAX_EMAIL_LENGTH = 254; // Common practical limit
+
   Object.entries(fields).forEach(([fieldName, value]) => {
     switch (fieldName) {
-      case "email":
+      case "email": {
+        const trimmed = String(value).trim();
+        const isReasonableLength = trimmed.length <= MAX_EMAIL_LENGTH;
+        const isValid = isReasonableLength && SAFE_EMAIL_REGEX.test(trimmed);
         validation[fieldName] = {
-          isValid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-          message: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-            ? ""
-            : "Please enter a valid email address",
+          isValid,
+          message: isValid ? "" : "Please enter a valid email address",
         };
         break;
+      }
 
       case "name":
         validation[fieldName] = {
@@ -425,15 +438,16 @@ function generateTechColor(tech) {
 }
 
 function generateImagePlaceholder(image) {
-  // Generate a simple placeholder based on image dimensions
-  return `data:image/svg+xml;base64,${btoa(`
-    <svg width="${image.width}" height="${image.height}" viewBox="0 0 ${image.width} ${image.height}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="#f3f4f6"/>
-      <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="system-ui" font-size="14">
-        Loading...
-      </text>
-    </svg>
-  `)}`;
+  // Generate a simple placeholder based on image dimensions (avoid nested template literals)
+  const svg = [
+    `<svg width="${image.width}" height="${image.height}" viewBox="0 0 ${image.width} ${image.height}" xmlns="http://www.w3.org/2000/svg">`,
+    '<rect width="100%" height="100%" fill="#f3f4f6"/>',
+    '<text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="system-ui" font-size="14">',
+    "Loading...",
+    "</text>",
+    "</svg>",
+  ].join("");
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
 
 function calculateImageSavings(format, width, height) {
