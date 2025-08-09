@@ -1,5 +1,7 @@
 # Muhammad Ahmed Shehzad – Portfolio
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Ahmed-Shehzad_Portfolio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Ahmed-Shehzad_Portfolio)
+
 Modern, production-ready personal portfolio built with **Next.js 15 (App Router)**, **React 19**, **TypeScript (strict)**, and **Tailwind CSS v4** – optimized for static export on GitHub Pages with clean architecture, smooth marquee animations, accessibility considerations, and automated CI/CD + security audits.
 
 ## ✨ Features
