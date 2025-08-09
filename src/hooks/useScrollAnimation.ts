@@ -24,68 +24,56 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    const currentElement = elementRef.current;
-    if (!currentElement) return;
+    const el = elementRef.current;
+    if (!el) return; // Nothing to observe yet
 
-    const createObserver = () => {
-      return new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            if (delay > 0) {
-              setBfcacheTimeout(() => setIsVisible(true), delay);
-            } else {
-              setIsVisible(true);
-            }
+    // Guard for non-browser or missing API; mark visible immediately (progressive enhancement)
+    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
+      return;
+    }
 
-            if (triggerOnce && observerRef.current) {
-              observerRef.current.unobserve(currentElement);
-            }
-          } else if (!triggerOnce) {
-            setIsVisible(false);
-          }
-        },
-        { threshold, rootMargin }
-      );
-    };
-
-    const startObserving = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-      observerRef.current = createObserver();
-      observerRef.current.observe(currentElement);
-    };
-
-    const stopObserving = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
+    // Single observer callback (reduces nested functions & cognitive complexity for Sonar)
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      if (entry.isIntersecting) {
+        if (delay > 0) {
+          setBfcacheTimeout(() => setIsVisible(true), delay);
+        } else {
+          setIsVisible(true);
+        }
+        if (triggerOnce && observerRef.current) {
+          observerRef.current.unobserve(el);
+        }
+      } else if (!triggerOnce) {
+        setIsVisible(false);
       }
     };
 
-    const handlePageShow = (event: PageTransitionEvent) => {
-      // Re-create observer if page was restored from bfcache
+    // (Re)create observer
+    observerRef.current?.disconnect();
+    observerRef.current = new IntersectionObserver(observerCallback, { threshold, rootMargin });
+    observerRef.current.observe(el);
+
+    // BFCache aware events (re-create or disconnect as needed)
+    const onPageShow = (event: PageTransitionEvent) => {
       if (event.persisted) {
-        startObserving();
+        observerRef.current?.disconnect();
+        observerRef.current = new IntersectionObserver(observerCallback, { threshold, rootMargin });
+        observerRef.current.observe(el);
       }
     };
-
-    const handlePageHide = () => {
-      // Disconnect observer when page is hidden for bfcache
-      stopObserving();
+    const onPageHide = () => {
+      observerRef.current?.disconnect();
     };
-
-    // Initial setup
-    startObserving();
-
-    // Bfcache event listeners
-    window.addEventListener("pageshow", handlePageShow, { passive: true });
-    window.addEventListener("pagehide", handlePageHide, { passive: true });
+    window.addEventListener("pageshow", onPageShow, { passive: true });
+    window.addEventListener("pagehide", onPageHide, { passive: true });
 
     return () => {
-      stopObserving();
-      window.removeEventListener("pageshow", handlePageShow);
-      window.removeEventListener("pagehide", handlePageHide);
+      observerRef.current?.disconnect();
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("pagehide", onPageHide);
     };
   }, [threshold, rootMargin, triggerOnce, delay, setBfcacheTimeout]);
 
