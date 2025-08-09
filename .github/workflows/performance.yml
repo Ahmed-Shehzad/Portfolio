@@ -53,11 +53,30 @@ jobs:
             exit 1
           fi
 
-          # Check if worker.js is copied to build output
-          if [ ! -f "out/worker.js" ]; then
-            echo "❌ worker.js not found in build output (out/)"
+          # Determine expected export paths (consider basePath '/Portfolio')
+          WORKER_PRIMARY="out/worker.js"
+          WORKER_BASEPATH="out/Portfolio/worker.js"
+          WORKER_FOUND=""
+          if [ -f "$WORKER_PRIMARY" ]; then
+            WORKER_FOUND="$WORKER_PRIMARY"
+          elif [ -f "$WORKER_BASEPATH" ]; then
+            WORKER_FOUND="$WORKER_BASEPATH"
+          else
+            # Fallback: search anywhere under out for worker.js (first match)
+            SEARCH_MATCH=$(find out -maxdepth 4 -type f -name worker.js | head -n 1 || true)
+            if [ -n "$SEARCH_MATCH" ]; then
+              WORKER_FOUND="$SEARCH_MATCH"
+              echo "ℹ️  Found worker via search at $SEARCH_MATCH"
+            fi
+          fi
+
+          if [ -z "$WORKER_FOUND" ]; then
+            echo "❌ worker.js not found in any expected build output path"
+            echo "Listing out/ for debugging (depth 2):"
+            find out -maxdepth 2 -type f -print || true
             exit 1
           fi
+          echo "✅ worker.js present at $WORKER_FOUND"
 
           # Validate worker.js has required message handler (support classic function or arrow function)
           if ! grep -q 'self.onmessage' public/worker.js; then
@@ -75,7 +94,7 @@ jobs:
             exit 1
           fi
 
-          # Validate worker has task processing
+          # Validate worker has task processing (at least one of the primary message constants)
           if ! grep -q "PROCESS_ANIMATIONS\|OPTIMIZE_SCROLL\|CALCULATE_PERFORMANCE" public/worker.js; then
             echo "❌ Web Worker task processing not found"
             exit 1
