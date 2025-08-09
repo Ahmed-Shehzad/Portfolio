@@ -6,6 +6,20 @@ import { ContactModal } from "@/components/features";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import { useState } from "react";
 
+/**
+ * ContactSection
+ *
+ * Call-to-action band encouraging direct contact, opening a modal form.
+ *
+ * Features:
+ * - Decorative grain background + gradient brand styling.
+ * - ScrollAnimationWrapper for scale / entrance effect.
+ * - Opens ContactModal (portal) while keeping state local.
+ *
+ * Accessibility:
+ * - Uses semantic button; modal presumed to handle focus trap & aria attributes.
+ * - High contrast text inside gradient background.
+ */
 export const ContactSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 

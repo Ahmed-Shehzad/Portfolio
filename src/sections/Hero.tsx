@@ -10,6 +10,27 @@ import { HeroOrbit } from "@/components/layout";
 import { OptimizedImage } from "@/components/ui";
 import { memo, useCallback } from "react";
 
+/**
+ * HeroSection
+ *
+ * Above‑the‑fold introductory section presenting personal branding plus
+ * immediate calls to action (explore projects / connect).
+ *
+ * Responsibilities:
+ * - Layered orbital icon animation (<HeroOrbit />) isolated from normal flow.
+ * - Semantic h1 and descriptive alt text for avatar / portrait imagery.
+ * - Smooth in‑page navigation using scrollIntoView (progressive enhancement friendly).
+ * - Priority optimized images for critical visual assets.
+ *
+ * Performance:
+ * - Memoized (React.memo) – static interior; no props.
+ * - Stable handlers with useCallback prevent needless child re-renders.
+ * - Absolutely positioned animation layer minimizes layout / paint cost.
+ *
+ * Accessibility:
+ * - Clear button labels (emojis are supplementary only).
+ * - Thoughtful alt text avoids redundancy and conveys context.
+ */
 export const HeroSection = memo(() => {
   const handleConnectClick = useCallback(() => {
     const contactSection = document.getElementById("contact");

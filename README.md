@@ -12,18 +12,7 @@ Modern, production-ready personal portfolio built with **Next.js 15 (App Router)
 - **Workspace setup**: `.vscode` tasks, launch + multi-root workspace file
 - **GitHub Actions**: build, quality, performance, security audits
 
-### 🌟 Web Worker Integration
-
-- **Performance Optimization**: Offloads computationally intensive tasks to background threads
-- **Main-thread Relief**: Reduces blocking operations for smoother user interactions
-- **Custom Hooks**: React hooks for seamless Web Worker integration
-- **Task Variety**: Handles animations, form validation, data processing, and performance metrics
-
-> Performance mindset baked in: background processing with Workers, optimized font loading, minimal layout shifts, and continuous marquee animations without visual seams.
-
-## ✨ Features
-
-### 🎨 Design & UX
+### Design & UX
 
 - **Modern Design**: Clean, professional design with beautiful animations
 - **Fully Responsive**: Optimized for all device sizes and screen resolutions
@@ -43,9 +32,18 @@ Modern, production-ready personal portfolio built with **Next.js 15 (App Router)
 ### 🛡️ Reliability & Error Handling
 
 - **Type Safe**: Full TypeScript implementation with strict type checking
-- **Error Boundaries**: Comprehensive error handling with graceful fallbacks
-- **Graceful Degradation**: Fallback UIs for network issues and component failures
+- **Root Error Boundary**: Global boundary via `ErrorBoundary` wrapper (route-level error files not yet added)
+- **Graceful Degradation**: Fallback UI + retry logic
 - **Development Debugging**: Detailed error reporting in development mode
+
+### 🌟 Web Worker Integration
+
+- **Performance Offloading**: Moves animation & data prep logic off main thread
+- **Custom Hooks**: `useWebWorker` core + task‑specific helpers (animations, testimonials, projects, stars, contact validation, performance)
+- **Extensible Tasks**: Add new task types in `public/worker.js`
+- **Stats & Health**: Periodic performance metrics and cache controls
+
+> Performance mindset baked in: background processing with Workers, optimized font loading, minimal layout shifts, and continuous marquee animations without seams.
 
 ## 🛠️ Tech Stack
 
@@ -210,9 +208,9 @@ portfolio/
 └── README.md                  # Project documentation
 ```
 
-> Note: The README no longer lists error.tsx / global-error.tsx / loading.tsx / not-found.tsx because they are not currently present in the codebase. Add them if you want full App Router error boundaries and custom 404.
+> Note: Route-level error pages (`error.tsx`, `global-error.tsx`, `loading.tsx`, `not-found.tsx`) are not present. Add them if you require granular App Router error handling & custom 404.
 
-## �️ Seamless Marquee Animations
+## Seamless Marquee Animations
 
 Two sections (`Tape.tsx`, `Testimonials.tsx`) implement an infinite marquee effect:
 
@@ -227,7 +225,7 @@ To adjust speed: only change the animation duration in the utility class (e.g. `
 
 Implemented via `ErrorBoundary` + `ErrorBoundaryWrapper` in `wrappers/`. Wraps root layout for graceful UI degradation and retry. Add route-level error files later if needed.
 
-## �🌟 Web Worker Performance System
+## 🌟 Web Worker Performance System
 
 This portfolio implements a comprehensive Web Worker system for optimal performance by offloading computationally intensive tasks from the main thread.
 
@@ -263,22 +261,25 @@ The Web Worker system operates with:
 ### ✨ **React Hook Integration**
 
 ```tsx
-// Animation optimization
-const { processAnimation } = useAnimationWorker();
+// Animation batch calculations
+const { processAnimations } = useAnimationWorker();
 
-// Form validation
-const { validateForm } = useFormWorker();
+// Contact form validation
+const { validateForm } = useContactValidationWorker();
 
-// Performance monitoring
+// Performance metrics (navigation / paint / resources)
 const { calculateMetrics } = usePerformanceWorker();
+
+// Direct low‑level task access
+const { executeTask } = useWebWorker();
 ```
 
-### 📊 **Performance Impact**
+### 📊 **Performance Impact (Indicative)**
 
-- **Main-thread work reduction**: ~60-70%
-- **Improved responsiveness**: Smoother user interactions
-- **Better Core Web Vitals**: Enhanced Lighthouse scores
-- **Scalable architecture**: Ready for additional background tasks
+- **Main-thread relief** via offloading heavier loops & calculations
+- **Smoother interactions** when simultaneous animations & data prep occur
+- **Extensible model** for future tasks without UI refactors
+- (Exact % savings depend on runtime workload; measure with `usePerformanceWorker`.)
 
 <!-- Retained documentation (trimmed) for error handling philosophy -->
 
@@ -286,13 +287,7 @@ This portfolio implements a comprehensive, production-ready error boundary syste
 
 ### 🏗️ **Architecture Overview**
 
-The error handling system operates at multiple levels:
-
-1. **Component Level**: `ErrorBoundary` class component catches JavaScript errors in React component trees
-2. **Route Level**: `error.tsx` handles errors in specific pages/routes
-3. **Global Level**: `global-error.tsx` catches critical application errors
-4. **Navigation Level**: `not-found.tsx` handles 404 errors with navigation
-5. **Loading Level**: `loading.tsx` provides UX during async operations
+Current implementation focuses on a single global **component-level** `ErrorBoundary` (wrapping the layout). Route & global error files can be added later if granular scopes are required.
 
 ### 📦 **Components**
 
@@ -318,12 +313,7 @@ The error handling system operates at multiple levels:
 - Handles client/server boundary error propagation
 - Integrated into root layout for application-wide coverage
 
-#### **App Router Error Pages**
-
-- **`error.tsx`** - Route-level error handling with retry mechanisms
-- **`global-error.tsx`** - Critical system errors (crashes entire app)
-- **`not-found.tsx`** - 404 errors with navigation options
-- **`loading.tsx`** - Loading states for better perceived performance
+<!-- App Router error page stubs intentionally omitted (not yet implemented) -->
 
 ### ✨ **Features**
 
@@ -923,7 +913,37 @@ npm run start          # Local production server
 - **Responsive**: All major breakpoints tested
 - **Performance**: Core Web Vitals optimization
 
-## 🤝 Contributing
+## � SonarQube Self-Hosted Setup
+
+Local bootstrap & token generation:
+
+```bash
+chmod +x scripts/sonar/sonar-bootstrap.sh
+export SONAR_HOST_URL=https://sonar.example.com
+export SONAR_ADMIN_TOKEN=your_admin_token   # or SONAR_USERNAME/SONAR_PASSWORD
+./scripts/sonar/sonar-bootstrap.sh
+# Copy printed token -> set as GitHub secret SONAR_TOKEN
+```
+
+Run local server (development):
+
+```bash
+npm run sonar:up        # starts Postgres + SonarQube
+# open http://localhost:9000 (first login admin/admin)
+```
+
+Trigger analysis locally (after token set):
+
+```bash
+export SONAR_TOKEN=your_token
+npm run sonar:scan
+```
+
+CI analysis workflow: `.github/workflows/sonar-selfhosted.yml`
+Required secrets: `SONAR_HOST_URL`, `SONAR_TOKEN`
+Project key: `portfolio` (matches `sonar-project.properties`).
+
+## �🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)

@@ -41,6 +41,13 @@ const words = [
   "Clean Architecture",
 ];
 
+/**
+ * TapeSection
+ *
+ * Repeating marquee "tape" showcasing technology / methodology keywords.
+ * Duplicate dataset enables seamless infinite animation (two passes) with
+ * second pass aria-hidden for accessibility.
+ */
 export const TapeSection = () => {
   return (
     <section id="tape">

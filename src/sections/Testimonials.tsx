@@ -50,6 +50,24 @@ const testimonials = [
   },
 ];
 
+/**
+ * TestimonialsSection
+ *
+ * Seamless horizontal marquee of client testimonials using duplicated list
+ * technique to avoid animation seams.
+ *
+ * Implementation:
+ * - Data array rendered twice; second clone marked aria-hidden to suppress duplicate screen reader output.
+ * - Star rating block memoized (useMemo) to avoid regenerating static SVG nodes.
+ * - Hover pause via pure CSS (animation-play-state) – no JS listeners required.
+ *
+ * Performance:
+ * - Memoized component; static testimonial data.
+ * - Keys combine repeat index + author name for reconciliation stability.
+ *
+ * Accessibility:
+ * - Descriptive avatar alt text; duplicated track excluded from accessibility tree.
+ */
 export const TestimonialsSection = memo(() => {
   // Memoize star rating JSX to prevent re-renders
   const starRating = useMemo(

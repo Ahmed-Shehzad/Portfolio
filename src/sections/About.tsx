@@ -34,6 +34,27 @@ const LazyToolboxItems = dynamic(
   }
 );
 
+/**
+ * AboutSection
+ *
+ * Multi‑segment narrative & capability overview: intro, differentiators, core
+ * values, location map, strengths, personal interests.
+ *
+ * Composition:
+ * - Code‑split heavy / optional UI (map, toolbox) with next/dynamic.
+ * - ScrollAnimationWrapper provides staggered entrance (perceived performance boost).
+ * - Consistent Card framing & gradient borders unify presentation.
+ * - Toolbox data hydrated lazily with constants to keep initial bundle lean.
+ *
+ * Performance:
+ * - Memoized (no props) + dynamic imports defer non-critical bytes.
+ * - OptimizedImage handles responsive assets (sizing + modern formats).
+ *
+ * Accessibility:
+ * - Logical heading hierarchy (h3/h4) within a single section landmark.
+ * - Badges remain textual (emoji + text) – not color‑only signals.
+ * - Animation wrappers preserve DOM order for assistive tech.
+ */
 export const AboutSection = memo(() => {
   return (
     <section id="about" className="py-20 md:px-24 lg:py-28">

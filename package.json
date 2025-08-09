@@ -13,6 +13,9 @@
     "lint:fix": "next lint --fix",
     "check": "npm run format:check && npm run lint",
     "fix": "npm run format:fix && npm run lint:fix",
+    "sonar:up": "docker compose -f docker-compose.sonar.yml up -d --wait",
+    "sonar:down": "docker compose -f docker-compose.sonar.yml down",
+    "sonar:scan": "SONAR_TOKEN=$SONAR_TOKEN docker compose -f docker-compose.sonar.yml run --rm sonar-scanner",
     "prepare": "husky"
   },
   "dependencies": {

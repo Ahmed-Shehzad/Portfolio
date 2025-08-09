@@ -11,6 +11,12 @@ const footerLinks = [
   },
 ];
 
+/**
+ * Footer
+ *
+ * Site footer with social / external links and a subtle radial highlight.
+ * Links open in new tabs with security rel attributes.
+ */
 export const Footer = () => {
   return (
     <footer className="relative overflow-x-clip md:px-24">

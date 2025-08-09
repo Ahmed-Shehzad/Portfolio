@@ -54,6 +54,24 @@ const portfolioProjects = [
   },
 ];
 
+/**
+ * ProjectsSection
+ *
+ * Sticky stacked showcase of selected projects emphasizing measurable results
+ * and optimized visual previews.
+ *
+ * Behaviors:
+ * - Incremental sticky offset (index-based) yields layered scroll illusion.
+ * - Staggered reveal (ScrollAnimationWrapper) enhances perceived performance.
+ * - Only the first image uses priority to conserve bandwidth.
+ *
+ * Performance:
+ * - Static dataset colocated for simplicity / future extraction.
+ * - OptimizedImage manages quality and optional blur placeholder.
+ *
+ * Accessibility:
+ * - Semantic list structure for result bullets; external links secured with rel attributes.
+ */
 export const ProjectsSection = () => {
   return (
     <section id="projects" className="pb-16 md:px-24 lg:py-24">

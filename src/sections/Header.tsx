@@ -50,7 +50,8 @@ const headerOptions: HeaderOption[] = [
 ];
 
 /**
- * Individual navigation item component
+ * NavigationItem – individual nav pill. Applies active styling and
+ * smooth-scroll behavior via parent click handler.
  */
 const NavigationItem: FC<NavigationItemProps> = (props) => {
   const { option, isActive, onClick } = props;
@@ -75,8 +76,22 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
 };
 
 /**
- * Optimized header navigation bar for the portfolio site.
- * Features: Auto-scroll detection, URL sync, smooth scrolling
+ * Header
+ *
+ * Optimized navigation bar with scroll-position awareness and history hash sync.
+ *
+ * Features:
+ * - Detects active section based on cached offsetTop values for O(n) backward scan.
+ * - Smooth scrolling with header offset compensation.
+ * - URL hash updated via replaceState (no history pollution).
+ * - bfcache-compatible scroll listener hook for reliability on back/forward nav.
+ *
+ * Performance:
+ * - Cached section offsets reduce layout thrash.
+ * - Bottom-of-page detection to force highlight of last section.
+ *
+ * Accessibility:
+ * - aria-current for active link; semantic nav landmark with role + label.
  */
 export const Header = () => {
   const [activeOption, setActiveOption] = useState<HeaderOption>(headerOptions[0]);

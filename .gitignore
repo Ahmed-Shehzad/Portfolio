@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 .vscode/
+sonar_data/
+sonar_logs/
+sonar_extensions/
 
 # debug
 npm-debug.log*
