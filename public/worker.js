@@ -1,5 +1,73 @@
-// Web Worker for handling heavy JavaScript computations
-// This helps move work off the main thread and improve Core Web Vitals
+// Web Worker for handling heavy JavaScript computations.
+// Refactored to reduce cognitive complexity (handler map instead of large switch),
+// centralize constants, and sanitize outbound messages for SonarQube compliance.
+
+// -----------------------------------------------------------------------------
+// Constants & Enumerations
+// -----------------------------------------------------------------------------
+/** @type {const} */
+const MESSAGE_TYPES = {
+  PROCESS_ANIMATIONS: "PROCESS_ANIMATIONS",
+  OPTIMIZE_SCROLL_CALCULATIONS: "OPTIMIZE_SCROLL_CALCULATIONS",
+  CALCULATE_PERFORMANCE_METRICS: "CALCULATE_PERFORMANCE_METRICS",
+  PROCESS_TESTIMONIALS: "PROCESS_TESTIMONIALS",
+  OPTIMIZE_PROJECT_DATA: "OPTIMIZE_PROJECT_DATA",
+  CALCULATE_STAR_RATINGS: "CALCULATE_STAR_RATINGS",
+  PROCESS_CONTACT_VALIDATION: "PROCESS_CONTACT_VALIDATION",
+  OPTIMIZE_IMAGES: "OPTIMIZE_IMAGES",
+  GET_PERFORMANCE_STATS: "GET_PERFORMANCE_STATS",
+  CLEAR_CACHE: "CLEAR_CACHE",
+};
+
+/** @type {const} */
+const OUT_TYPES = {
+  ANIMATIONS_PROCESSED: "ANIMATIONS_PROCESSED",
+  SCROLL_OPTIMIZED: "SCROLL_OPTIMIZED",
+  METRICS_CALCULATED: "METRICS_CALCULATED",
+  TESTIMONIALS_PROCESSED: "TESTIMONIALS_PROCESSED",
+  PROJECTS_OPTIMIZED: "PROJECTS_OPTIMIZED",
+  STAR_RATINGS_CALCULATED: "STAR_RATINGS_CALCULATED",
+  CONTACT_VALIDATED: "CONTACT_VALIDATED",
+  IMAGES_OPTIMIZED: "IMAGES_OPTIMIZED",
+  PERFORMANCE_STATS: "PERFORMANCE_STATS",
+  CACHE_CLEARED: "CACHE_CLEARED",
+  ERROR: "ERROR",
+  WORKER_ERROR: "WORKER_ERROR",
+  WORKER_HEALTH_CHECK: "WORKER_HEALTH_CHECK",
+  WORKER_READY: "WORKER_READY",
+  WORKER_LOG: "WORKER_LOG",
+};
+
+const HEALTH_CHECK_INTERVAL_MS = 30_000; // 30s
+
+// Utility: safe string conversion & control char stripping
+const sanitize = (input) => {
+  const raw = typeof input === "string" ? input : String(input ?? "");
+  return raw
+    .split("")
+    .filter((c) => {
+      const code = c.charCodeAt(0);
+      return !(code <= 31 || (code >= 127 && code <= 159));
+    })
+    .join("");
+};
+
+// Safe base64 encode (btoa can throw for unicode) – degrade gracefully.
+const safeBtoa = (str) => {
+  try {
+    return btoa(str);
+  } catch {
+    // Fallback: percent-encode then base64 of bytes
+    try {
+      const utf8 = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+        String.fromCharCode(parseInt(p1, 16))
+      );
+      return btoa(utf8);
+    } catch {
+      return ""; // last resort empty placeholder
+    }
+  }
+};
 
 // Worker state management
 const workerState = {
@@ -13,87 +81,56 @@ const workerState = {
   },
 };
 
-// Main message handler
-self.onmessage = function (e) {
-  const { type, data, id } = e.data;
-  const startTime = performance.now();
-
-  try {
-    switch (type) {
-      case "PROCESS_ANIMATIONS": {
-        const result = processAnimationData(data);
-        postResult("ANIMATIONS_PROCESSED", result, id, startTime);
-        break;
-      }
-
-      case "OPTIMIZE_SCROLL_CALCULATIONS": {
-        const result = optimizeScrollCalculations(data);
-        postResult("SCROLL_OPTIMIZED", result, id, startTime);
-        break;
-      }
-
-      case "CALCULATE_PERFORMANCE_METRICS": {
-        const result = calculatePerformanceMetrics(data);
-        postResult("METRICS_CALCULATED", result, id, startTime);
-        break;
-      }
-
-      case "PROCESS_TESTIMONIALS": {
-        const result = processTestimonialsData(data);
-        postResult("TESTIMONIALS_PROCESSED", result, id, startTime);
-        break;
-      }
-
-      case "OPTIMIZE_PROJECT_DATA": {
-        const result = optimizeProjectData(data);
-        postResult("PROJECTS_OPTIMIZED", result, id, startTime);
-        break;
-      }
-
-      case "CALCULATE_STAR_RATINGS": {
-        const result = calculateStarRatings(data);
-        postResult("STAR_RATINGS_CALCULATED", result, id, startTime);
-        break;
-      }
-
-      case "PROCESS_CONTACT_VALIDATION": {
-        const result = processContactValidation(data);
-        postResult("CONTACT_VALIDATED", result, id, startTime);
-        break;
-      }
-
-      case "OPTIMIZE_IMAGES": {
-        const result = processImageOptimization(data);
-        postResult("IMAGES_OPTIMIZED", result, id, startTime);
-        break;
-      }
-
-      case "GET_PERFORMANCE_STATS": {
-        self.postMessage({
-          type: "PERFORMANCE_STATS",
-          data: workerState.performanceMetrics,
-          id,
-        });
-        break;
-      }
-
-      case "CLEAR_CACHE": {
-        workerState.cache.clear();
-        self.postMessage({ type: "CACHE_CLEARED", data: true, id });
-        break;
-      }
-
-      default:
-        self.postMessage({
-          type: "ERROR",
-          data: `Unknown task type: ${type}`,
-          id,
-        });
-    }
-  } catch (error) {
+// Handler map to reduce switch complexity
+const handlers = {
+  [MESSAGE_TYPES.PROCESS_ANIMATIONS]: (data, id, start) =>
+    postResult(OUT_TYPES.ANIMATIONS_PROCESSED, processAnimationData(data), id, start),
+  [MESSAGE_TYPES.OPTIMIZE_SCROLL_CALCULATIONS]: (data, id, start) =>
+    postResult(OUT_TYPES.SCROLL_OPTIMIZED, optimizeScrollCalculations(data), id, start),
+  [MESSAGE_TYPES.CALCULATE_PERFORMANCE_METRICS]: (data, id, start) =>
+    postResult(OUT_TYPES.METRICS_CALCULATED, calculatePerformanceMetrics(data), id, start),
+  [MESSAGE_TYPES.PROCESS_TESTIMONIALS]: (data, id, start) =>
+    postResult(OUT_TYPES.TESTIMONIALS_PROCESSED, processTestimonialsData(data), id, start),
+  [MESSAGE_TYPES.OPTIMIZE_PROJECT_DATA]: (data, id, start) =>
+    postResult(OUT_TYPES.PROJECTS_OPTIMIZED, optimizeProjectData(data), id, start),
+  [MESSAGE_TYPES.CALCULATE_STAR_RATINGS]: (data, id, start) =>
+    postResult(OUT_TYPES.STAR_RATINGS_CALCULATED, calculateStarRatings(data), id, start),
+  [MESSAGE_TYPES.PROCESS_CONTACT_VALIDATION]: (data, id, start) =>
+    postResult(OUT_TYPES.CONTACT_VALIDATED, processContactValidation(data), id, start),
+  [MESSAGE_TYPES.OPTIMIZE_IMAGES]: (data, id, start) =>
+    postResult(OUT_TYPES.IMAGES_OPTIMIZED, processImageOptimization(data), id, start),
+  [MESSAGE_TYPES.GET_PERFORMANCE_STATS]: (_data, id) =>
     self.postMessage({
-      type: "ERROR",
-      data: error.message,
+      type: OUT_TYPES.PERFORMANCE_STATS,
+      data: workerState.performanceMetrics,
+      id,
+    }),
+  [MESSAGE_TYPES.CLEAR_CACHE]: (_data, id) => {
+    workerState.cache.clear();
+    self.postMessage({ type: OUT_TYPES.CACHE_CLEARED, data: true, id });
+  },
+};
+
+// Main message handler (single responsibility + validation)
+self.onmessage = (e) => {
+  const payload = e?.data || {};
+  const { type, data, id } = payload;
+  if (!type) {
+    self.postMessage({ type: OUT_TYPES.ERROR, data: "Missing message type", id });
+    return;
+  }
+  const handler = handlers[type];
+  if (!handler) {
+    self.postMessage({ type: OUT_TYPES.ERROR, data: `Unknown task type: ${sanitize(type)}`, id });
+    return;
+  }
+  const startTime = performance.now();
+  try {
+    handler(data, id, startTime);
+  } catch (err) {
+    self.postMessage({
+      type: OUT_TYPES.ERROR,
+      data: sanitize(err?.message || "Unknown error"),
       id,
     });
   }
@@ -126,10 +163,10 @@ function processAnimationData(data) {
     return workerState.cache.get(cacheKey);
   }
 
-  const { elements, scrollProgress, viewport } = data;
+  const { elements, scrollProgress } = data; // removed unused viewport
 
   const processed = elements.map((element) => {
-    const { type, startOffset, endOffset, properties } = element;
+    const { startOffset, endOffset, properties } = element; // removed unused type
 
     // Calculate animation progress based on scroll position
     const elementProgress = Math.max(
@@ -265,7 +302,7 @@ function optimizeProjectData(data) {
   const { projects } = data;
 
   return projects.map((project) => {
-    const { title, description, technologies, image, links } = project;
+    const { title, technologies, image, links } = project; // removed unused description
 
     return {
       ...project,
@@ -438,16 +475,20 @@ function generateTechColor(tech) {
 }
 
 function generateImagePlaceholder(image) {
-  // Generate a simple placeholder based on image dimensions (avoid nested template literals)
-  const svg = [
-    `<svg width="${image.width}" height="${image.height}" viewBox="0 0 ${image.width} ${image.height}" xmlns="http://www.w3.org/2000/svg">`,
+  const width = Number(image.width) || 1;
+  const height = Number(image.height) || 1;
+  const safeWidth = Math.max(1, Math.min(width, 4000));
+  const safeHeight = Math.max(1, Math.min(height, 4000));
+  const svgParts = [
+    `<svg width="${safeWidth}" height="${safeHeight}" viewBox="0 0 ${safeWidth} ${safeHeight}" xmlns="http://www.w3.org/2000/svg">`,
     '<rect width="100%" height="100%" fill="#f3f4f6"/>',
     '<text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-family="system-ui" font-size="14">',
     "Loading...",
     "</text>",
     "</svg>",
-  ].join("");
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  ];
+  const svg = svgParts.join("");
+  return `data:image/svg+xml;base64,${safeBtoa(svg)}`;
 }
 
 function calculateImageSavings(format, width, height) {
@@ -487,24 +528,26 @@ self.onerror = function (error) {
 
 // Performance monitoring
 setInterval(() => {
-  if (workerState.performanceMetrics.tasksCompleted > 0) {
-    self.postMessage({
-      type: "WORKER_HEALTH_CHECK",
-      data: {
-        ...workerState.performanceMetrics,
-        cacheSize: workerState.cache.size,
-        memoryUsage: performance.memory
-          ? {
-              used: performance.memory.usedJSHeapSize,
-              total: performance.memory.totalJSHeapSize,
-              limit: performance.memory.jsHeapSizeLimit,
-            }
-          : null,
-      },
-    });
-  }
-}, 30000); // Every 30 seconds
+  if (workerState.performanceMetrics.tasksCompleted <= 0) return;
+  self.postMessage({
+    type: OUT_TYPES.WORKER_HEALTH_CHECK,
+    data: {
+      ...workerState.performanceMetrics,
+      cacheSize: workerState.cache.size,
+      memoryUsage: performance.memory
+        ? {
+            used: performance.memory.usedJSHeapSize,
+            total: performance.memory.totalJSHeapSize,
+            limit: performance.memory.jsHeapSizeLimit,
+          }
+        : null,
+    },
+  });
+}, HEALTH_CHECK_INTERVAL_MS);
 
 // Initialize worker
-console.log("Portfolio Web Worker initialized successfully");
-self.postMessage({ type: "WORKER_READY", data: true });
+self.postMessage({
+  type: OUT_TYPES.WORKER_LOG,
+  data: "Portfolio Web Worker initialized successfully",
+});
+self.postMessage({ type: OUT_TYPES.WORKER_READY, data: true });
