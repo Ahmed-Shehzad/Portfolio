@@ -7,13 +7,15 @@ import { Card, OptimizedImage, SectionHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import { Fragment, memo, useMemo } from "react";
 
+// NOTE: Avatars manually reassigned to better align with perceived gender / persona of each testimonial.
+// If the visual assets differ from these assumptions, adjust the mapping below without changing order of entries.
 const testimonials = [
   {
     name: "Sarah Chen",
     position: "Product Manager",
     company: "CloudFlow Technologies",
     text: "Working with Ahmed was a game-changer for our SaaS product launch. He implemented a scalable architecture that reduced our deployment time by 40%, which meant we could ship features faster and respond to market changes instantly. His ability to explain complex technical concepts in simple terms also helped our non-technical team members align better with development goals.",
-    avatar: memojiAvatar1,
+    avatar: memojiAvatar4,
     companyColor: "#3B82F6",
   },
   {
@@ -21,7 +23,7 @@ const testimonials = [
     position: "Chief Technology Officer",
     company: "BrightByte Solutions",
     text: "Ahmed's deep understanding of both frontend and backend systems allowed us to refactor a legacy codebase without any downtime — something I didn't think was possible. He introduced a clean architecture pattern that made onboarding new developers significantly easier. His code reviews are always constructive, and his documentation is top-notch.",
-    avatar: memojiAvatar2,
+    avatar: memojiAvatar1,
     companyColor: "#10B981",
   },
   {
@@ -29,7 +31,7 @@ const testimonials = [
     position: "Founder & CEO",
     company: "VisionX AI",
     text: "Ahmed doesn't just write code — he solves business problems. For our AI-driven platform, he built a microservices architecture on AWS that could handle a 3x traffic surge overnight without any hiccups. His proactive communication and dedication to deadlines made him feel like part of our core team.",
-    avatar: memojiAvatar3,
+    avatar: memojiAvatar2,
     companyColor: "#8B5CF6",
   },
   {
@@ -37,7 +39,7 @@ const testimonials = [
     position: "Design Director",
     company: "PixelCraft Studio",
     text: "Ahmed is one of those rare developers who truly respects design. He translated our Figma prototypes into responsive, accessible, and high-performance UI components with pixel-perfect accuracy. Even better, he suggested subtle UX improvements that increased user engagement by 25%.",
-    avatar: memojiAvatar4,
+    avatar: memojiAvatar5,
     companyColor: "#F59E0B",
   },
   {
@@ -45,7 +47,7 @@ const testimonials = [
     position: "VP of Engineering",
     company: "NovaTech Global",
     text: "We were struggling with downtime and slow releases before Ahmed stepped in. Within two months, he set up an automated CI/CD pipeline, integrated containerization with Kubernetes, and improved our system reliability by 99.9%. His approach to problem-solving is both methodical and creative.",
-    avatar: memojiAvatar5,
+    avatar: memojiAvatar3,
     companyColor: "#EF4444",
   },
 ];
