@@ -10,12 +10,18 @@ interface IContactModalProps {
   onClose: () => void;
 }
 
-// Validation constants for easy configuration
+// Safe, bounded email regex (linear) + validation constants
+// - Limits local part to 1-64 chars; domain labels to 1-63; requires at least one dot.
+// - Avoids nested quantifiers/backtracking hotspots that could enable ReDoS.
+const SAFE_EMAIL_REGEX =
+  /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63})+$/;
+const MAX_EMAIL_LENGTH = 254; // Common practical maximum
+
 const VALIDATION_RULES = {
   name: { minLength: 2, required: true },
   subject: { minLength: 3, required: true },
   message: { minLength: 10, required: true },
-  email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, required: true },
+  email: { pattern: SAFE_EMAIL_REGEX, required: true },
 } as const;
 
 type ValidationRule = {
@@ -58,9 +64,13 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
       return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${rules.minLength} characters`;
     }
 
-    // Check pattern (for email)
-    if (rules.pattern && !rules.pattern.test(trimmedValue)) {
-      return fieldName === "email" ? "Please enter a valid email address" : "Invalid format";
+    // Check pattern (for email) with length guard
+    if (
+      fieldName === "email" &&
+      (trimmedValue.length > MAX_EMAIL_LENGTH ||
+        (rules.pattern && !rules.pattern.test(trimmedValue)))
+    ) {
+      return "Please enter a valid email address";
     }
 
     return "";
