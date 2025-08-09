@@ -110,6 +110,49 @@ pnpm dev
 
 4. Visit http://localhost:3000 (Next will auto-shift to another port if busy).
 
+### 🔍 Running CI Workflows Locally
+
+You can approximate key GitHub Actions jobs on your machine:
+
+#### Sonar (Cloud or Self-Hosted)
+
+1. Export credentials:
+
+```bash
+export SONAR_TOKEN=YOUR_TOKEN
+export SONAR_HOST_URL=https://sonarcloud.io   # or http://localhost:9000 for self-hosted
+```
+
+2. Run the helper script:
+
+```bash
+./scripts/run-sonar-docker.sh
+```
+
+3. (Optional self-hosted) Start stack:
+
+```bash
+npm run sonar:up
+# open http://localhost:9000, create token, then re-run step 1
+```
+
+4. Tear down when done:
+
+```bash
+npm run sonar:down
+```
+
+#### TypeScript Debug (mirrors CI diagnostics)
+
+```bash
+npx tsc -v
+npx tsc --showConfig > tsconfig-expanded.json
+npx tsc --traceResolution src/components/ui/Card.tsx > trace-card.txt
+npx tsc --traceResolution src/sections/Projects.tsx > trace-projects.txt
+```
+
+Artifacts generated locally match those uploaded by the workflow (ts-debug artifact).
+
 ## 📁 Project Structure
 
 ```
