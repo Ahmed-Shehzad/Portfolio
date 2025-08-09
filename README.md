@@ -1,28 +1,29 @@
-# Muhammad Ahmed Shehzad - Portfolio
+# Muhammad Ahmed Shehzad – Portfolio
 
-A modern, production-ready portfolio website built with Next.js 15, React 19, TypeScript, and Tailwind CSS v4. Features comprehensive performance optimization with Web Workers, robust error handling, and professional deployment workflows.
+Modern, production-ready personal portfolio built with **Next.js 15 (App Router)**, **React 19**, **TypeScript (strict)**, and **Tailwind CSS v4** – optimized for static export on GitHub Pages with clean architecture, smooth marquee animations, accessibility considerations, and automated CI/CD + security audits.
 
 ## ✨ Features
 
-### 🛠️ **Developer Experience**
+### 🛠️ Developer Experience
 
-- **Code Quality**: Automated ESLint, Prettier, and EditorConfig enforcement
-- **Pre-commit Hooks**: Automatic code formatting and linting before commits
-- **CI/CD Pipeline**: GitHub Actions for automated testing and quality checks
-- **Production Ready**: Clean codebase with no development artifacts
+- **Strict TypeScript** + modern React patterns
+- **Flat ESLint config** (eslint v9) + Prettier (Tailwind plugin)
+- **Husky + lint-staged** quality gates
+- **Workspace setup**: `.vscode` tasks, launch + multi-root workspace file
+- **GitHub Actions**: build, quality, performance, security audits
 
-### 🌟 **Web Worker Integration**
+### 🌟 Web Worker Integration
 
 - **Performance Optimization**: Offloads computationally intensive tasks to background threads
 - **Main-thread Relief**: Reduces blocking operations for smoother user interactions
 - **Custom Hooks**: React hooks for seamless Web Worker integration
 - **Task Variety**: Handles animations, form validation, data processing, and performance metrics
 
-A modern, production-ready portfolio website built with Next.js 15, React 19, TypeScript, and Tailwind CSS v4. Features comprehensive performance optimization with Web Workers, robust error handling, and professional deployment workflows.
+> Performance mindset baked in: background processing with Workers, optimized font loading, minimal layout shifts, and continuous marquee animations without visual seams.
 
 ## ✨ Features
 
-### 🎨 **Design & User Experience**
+### 🎨 Design & UX
 
 - **Modern Design**: Clean, professional design with beautiful animations
 - **Fully Responsive**: Optimized for all device sizes and screen resolutions
@@ -30,7 +31,7 @@ A modern, production-ready portfolio website built with Next.js 15, React 19, Ty
 - **Scroll Animations**: Subtle fade-in, slide-in, and scale-in animations on scroll
 - **Smooth Navigation**: Seamless scrolling between sections with active state tracking
 
-### ⚡ **Performance & Optimization**
+### ⚡ Performance & Optimization
 
 - **Next.js 15**: Latest features including App Router and React 19 integration
 - **Web Workers**: Main-thread work reduction for better performance
@@ -39,7 +40,7 @@ A modern, production-ready portfolio website built with Next.js 15, React 19, Ty
 - **SEO Friendly**: Comprehensive metadata, structured data, and Open Graph tags
 - **Image Optimization**: Responsive images with proper loading strategies
 
-### 🛡️ **Reliability & Error Handling**
+### 🛡️ Reliability & Error Handling
 
 - **Type Safe**: Full TypeScript implementation with strict type checking
 - **Error Boundaries**: Comprehensive error handling with graceful fallbacks
@@ -48,7 +49,7 @@ A modern, production-ready portfolio website built with Next.js 15, React 19, Ty
 
 ## 🛠️ Tech Stack
 
-### **Frontend**
+### Frontend
 
 - **Framework**: Next.js 15 (App Router, Static Export)
 - **Language**: TypeScript 5.8+ (Strict mode)
@@ -58,7 +59,7 @@ A modern, production-ready portfolio website built with Next.js 15, React 19, Ty
 - **Icons**: Custom SVG icons optimized with SVGR
 - **Fonts**: Inter & Calistoga (Google Fonts, optimized loading)
 
-### **Development Tools**
+### Development Tooling
 
 - **Code Quality**: ESLint 9+ (Next.js + TypeScript + Prettier configs)
 - **Formatting**: Prettier 3+ with Tailwind CSS plugin
@@ -66,7 +67,7 @@ A modern, production-ready portfolio website built with Next.js 15, React 19, Ty
 - **Git Hooks**: Husky + lint-staged for pre-commit quality gates
 - **Package Manager**: npm with lock file for dependency consistency
 
-### **Deployment & Infrastructure**
+### Deployment & Infrastructure
 
 - **Hosting**: GitHub Pages (Static deployment)
 - **CI/CD**: GitHub Actions (Automated testing & quality checks)
@@ -109,7 +110,7 @@ yarn dev
 pnpm dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Visit http://localhost:3000 (Next will auto-shift to another port if busy).
 
 ## 📁 Project Structure
 
@@ -130,12 +131,8 @@ portfolio/
 ├── src/
 │   ├── app/                   # Next.js App Router directory
 │   │   ├── globals.css        # Global styles and Tailwind CSS
-│   │   ├── layout.tsx         # Root layout with error boundary
-│   │   ├── page.tsx           # Home page (main portfolio)
-│   │   ├── error.tsx          # Error page for route-level errors
-│   │   ├── global-error.tsx   # Global error handler (critical errors)
-│   │   ├── not-found.tsx      # Custom 404 page
-│   │   ├── loading.tsx        # Loading component
+│   │   ├── layout.tsx         # Root layout (metadata + error boundary wrapper)
+│   │   ├── page.tsx           # Home page
 │   │   └── favicon.ico        # Site favicon
 │   ├── assets/                # Static assets (images, icons)
 │   │   ├── icons/             # SVG icons for technologies and UI
@@ -200,8 +197,6 @@ portfolio/
 │       ├── ScrollAnimationWrapper.tsx # Scroll animation wrapper
 │       └── index.ts                  # Wrappers barrel export
 ├── .editorconfig              # Cross-editor formatting rules
-├── .prettierrc                # Prettier configuration
-├── .prettierignore            # Files excluded from formatting
 ├── .gitignore                 # Git ignore patterns
 ├── eslint.config.mjs          # ESLint configuration (flat config)
 ├── next-env.d.ts              # Next.js TypeScript declarations
@@ -211,10 +206,28 @@ portfolio/
 ├── postcss.config.mjs         # PostCSS configuration
 ├── svg.d.ts                   # SVG TypeScript declarations
 ├── package.json               # Dependencies and scripts
+├── portfolio.code-workspace   # VS Code workspace file
 └── README.md                  # Project documentation
 ```
 
-## 🌟 Web Worker Performance System
+> Note: The README no longer lists error.tsx / global-error.tsx / loading.tsx / not-found.tsx because they are not currently present in the codebase. Add them if you want full App Router error boundaries and custom 404.
+
+## �️ Seamless Marquee Animations
+
+Two sections (`Tape.tsx`, `Testimonials.tsx`) implement an infinite marquee effect:
+
+- **Technique**: Duplicate content exactly twice → translateX from `0%` to `-50%` → loop.
+- **Keyframes**: `@keyframes move-left` updated to `-50%` for pixel-perfect seam avoidance.
+- **Accessibility**: Duplicate set marked `aria-hidden` to avoid screen reader repetition.
+- **Performance**: `will-change: transform` + linear timing for consistent GPU compositing.
+
+To adjust speed: only change the animation duration in the utility class (e.g. `30s` → `45s`). Do not change the `-50%` shift unless you alter duplication count.
+
+## 🧵 Error Boundary System
+
+Implemented via `ErrorBoundary` + `ErrorBoundaryWrapper` in `wrappers/`. Wraps root layout for graceful UI degradation and retry. Add route-level error files later if needed.
+
+## �🌟 Web Worker Performance System
 
 This portfolio implements a comprehensive Web Worker system for optimal performance by offloading computationally intensive tasks from the main thread.
 
@@ -267,7 +280,7 @@ const { calculateMetrics } = usePerformanceWorker();
 - **Better Core Web Vitals**: Enhanced Lighthouse scores
 - **Scalable architecture**: Ready for additional background tasks
 
-## 🚨 Error Boundary System
+<!-- Retained documentation (trimmed) for error handling philosophy -->
 
 This portfolio implements a comprehensive, production-ready error boundary system that ensures graceful error handling and optimal user experience.
 
@@ -440,7 +453,7 @@ This project implements enterprise-grade code quality standards and automated wo
 - **File-specific Rules**: Different settings for different file types
 - **Team Consistency**: Ensures same formatting regardless of editor choice
 
-### 🚀 **Automated Workflows**
+### 🚀 Automated Workflows
 
 #### **Pre-commit Hooks (Husky + lint-staged)**
 
@@ -452,16 +465,14 @@ This project implements enterprise-grade code quality standards and automated wo
 4. Only staged files     # Performance optimization
 ```
 
-#### **GitHub Actions CI/CD**
+#### CI/CD (GitHub Actions)
 
-```yaml
-# .github/workflows/code-quality.yml
-✅ Code formatting check (Prettier)
-✅ Linting validation (ESLint)
-✅ TypeScript type checking
-✅ Build verification
-✅ Cross-platform testing (Ubuntu)
-```
+Workflows:
+
+- `nextjs.yml` – Build + export + deploy to Pages (with cache + telemetry disabled)
+- `code-quality.yml` – Lint, format:check, type check, build (ESLint artifacts uploaded)
+- `performance.yml` – Worker validation, bundle/statics/SEO checks, artifact upload
+- `security.yml` – npm audit, dependency review, license summary (scheduled weekly)
 
 #### **VS Code Integration**
 
@@ -475,7 +486,7 @@ This project implements enterprise-grade code quality standards and automated wo
 }
 ```
 
-### 📝 **Available Scripts**
+### 📝 Scripts
 
 #### **Development**
 
@@ -502,7 +513,7 @@ npm run check        # Run both formatting and linting checks
 npm run fix          # Fix both formatting and linting issues
 ```
 
-### 🛠️ **Development Setup**
+### 🛠️ Development Setup
 
 #### **Recommended VS Code Extensions**
 
@@ -527,7 +538,7 @@ git commit -m "feat: ..."    # Triggers pre-commit hooks
 # ✅ Only clean code gets committed
 ```
 
-### 🎯 **Quality Metrics**
+### 🎯 Quality Metrics
 
 - **100% TypeScript**: Strict type checking enabled
 - **Zero ESLint Errors**: Enforced by pre-commit hooks
@@ -767,9 +778,9 @@ npm run lint        # Verify code quality
 npm run format:check # Verify formatting
 ```
 
-### 🚀 **Deployment Options**
+## 🚀 Deployment
 
-#### **GitHub Pages (Recommended)**
+### GitHub Pages (Default)
 
 This project is optimized for GitHub Pages deployment:
 
@@ -788,7 +799,7 @@ This project is optimized for GitHub Pages deployment:
 4. Configure source to "GitHub Actions"
 5. Push changes to trigger deployment
 
-#### **Manual GitHub Pages**
+### Manual Export
 
 ```bash
 # Manual deployment process
@@ -798,7 +809,7 @@ git commit -m "Deploy"
 git subtree push --prefix out origin gh-pages
 ```
 
-#### **Vercel (Alternative)**
+### Vercel (Alt)
 
 ```bash
 # One-click deployment
@@ -806,7 +817,7 @@ npx vercel
 # Follow prompts for automatic deployment
 ```
 
-#### **Netlify (Alternative)**
+### Netlify (Alt)
 
 ```bash
 # Connect GitHub repository
@@ -815,7 +826,7 @@ npx vercel
 # - Publish directory: out
 ```
 
-### 🌐 **Custom Domain Setup**
+### 🌐 Custom Domain
 
 #### **GitHub Pages Custom Domain**
 
@@ -848,7 +859,7 @@ NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 NEXT_PUBLIC_GA_ID=your-google-analytics-id
 ```
 
-### ⚡ **Performance Optimization**
+## ⚡ Performance Snapshot
 
 #### **Build Output**
 
@@ -871,7 +882,7 @@ NEXT_PUBLIC_GA_ID=your-google-analytics-id
 - **Main-thread Work**: Reduced by 60-70% with Web Workers
 - **Lighthouse Score**: 95+ across all categories
 
-### 🔄 **CI/CD Pipeline**
+## 🔄 CI/CD Summary
 
 #### **Automated Deployment Workflow**
 
