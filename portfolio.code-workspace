@@ -1,0 +1,85 @@
+{
+  "folders": [{ "path": "." }],
+  "settings": {
+    // Inherit most settings from .vscode/settings.json; override a few workspace-wide ones here if desired
+    "files.exclude": {
+      "**/.next": true,
+      "**/node_modules": true,
+      "**/dist": true,
+    },
+    "search.exclude": {
+      "**/.next": true,
+      "**/node_modules": true,
+      "**/dist": true,
+    },
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit",
+    },
+    "editor.formatOnSave": true,
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    "editor.rulers": [100],
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "bradlc.vscode-tailwindcss",
+      "GitHub.copilot",
+      "GitHub.copilot-chat",
+      "streetsidesoftware.code-spell-checker",
+      "usernamehw.errorlens",
+    ],
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Next.js: debug server-side",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "npm run dev",
+      },
+    ],
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "dev",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "dev"],
+        "group": { "kind": "build", "isDefault": true },
+        "isBackground": true,
+        "options": { "cwd": "${workspaceFolder}" },
+      },
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "build"],
+        "group": "build",
+        "options": { "cwd": "${workspaceFolder}" },
+      },
+      {
+        "label": "lint",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "lint"],
+        "group": "test",
+        "options": { "cwd": "${workspaceFolder}" },
+      },
+      {
+        "label": "check",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "check"],
+        "group": "test",
+        "options": { "cwd": "${workspaceFolder}" },
+      },
+    ],
+  },
+}

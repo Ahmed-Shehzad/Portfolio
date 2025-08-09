@@ -1,4 +1,5 @@
-import { ErrorBoundaryWrapper } from "@/wrappers";
+// Direct import instead of barrel to avoid any potential circular or undefined export issues
+import { ErrorBoundaryWrapper } from "@/wrappers/ErrorBoundaryWrapper";
 import type { Metadata } from "next";
 import { Calistoga, Inter } from "next/font/google";
 import { FC, ReactNode } from "react";

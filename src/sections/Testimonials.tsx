@@ -81,8 +81,8 @@ export const TestimonialsSection = memo(() => {
         </ScrollAnimationWrapper>
         <ScrollAnimationWrapper animation="fadeIn" delay={300}>
           <div className="-my-4 mt-12 flex overflow-x-clip [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] py-4 lg:mt-24">
-            <div className="flex flex-none animate-[move-left_30s_linear_infinite] gap-8 pr-8 hover:[animation-play-state:paused]">
-              {[...new Array(2)].fill(0).map((_, repeatIndex) => (
+            <div className="flex flex-none animate-[move-left_45s_linear_infinite] gap-8 pr-8 will-change-transform hover:[animation-play-state:paused]">
+              {[0, 1].map((repeatIndex) => (
                 <Fragment
                   key={`card-fragment-repeat-${repeatIndex}-${testimonials
                     .map((t) => t.name)
@@ -93,6 +93,7 @@ export const TestimonialsSection = memo(() => {
                       <Card
                         key={`${testimonial.name}-${repeatIndex}`}
                         className="max-w-xs p-6 transition duration-300 hover:-rotate-3 md:max-w-md md:p-8"
+                        aria-hidden={repeatIndex === 1}
                       >
                         {/* Header with Avatar and Company Badge */}
                         <div className="mb-4 flex items-start justify-between">

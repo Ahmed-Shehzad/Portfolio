@@ -15,14 +15,6 @@ const nextConfig: NextConfig = {
     basePath: "/Portfolio",
     assetPrefix: "/Portfolio",
   }),
-  turbopack: {
-    rules: {
-      "*.svg": {
-        loaders: ["@svgr/webpack"],
-        as: "*.js",
-      },
-    },
-  },
   webpack(config) {
     // Remove the default Next.js svg loader if present
     config.module.rules = config.module.rules.map((rule: any) => {
@@ -81,15 +73,8 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  devIndicators:
-    process.env.NODE_ENV === "development"
-      ? {
-          buildActivity: true,
-          position: "bottom-left",
-          appIsrStatus: true,
-          buildActivityPosition: "bottom-left",
-        }
-      : false,
+  // Removed deprecated devIndicators options (Next.js 15 no longer supports them). If you need build status
+  // visuals, consider a custom overlay component instead.
 };
 
 export default nextConfig;
