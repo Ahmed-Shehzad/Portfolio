@@ -41,7 +41,7 @@ Components responsible for page layout and structure.
 ==== Page Sections (`/sections/`)
 Main content sections that compose the portfolio pages.
 
-* **link:sections/Hero.adoc[Hero]** - Landing section with animations
+This documentation provides detailed technical specifications, usage examples, and best practices for all components in the portfolio application. The architecture follows modern React + Next.js patterns with TypeScript, strict type safety, background processing via Web Workers, and comprehensive accessibility features.
 * **About** - Personal information and skills
 * **Projects** - Portfolio project showcase
 * **Contact** - Contact information and form
@@ -149,7 +149,6 @@ import { ErrorBoundary } from "@/wrappers";
   <div className="p-6">
     {/* Content */}
   </div>
-</Card>
 
 // Modal implementation
 const [isOpen, setIsOpen] = useState(false);
@@ -167,11 +166,9 @@ const { processAnimation, isProcessing } = useAnimationWorker();
 === Component Development
 * **Single Responsibility**: Each component has a focused purpose
 * **Composition over Inheritance**: Prefer component composition
-* **Props Interface**: Well-defined TypeScript interfaces
 * **Default Props**: Sensible defaults for optional properties
 
 === Performance Considerations
-* **Memoization**: Use React.memo for expensive components
 * **Callback Optimization**: useCallback for event handlers
 * **Lazy Loading**: Defer non-critical component loading
 * **Bundle Splitting**: Keep component bundles small
@@ -191,8 +188,7 @@ const { processAnimation, isProcessing } = useAnimationWorker();
 4. **Write Tests**: Unit and integration tests
 5. **Accessibility Review**: Manual and automated testing
 6. **Performance Audit**: Bundle size and runtime performance
-
-=== Documentation Standards
+const { processAnimations, isProcessing } = useAnimationWorker();
 * **AsciiDoc Format**: Consistent documentation formatting
 * **Code Examples**: Practical usage demonstrations
 * **Interface Documentation**: Complete props and types
