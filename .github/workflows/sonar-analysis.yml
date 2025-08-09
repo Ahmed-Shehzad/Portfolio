@@ -32,6 +32,33 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: TS Resolution Debug
+        run: |
+          npx tsc -v
+          echo '--- Listing declaration files ---'
+          ls -l images.d.ts || true
+          ls -l src/types || true
+          echo '--- showConfig (writing tsconfig-expanded.json) ---'
+          npx tsc --showConfig > tsconfig-expanded.json
+          grep -n 'images.d.ts' tsconfig-expanded.json || true
+          grep -n '@/assets/images' tsconfig-expanded.json || true
+          echo '--- traceResolution Card.tsx ---'
+          npx tsc --traceResolution src/components/ui/Card.tsx > trace-card.txt || true
+          echo '--- traceResolution Projects.tsx ---'
+          npx tsc --traceResolution src/sections/Projects.tsx > trace-projects.txt || true
+          echo '--- Finished diagnostics (will proceed to full type check) ---'
+        continue-on-error: true
+
+      - name: Upload TS debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ts-debug
+          path: |
+            tsconfig-expanded.json
+            trace-card.txt
+            trace-projects.txt
+
       - name: Type check
         run: npx tsc --noEmit
 
