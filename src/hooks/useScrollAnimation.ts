@@ -22,6 +22,7 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
   const elementRef = useRef<HTMLElement>(null);
   const { setBfcacheTimeout } = useBfcacheCompatibleTimeout();
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const el = elementRef.current;
@@ -39,7 +40,15 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
       if (!entry) return;
       if (entry.isIntersecting) {
         if (delay > 0) {
-          setBfcacheTimeout(() => setIsVisible(true), delay);
+          // Clear any existing scheduled visibility change to avoid multiple queued timers
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+          timeoutRef.current = setBfcacheTimeout(() => {
+            setIsVisible(true);
+            timeoutRef.current = null;
+          }, delay);
         } else {
           setIsVisible(true);
         }
@@ -72,6 +81,10 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
 
     return () => {
       observerRef.current?.disconnect();
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       window.removeEventListener("pageshow", onPageShow);
       window.removeEventListener("pagehide", onPageHide);
     };

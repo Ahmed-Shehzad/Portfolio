@@ -1,54 +1,79 @@
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import CheckCircleIcon from "@/assets/icons/check-circle.svg";
 import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
-import darkSaasLandingPage from "@/assets/images/dark-saas-landing-page.png";
-import lightSaasLandingPage from "@/assets/images/light-saas-landing-page.png";
+import ExtraleichtPage from "@/assets/images/extraleicht.png";
+import SustaynPage from "@/assets/images/sustayn.png";
+import PlegehilfePage from "@/assets/images/verbund-pflegehilfe.png";
+import Football365ScoresPage from "@/assets/images/365-scores.png";
 import { Card, OptimizedImage, SectionHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
 
 const portfolioProjects = [
   {
-    company: "Acme Corp",
-    year: "2022",
-    title: "Dark Saas Landing Page",
+    company: "Verbund Pflegehilfe",
+    year: "2008",
+    title: "Free Care Advice & Provider Matching Service",
     results: [
-      { title: "Enhanced user experience by 40%" },
-      { title: "Improved site speed by 50%" },
-      { title: "Increased mobile traffic by 35%" },
+      { title: "Free personalized care consultation" },
+      { title: "Matching with local care providers" },
+      { title: "Support for obtaining care aids" },
+      { title: "Guidance on subsidies & financing" },
+      { title: "Advice on barrier-free home solutions" },
     ],
-    link: "https://youtu.be/4k7IdSLxh6w",
-    image: darkSaasLandingPage,
-    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
-    imageWidth: 800,
-    imageHeight: 507,
-  },
-  {
-    company: "Innovative Co",
-    year: "2021",
-    title: "Light Saas Landing Page",
-    results: [
-      { title: "Boosted sales by 20%" },
-      { title: "Expanded customer reach by 35%" },
-      { title: "Increased brand awareness by 15%" },
-    ],
-    link: "https://youtu.be/7hi5zwO75yc",
-    image: lightSaasLandingPage,
-    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
-    imageWidth: 800,
-    imageHeight: 507,
-  },
-  {
-    company: "Quantum Dynamics",
-    year: "2023",
-    title: "AI Startup Landing Page",
-    results: [
-      { title: "Enhanced user experience by 40%" },
-      { title: "Improved site speed by 50%" },
-      { title: "Increased mobile traffic by 35%" },
-    ],
-    link: "https://youtu.be/Z7I5uSRHMHg",
-    image: aiStartupLandingPage,
+    link: "https://www.pflegehilfe.org",
+    image: PlegehilfePage,
     // Actual image dimensions: 1629 x 1032, aspect ratio: ~1.58
+    imageWidth: 1629,
+    imageHeight: 1032,
+  },
+  {
+    company: "Sustayn GmbH",
+    year: "2021",
+    title: "Employee Engagement Platform for Sustainability",
+    results: [
+      { title: "Gamified sustainability engagement" },
+      { title: "Microlearning & knowledge sharing" },
+      { title: "Challenges, events & rewards" },
+      { title: "Idea management & co-determination" },
+      { title: "Integration with intranet & apps" },
+    ],
+    link: "https://app.sustayn.de",
+    image: SustaynPage,
+    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
+    imageWidth: 800,
+    imageHeight: 507,
+  },
+  {
+    company: "Extraleicht GmbH & Co. KG",
+    year: "2012",
+    title: "Extraleicht",
+    results: [
+      { title: "Heating oil price calculator" },
+      { title: "Online heating oil ordering" },
+      { title: "Tank service solutions" },
+      { title: "Lubricants & operating supplies" },
+      { title: "Customer service & contact" },
+    ],
+    link: "https://extraleicht.com",
+    image: ExtraleichtPage,
+    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
+    imageWidth: 800,
+    imageHeight: 507,
+  },
+  {
+    company: "365Scores",
+    year: "2012",
+    title: "365Scores – Real-Time Sports Scores & Personalized Updates",
+    results: [
+      { title: "Live scores and real-time sports updates" },
+      { title: "Personalized feeds for teams, leagues, and players" },
+      { title: "Comprehensive coverage of multiple sports" },
+      { title: "Sports betting insights and information" },
+      { title: "Publisher tools for live score integration and monetization" },
+    ],
+    link: "https://www.365scores.com",
+    image: Football365ScoresPage,
+    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
     imageWidth: 1629,
     imageHeight: 1032,
   },
@@ -132,17 +157,34 @@ export const ProjectsSection = () => {
                       </a>
                     </div>
                     <div className="relative">
-                      <OptimizedImage
-                        src={project.image}
-                        alt={`${project.title} screenshot showcasing the ${project.company} project from ${project.year}`}
-                        width={project.imageWidth}
-                        height={project.imageHeight}
-                        className="mt-8 -mb-4 md:-mb-0 lg:absolute lg:mt-0 lg:h-full lg:w-auto lg:max-w-none"
-                        priority={projectIndex === 0} // Prioritize loading the first image
-                        quality={90} // Higher quality for project showcase images
-                        placeholder="blur" // Add blur placeholder for better UX
-                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                      />
+                      <figure
+                        className="relative rounded-2xl border border-white/10 bg-neutral-900/70 px-3 pt-6 pb-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/5 backdrop-blur supports-[backdrop-filter]:bg-neutral-900/50 lg:flex lg:h-full lg:flex-col"
+                        aria-label={`${project.title} preview in MacBook frame`}
+                      >
+                        {/* Camera notch / bezel indicator */}
+                        <div
+                          className="pointer-events-none absolute top-1.5 left-1/2 h-2 w-24 -translate-x-1/2 rounded-full bg-black/40"
+                          aria-hidden="true"
+                        />
+                        <div className="relative flex-grow overflow-hidden rounded-lg ring-1 ring-white/10">
+                          <OptimizedImage
+                            src={project.image}
+                            alt={`${project.title} screenshot showcasing the ${project.company} project from ${project.year}`}
+                            width={project.imageWidth}
+                            height={project.imageHeight}
+                            className="h-full w-full object-cover"
+                            priority={projectIndex === 0}
+                            quality={90}
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                          />
+                        </div>
+                        {/* Bottom base / stand */}
+                        <div
+                          className="pointer-events-none mx-auto mt-3 h-1.5 w-32 rounded-full bg-gradient-to-r from-neutral-500/40 via-neutral-400/30 to-neutral-500/40"
+                          aria-hidden="true"
+                        />
+                      </figure>
                     </div>
                   </div>
                 </ScrollAnimationWrapper>
