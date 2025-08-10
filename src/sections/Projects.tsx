@@ -1,6 +1,5 @@
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import CheckCircleIcon from "@/assets/icons/check-circle.svg";
-import aiStartupLandingPage from "@/assets/images/ai-startup-landing-page.png";
 import ExtraleichtPage from "@/assets/images/extraleicht.png";
 import SustaynPage from "@/assets/images/sustayn.png";
 import PlegehilfePage from "@/assets/images/verbund-pflegehilfe.png";
