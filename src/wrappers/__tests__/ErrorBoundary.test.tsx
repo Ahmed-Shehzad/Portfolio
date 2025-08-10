@@ -8,16 +8,6 @@ const AlwaysThrows: React.FC = () => {
   throw new Error("Boom");
 };
 
-// Component that throws only on its very first render (using a ref to avoid StrictMode double-invoke issues)
-const ThrowThenRecover: React.FC = () => {
-  const first = React.useRef(true);
-  if (first.current) {
-    first.current = false;
-    throw new Error("Boom");
-  }
-  return <div>Recovered</div>;
-};
-
 describe("ErrorBoundary", () => {
   it("renders fallback UI with action buttons", () => {
     render(
