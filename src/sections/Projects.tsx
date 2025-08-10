@@ -155,14 +155,15 @@ export const ProjectsSection = () => {
                         </button>
                       </a>
                     </div>
-                    <div className="relative">
+                    {/* Visual preview frame: maintain aspect ratio on tablets (e.g., iPad Pro 11"/12.9") */}
+                    <div className="relative mt-8 h-56 w-full overflow-hidden rounded-2xl sm:h-60 md:aspect-[158/100] md:h-auto lg:mt-0 lg:aspect-auto lg:h-[400px]">
                       <figure
-                        className="relative rounded-2xl border border-white/10 bg-neutral-900/70 px-3 pt-6 pb-4 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/5 backdrop-blur supports-[backdrop-filter]:bg-neutral-900/50 lg:flex lg:h-full lg:flex-col"
+                        className="relative flex h-full flex-col rounded-2xl border border-white/10 bg-neutral-900/70 px-2 pt-5 pb-3 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/5 backdrop-blur supports-[backdrop-filter]:bg-neutral-900/50 sm:px-3 sm:pt-6 sm:pb-4"
                         aria-label={`${project.title} preview in MacBook frame`}
                       >
                         {/* Camera notch / bezel indicator */}
                         <div
-                          className="pointer-events-none absolute top-1.5 left-1/2 h-2 w-24 -translate-x-1/2 rounded-full bg-black/40"
+                          className="pointer-events-none absolute top-1.5 left-1/2 h-2 w-20 -translate-x-1/2 rounded-full bg-black/40 sm:w-24"
                           aria-hidden="true"
                         />
                         <div className="relative flex-grow overflow-hidden rounded-lg ring-1 ring-white/10">
@@ -171,16 +172,17 @@ export const ProjectsSection = () => {
                             alt={`${project.title} screenshot showcasing the ${project.company} project from ${project.year}`}
                             width={project.imageWidth}
                             height={project.imageHeight}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-cover md:object-cover"
                             priority={projectIndex === 0}
                             quality={90}
                             placeholder="blur"
+                            sizes="(min-width:1280px) 600px, (min-width:1024px) 50vw, 100vw"
                             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                           />
                         </div>
                         {/* Bottom base / stand */}
                         <div
-                          className="pointer-events-none mx-auto mt-3 h-1.5 w-32 rounded-full bg-gradient-to-r from-neutral-500/40 via-neutral-400/30 to-neutral-500/40"
+                          className="pointer-events-none mx-auto mt-2 h-1.5 w-28 rounded-full bg-gradient-to-r from-neutral-500/40 via-neutral-400/30 to-neutral-500/40 sm:mt-3 sm:w-32"
                           aria-hidden="true"
                         />
                       </figure>
