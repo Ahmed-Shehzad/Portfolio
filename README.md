@@ -279,7 +279,12 @@ This portfolio implements a comprehensive Web Worker system for optimal performa
 
 The Web Worker system operates with:
 
-1. **Main Worker**: `public/worker.js` - Central processing unit for all background tasks
+1. **Main Worker**: `public/worker.js` (generated)
+
+- Source: `src/worker/worker.ts`
+- Build: `npm run build:worker` (also runs automatically in `npm run dev` and `npm run build`)
+- Note: Do not edit the generated JS directly; make changes in TypeScript source.
+
 2. **React Integration**: Custom hooks for seamless worker communication
 3. **Task Management**: Organized task types with proper error handling
 4. **Performance Monitoring**: Built-in metrics and optimization tracking

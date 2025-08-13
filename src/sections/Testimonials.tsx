@@ -50,6 +50,46 @@ const testimonials = [
     avatar: memojiAvatar3,
     companyColor: "#EF4444",
   },
+  {
+    name: "Priya Natarajan",
+    position: "Head of Product",
+    company: "QuantumCraft Labs",
+    text: "Ahmed quickly aligned engineering with product outcomes. He improved our build pipeline and introduced metrics-driven releases, which cut our time-to-validate A/B tests in half and boosted conversion across our onboarding flow.",
+    avatar: memojiAvatar2,
+    companyColor: "#06B6D4",
+  },
+  {
+    name: "Tomás Álvarez",
+    position: "Engineering Manager",
+    company: "Altitude Networks",
+    text: "Our React app felt sluggish under load until Ahmed profiled critical paths and implemented intelligent memoization and virtualization. Lighthouse and Core Web Vitals jumped across the board, and our support tickets dropped noticeably.",
+    avatar: memojiAvatar5,
+    companyColor: "#E11D48",
+  },
+  {
+    name: "Lina Park",
+    position: "Chief Operating Officer",
+    company: "Harbor Health",
+    text: "Compliance, reliability, and speed rarely coexist. Ahmed standardized our infra-as-code, added robust observability, and set SLOs that helped us maintain 99.95% uptime while accelerating feature delivery.",
+    avatar: memojiAvatar3,
+    companyColor: "#84CC16",
+  },
+  {
+    name: "Noah Williams",
+    position: "Lead Frontend Engineer",
+    company: "Aurora Commerce",
+    text: "Ahmed elevated our design system with accessible, reusable components and rigorous testing. Storybook coverage improved, and our team shipped consistent UI faster with fewer regressions.",
+    avatar: memojiAvatar1,
+    companyColor: "#14B8A6",
+  },
+  {
+    name: "Fatima Rahman",
+    position: "Product Owner",
+    company: "Stellar Fintech",
+    text: "From discovery to delivery, Ahmed kept us focused on user value. His developer experience improvements and documentation reduced onboarding time for new engineers from weeks to days.",
+    avatar: memojiAvatar4,
+    companyColor: "#F43F5E",
+  },
 ];
 
 /**

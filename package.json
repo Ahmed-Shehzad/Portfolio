@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run build:worker && next dev",
+    "build": "npm run build:worker && next build",
     "start": "next start",
     "lint": "next lint",
+    "build:worker": "tsc -p tsconfig.worker.json",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:ci": "CI=1 vitest run --coverage && node scripts/convert-junit-to-generic.mjs coverage/sonar-report.xml coverage/generic-report.xml",
