@@ -8,7 +8,19 @@
 // -----------------------------------------------------------------------------
 // Note: no module exports to allow compilation as a classic worker script
 
-const MESSAGE_TYPES = {
+interface MessageTypesShape {
+  PROCESS_ANIMATIONS: "PROCESS_ANIMATIONS";
+  OPTIMIZE_SCROLL_CALCULATIONS: "OPTIMIZE_SCROLL_CALCULATIONS";
+  CALCULATE_PERFORMANCE_METRICS: "CALCULATE_PERFORMANCE_METRICS";
+  PROCESS_TESTIMONIALS: "PROCESS_TESTIMONIALS";
+  OPTIMIZE_PROJECT_DATA: "OPTIMIZE_PROJECT_DATA";
+  CALCULATE_STAR_RATINGS: "CALCULATE_STAR_RATINGS";
+  PROCESS_CONTACT_VALIDATION: "PROCESS_CONTACT_VALIDATION";
+  OPTIMIZE_IMAGES: "OPTIMIZE_IMAGES";
+  GET_PERFORMANCE_STATS: "GET_PERFORMANCE_STATS";
+  CLEAR_CACHE: "CLEAR_CACHE";
+}
+const MESSAGE_TYPES: MessageTypesShape = {
   PROCESS_ANIMATIONS: "PROCESS_ANIMATIONS",
   OPTIMIZE_SCROLL_CALCULATIONS: "OPTIMIZE_SCROLL_CALCULATIONS",
   CALCULATE_PERFORMANCE_METRICS: "CALCULATE_PERFORMANCE_METRICS",
@@ -19,9 +31,26 @@ const MESSAGE_TYPES = {
   OPTIMIZE_IMAGES: "OPTIMIZE_IMAGES",
   GET_PERFORMANCE_STATS: "GET_PERFORMANCE_STATS",
   CLEAR_CACHE: "CLEAR_CACHE",
-} as const;
+};
 
-const OUT_TYPES = {
+interface OutTypesShape {
+  ANIMATIONS_PROCESSED: "ANIMATIONS_PROCESSED";
+  SCROLL_OPTIMIZED: "SCROLL_OPTIMIZED";
+  METRICS_CALCULATED: "METRICS_CALCULATED";
+  TESTIMONIALS_PROCESSED: "TESTIMONIALS_PROCESSED";
+  PROJECTS_OPTIMIZED: "PROJECTS_OPTIMIZED";
+  STAR_RATINGS_CALCULATED: "STAR_RATINGS_CALCULATED";
+  CONTACT_VALIDATED: "CONTACT_VALIDATED";
+  IMAGES_OPTIMIZED: "IMAGES_OPTIMIZED";
+  PERFORMANCE_STATS: "PERFORMANCE_STATS";
+  CACHE_CLEARED: "CACHE_CLEARED";
+  ERROR: "ERROR";
+  WORKER_ERROR: "WORKER_ERROR";
+  WORKER_HEALTH_CHECK: "WORKER_HEALTH_CHECK";
+  WORKER_READY: "WORKER_READY";
+  WORKER_LOG: "WORKER_LOG";
+}
+const OUT_TYPES: OutTypesShape = {
   ANIMATIONS_PROCESSED: "ANIMATIONS_PROCESSED",
   SCROLL_OPTIMIZED: "SCROLL_OPTIMIZED",
   METRICS_CALCULATED: "METRICS_CALCULATED",
@@ -37,7 +66,7 @@ const OUT_TYPES = {
   WORKER_HEALTH_CHECK: "WORKER_HEALTH_CHECK",
   WORKER_READY: "WORKER_READY",
   WORKER_LOG: "WORKER_LOG",
-} as const;
+};
 
 // Explicit key & value type helpers (improves DX in editor hints)
 type MessageTypesMap = typeof MESSAGE_TYPES;
@@ -83,13 +112,13 @@ interface PerfTimings {
   domContentLoadedEventEnd?: number;
   navigationStart?: number;
   loadEventEnd?: number;
-  [k: string]: any;
+  [k: string]: unknown;
 }
 
 interface PerformancePayload {
   navigationTiming?: PerfTimings;
   paintTiming?: Record<string, number>;
-  resourceTiming?: Array<{ duration: number; [k: string]: any }>;
+  resourceTiming?: Array<{ duration: number; [k: string]: unknown }>;
 }
 
 interface TestimonialsPayload {
@@ -98,7 +127,7 @@ interface TestimonialsPayload {
     text: string;
     name: string;
     company: string;
-    [k: string]: any;
+    [k: string]: unknown;
   }>;
 }
 
@@ -106,9 +135,9 @@ interface ProjectsPayload {
   projects: Array<{
     title: string;
     technologies: string[];
-    image: { width: number; height: number; [k: string]: any };
-    links: Array<{ href: string; [k: string]: any }>;
-    [k: string]: any;
+    image: { width: number; height: number; [k: string]: unknown };
+    links: Array<{ href: string; [k: string]: unknown }>;
+    [k: string]: unknown;
   }>;
 }
 
@@ -121,7 +150,13 @@ interface ContactValidationPayload {
 }
 
 interface ImagesPayload {
-  images: Array<{ src: string; width: number; height: number; format: string; [k: string]: any }>;
+  images: Array<{
+    src: string;
+    width: number;
+    height: number;
+    format: string;
+    [k: string]: unknown;
+  }>;
 }
 
 // Outgoing message payloads (result data shapes kept broad for flexibility)
@@ -143,7 +178,7 @@ interface OutgoingMessageMap {
     lineno?: number;
     colno?: number;
   };
-  [OUT_TYPES.WORKER_HEALTH_CHECK]: PerformanceMetrics & { cacheSize: number; memoryUsage: any };
+  [OUT_TYPES.WORKER_HEALTH_CHECK]: PerformanceMetrics & { cacheSize: number; memoryUsage: unknown };
   [OUT_TYPES.WORKER_READY]: boolean;
   [OUT_TYPES.WORKER_LOG]: string;
 }
@@ -255,8 +290,10 @@ const handlers: {
 
 // Main message handler (single responsibility + validation)
 // Type guard to validate inbound message
-function isInboundMessage(msg: any): msg is InboundPayloads {
-  return !!msg && typeof msg.type === "string" && (msg.type as string) in handlers;
+function isInboundMessage(msg: unknown): msg is InboundPayloads {
+  if (!msg || typeof msg !== "object") return false;
+  const t = (msg as { type?: unknown }).type;
+  return typeof t === "string" && t in handlers;
 }
 
 self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) => {
@@ -265,7 +302,7 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
     self.postMessage({
       type: OUT_TYPES.ERROR,
       data: "Missing or unknown message type",
-      id: (raw as any)?.id,
+      id: (raw as { id?: ID }).id,
     });
     return;
   }
@@ -275,14 +312,14 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
     // Union of handler function parameter types collapses to never when indexed by a union key.
     // Use a controlled cast here; payload already validated by isInboundMessage.
     (handlers as Record<string, (d: unknown, id: ID, s?: number) => void>)[type](
-      (raw as any).data,
+      (raw as InboundPayloads).data,
       id,
       startTime
     );
-  } catch (err: any) {
+  } catch (err) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
-      data: sanitize(err?.message || "Unknown error"),
+      data: sanitize(err instanceof Error ? err.message : String(err)),
       id,
     });
   }
@@ -393,10 +430,18 @@ function optimizeScrollCalculations(data: OptimizeScrollPayload) {
 }
 
 // Performance metrics calculation
-function calculatePerformanceMetrics(data: PerformancePayload) {
+interface CalculatedPerformanceMetrics {
+  fcp: number;
+  lcp: number;
+  domContentLoaded: number;
+  loadComplete: number;
+  totalResources: number;
+  slowResources: number;
+  performanceScore: number;
+}
+function calculatePerformanceMetrics(data: PerformancePayload): CalculatedPerformanceMetrics {
   const { navigationTiming, paintTiming, resourceTiming } = data;
-
-  const metrics: any = {
+  const metrics: CalculatedPerformanceMetrics = {
     // Core Web Vitals approximations
     fcp: paintTiming?.["first-contentful-paint"] || 0,
     lcp: paintTiming?.["largest-contentful-paint"] || 0,
@@ -427,14 +472,25 @@ function calculatePerformanceMetrics(data: PerformancePayload) {
 }
 
 // Testimonials data processing
-function processTestimonialsData(data: TestimonialsPayload) {
+interface ProcessedTestimonial {
+  rating: number;
+  text: string;
+  name: string;
+  company: string;
+  stars: Array<{ filled: boolean; index: number; key: string }>;
+  textMetrics: { length: number; wordCount: number; estimatedReadTime: number };
+  companyColor: string;
+  ariaLabel: string;
+  [k: string]: unknown;
+}
+function processTestimonialsData(data: TestimonialsPayload): ProcessedTestimonial[] {
   const { testimonials } = data;
 
   return testimonials.map((testimonial) => {
     const { rating, text, name, company } = testimonial;
 
     return {
-      ...(testimonial as any),
+      ...testimonial,
       // Pre-calculate star display data
       stars: Array.from({ length: 5 }, (_, i) => ({
         filled: i < rating,
@@ -456,58 +512,90 @@ function processTestimonialsData(data: TestimonialsPayload) {
 }
 
 // Project data optimization
-function optimizeProjectData(data: ProjectsPayload) {
+interface OptimizedProject {
+  title: string;
+  technologies: string[];
+  image: { width: number; height: number; [k: string]: unknown };
+  links: Array<{ href: string; rel?: string; target: string }>;
+  technologyChips: Array<{ name: string; color: string; index: number; key: string }>;
+  imageData: { width: number; height: number; aspectRatio: number; placeholder: string };
+  secureLinks: Array<{ href: string; rel?: string; target: string }>;
+  [k: string]: unknown;
+}
+function optimizeProjectData(data: ProjectsPayload): OptimizedProject[] {
   const { projects } = data;
 
-  return projects.map((project) => {
+  return projects.map((project): OptimizedProject => {
     const { title, technologies, image, links } = project;
 
+    const technologyChips = technologies.map((tech, index) => ({
+      name: tech,
+      color: generateTechColor(tech),
+      index,
+      key: `tech-${title}-${tech}`,
+    }));
+
+    const imageData = {
+      width: image.width,
+      height: image.height,
+      aspectRatio: image.width / image.height,
+      placeholder: generateImagePlaceholder(image),
+    };
+
+    const secureLinks: OptimizedProject["secureLinks"] = links.map((link) => ({
+      href: link.href,
+      rel: link.href.startsWith("http") ? "noopener noreferrer" : undefined,
+      target: link.href.startsWith("http") ? "_blank" : "_self",
+    }));
+
     return {
-      ...(project as any),
-      // Pre-calculate technology chips
-      technologyChips: technologies.map((tech, index) => ({
-        name: tech,
-        color: generateTechColor(tech),
-        index,
-        key: `tech-${title}-${tech}`,
+      title,
+      technologies: [...technologies],
+      image: { width: image.width, height: image.height },
+      links: links.map((l) => ({
+        href: l.href,
+        target: l.href.startsWith("http") ? "_blank" : "_self",
+        rel: l.href.startsWith("http") ? "noopener noreferrer" : undefined,
       })),
-      // Optimize image data
-      imageData: {
-        ...image,
-        aspectRatio: image.width / image.height,
-        placeholder: generateImagePlaceholder(image),
-      },
-      // Pre-process links for security
-      secureLinks: links.map((link) => ({
-        ...link,
-        rel: link.href.startsWith("http") ? "noopener noreferrer" : undefined,
-        target: link.href.startsWith("http") ? "_blank" : "_self",
-      })),
+      technologyChips,
+      imageData,
+      secureLinks,
     };
   });
 }
 
 // Star ratings calculation with memoization
-function calculateStarRatings(data: StarRatingsPayload) {
+interface StarEntry {
+  filled: boolean;
+  halfFilled: boolean;
+  empty: boolean;
+  index: number;
+  key: string;
+}
+interface StarRatingResult {
+  id: string | number;
+  rating: number;
+  stars: StarEntry[];
+}
+function calculateStarRatings(data: StarRatingsPayload): StarRatingResult[] {
   const { ratings } = data;
 
-  return ratings.map(({ rating, id }) => {
+  return ratings.map(({ rating, id }): StarRatingResult => {
     const cacheKey = `stars_${id}_${rating}`;
 
     if (workerState.cache.has(cacheKey)) {
-      return workerState.cache.get(cacheKey);
+      return workerState.cache.get(cacheKey) as StarRatingResult;
     }
 
-    const stars = Array.from({ length: 5 }, (_, index) => ({
+    const stars: StarEntry[] = Array.from({ length: 5 }, (_, index) => ({
       filled: index < Math.floor(rating),
       halfFilled: index < rating && index >= Math.floor(rating),
       empty: index >= Math.ceil(rating),
       index,
       key: `star-${id}-${index}`,
     }));
-
-    const result = { id, rating, stars } as const;
-    workerState.cache.set(cacheKey, result);
+    const result: StarRatingResult = { id, rating, stars };
+    workerState.cache.set(cacheKey, result as StarRatingResult);
 
     return result;
   });
@@ -667,15 +755,12 @@ function calculateImageSavings(format: string, width: number, height: number) {
 }
 
 // Error handling
-self.onerror = function (error: any) {
-  const err = typeof error === "string" ? { message: error } : (error as any);
+self.onerror = function (error: unknown) {
+  const err = error instanceof Error ? error : new Error(String(error));
   self.postMessage({
     type: OUT_TYPES.WORKER_ERROR,
     data: {
-      message: err?.message,
-      filename: err?.filename,
-      lineno: err?.lineno,
-      colno: err?.colno,
+      message: err.message,
     },
   });
 };
@@ -683,11 +768,17 @@ self.onerror = function (error: any) {
 // Performance monitoring
 setInterval(() => {
   if (workerState.performanceMetrics.tasksCompleted <= 0) return;
-  const mem = (performance as any)?.memory
+  interface PerfMemory {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  }
+  const perfWithMem = performance as Performance & { memory?: PerfMemory };
+  const mem = perfWithMem.memory
     ? {
-        used: (performance as any).memory.usedJSHeapSize,
-        total: (performance as any).memory.totalJSHeapSize,
-        limit: (performance as any).memory.jsHeapSizeLimit,
+        used: perfWithMem.memory.usedJSHeapSize,
+        total: perfWithMem.memory.totalJSHeapSize,
+        limit: perfWithMem.memory.jsHeapSizeLimit,
       }
     : null;
   self.postMessage({
