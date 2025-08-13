@@ -1,7 +1,7 @@
 // NOTE: This file is the single source of truth for the web worker logic.
 // It compiles to public/worker.js via `npm run build:worker`.
 // Do not edit public/worker.js directly.
-// Logic is preserved from the original JS implementation; only types were added.
+// Logic preserved; this refactor strengthens types and applies small perf-oriented cleanups.
 
 // -----------------------------------------------------------------------------
 // Constants & Enumerations
@@ -39,18 +39,128 @@ const OUT_TYPES = {
   WORKER_LOG: "WORKER_LOG",
 } as const;
 
+// Explicit key & value type helpers (improves DX in editor hints)
+type MessageTypesMap = typeof MESSAGE_TYPES;
+type MessageTypeKey = keyof MessageTypesMap;
+type MessageType = MessageTypesMap[MessageTypeKey];
+
+type OutTypesMap = typeof OUT_TYPES;
+type OutTypeKey = keyof OutTypesMap;
+type OutType = OutTypesMap[OutTypeKey];
+
 const HEALTH_CHECK_INTERVAL_MS = 30_000; // 30s
 
-// Utility: safe string conversion & control char stripping
+// Payload Types
+
+type ID = string | number | undefined;
+
+type ProcessAnimationsPayload = {
+  elements: Array<{
+    startOffset: number;
+    endOffset: number;
+    properties: Record<string, { start: unknown; end: unknown }>;
+    // passthrough props allowed
+    [key: string]: unknown;
+  }>;
+  scrollProgress: number;
+};
+
+type OptimizeScrollPayload = {
+  scrollY: number;
+  windowHeight: number;
+  elements: Array<{
+    offsetTop: number;
+    offsetHeight: number;
+    threshold?: number;
+    [key: string]: unknown;
+  }>;
+};
+
+type PerfTimings = {
+  domContentLoadedEventEnd?: number;
+  navigationStart?: number;
+  loadEventEnd?: number;
+  [k: string]: any;
+};
+
+type PerformancePayload = {
+  navigationTiming?: PerfTimings;
+  paintTiming?: Record<string, number>;
+  resourceTiming?: Array<{ duration: number; [k: string]: any }>;
+};
+
+type TestimonialsPayload = {
+  testimonials: Array<{
+    rating: number;
+    text: string;
+    name: string;
+    company: string;
+    [k: string]: any;
+  }>;
+};
+
+type ProjectsPayload = {
+  projects: Array<{
+    title: string;
+    technologies: string[];
+    image: { width: number; height: number; [k: string]: any };
+    links: Array<{ href: string; [k: string]: any }>;
+    [k: string]: any;
+  }>;
+};
+
+type StarRatingsPayload = {
+  ratings: Array<{ rating: number; id: string | number }>;
+};
+
+type ContactValidationPayload = {
+  fields: Record<string, string>;
+};
+
+type ImagesPayload = {
+  images: Array<{ src: string; width: number; height: number; format: string; [k: string]: any }>;
+};
+
+// Central mapping of message type -> payload; keeps unions in sync automatically
+interface MessagePayloadMap {
+  [MESSAGE_TYPES.PROCESS_ANIMATIONS]: ProcessAnimationsPayload;
+  [MESSAGE_TYPES.OPTIMIZE_SCROLL_CALCULATIONS]: OptimizeScrollPayload;
+  [MESSAGE_TYPES.CALCULATE_PERFORMANCE_METRICS]: PerformancePayload;
+  [MESSAGE_TYPES.PROCESS_TESTIMONIALS]: TestimonialsPayload;
+  [MESSAGE_TYPES.OPTIMIZE_PROJECT_DATA]: ProjectsPayload;
+  [MESSAGE_TYPES.CALCULATE_STAR_RATINGS]: StarRatingsPayload;
+  [MESSAGE_TYPES.PROCESS_CONTACT_VALIDATION]: ContactValidationPayload;
+  [MESSAGE_TYPES.OPTIMIZE_IMAGES]: ImagesPayload;
+  [MESSAGE_TYPES.GET_PERFORMANCE_STATS]: undefined;
+  [MESSAGE_TYPES.CLEAR_CACHE]: undefined;
+}
+
+type InboundMessage<T extends MessageType = MessageType> = {
+  type: T;
+  data: MessagePayloadMap[T];
+  id?: ID;
+};
+
+type InboundPayloads = {
+  [K in MessageType]: InboundMessage<K>;
+}[MessageType];
+
+// Utility: fast control-char stripping via regex
 const sanitize = (input: unknown): string => {
   const raw = typeof input === "string" ? input : String(input ?? "");
-  return raw
-    .split("")
-    .filter((c) => {
-      const code = c.charCodeAt(0);
-      return !(code <= 31 || (code >= 127 && code <= 159));
-    })
-    .join("");
+  // Build regex at runtime to avoid control character parsing issues
+  const controlRanges = [
+    [0x0000, 0x001f],
+    [0x007f, 0x009f],
+  ];
+  const pattern = new RegExp(
+    controlRanges
+      .map(([a, b]) => `[#${a.toString(16)}-#${b.toString(16)}]`)
+      .join("|")
+      .replace(/#/g, "\\x"),
+    "g"
+  );
+  return raw.replace(pattern, "");
 };
 
 // Safe base64 encode (btoa can throw for unicode) – degrade gracefully.
@@ -72,8 +182,8 @@ const safeBtoa = (str: string): string => {
 // Worker state management
 const workerState: {
   isProcessing: boolean;
-  taskQueue: any[];
-  cache: Map<string, any>;
+  taskQueue: unknown[];
+  cache: Map<string, unknown>;
   performanceMetrics: {
     tasksCompleted: number;
     totalProcessingTime: number;
@@ -91,7 +201,9 @@ const workerState: {
 };
 
 // Handler map to reduce switch complexity
-const handlers: Record<string, (data: any, id: any, start?: number) => void> = {
+const handlers: {
+  [K in MessageType]: (data: MessagePayloadMap[K], id: ID, start?: number) => void;
+} = {
   [MESSAGE_TYPES.PROCESS_ANIMATIONS]: (data, id, start) =>
     postResult(OUT_TYPES.ANIMATIONS_PROCESSED, processAnimationData(data), id, start!),
   [MESSAGE_TYPES.OPTIMIZE_SCROLL_CALCULATIONS]: (data, id, start) =>
@@ -121,21 +233,25 @@ const handlers: Record<string, (data: any, id: any, start?: number) => void> = {
 };
 
 // Main message handler (single responsibility + validation)
-self.onmessage = (e: MessageEvent<any>) => {
-  const payload = e?.data || {};
-  const { type, data, id } = payload as { type?: string; data: any; id?: any };
-  if (!type) {
-    self.postMessage({ type: OUT_TYPES.ERROR, data: "Missing message type", id });
+// Type guard to validate inbound message
+function isInboundMessage(msg: any): msg is InboundPayloads {
+  return !!msg && typeof msg.type === "string" && (msg.type as string) in handlers;
+}
+
+self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) => {
+  const raw = (e?.data || {}) as Record<string, unknown>;
+  if (!isInboundMessage(raw)) {
+    self.postMessage({
+      type: OUT_TYPES.ERROR,
+      data: "Missing or unknown message type",
+      id: (raw as any)?.id,
+    });
     return;
   }
-  const handler = handlers[type];
-  if (!handler) {
-    self.postMessage({ type: OUT_TYPES.ERROR, data: `Unknown task type: ${sanitize(type)}`, id });
-    return;
-  }
+  const { type, data, id } = raw;
   const startTime = performance.now();
   try {
-    handler(data, id, startTime);
+    (handlers as any)[type](data, id, startTime);
   } catch (err: any) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
@@ -146,7 +262,7 @@ self.onmessage = (e: MessageEvent<any>) => {
 };
 
 // Helper function to post results with performance tracking
-function postResult(type: string, data: any, id: any, startTime: number) {
+function postResult(type: OutType, data: any, id: ID, startTime: number) {
   const processingTime = performance.now() - startTime;
 
   // Update performance metrics
@@ -165,7 +281,7 @@ function postResult(type: string, data: any, id: any, startTime: number) {
 }
 
 // Animation processing functions
-function processAnimationData(data: any) {
+function processAnimationData(data: ProcessAnimationsPayload) {
   const cacheKey = `animation_${JSON.stringify(data)}`;
 
   if (workerState.cache.has(cacheKey)) {
@@ -174,8 +290,8 @@ function processAnimationData(data: any) {
 
   const { elements, scrollProgress } = data;
 
-  const processed = (elements as any[]).map((element) => {
-    const { startOffset, endOffset, properties } = element as any;
+  const processed = elements.map((element) => {
+    const { startOffset, endOffset, properties } = element;
 
     // Calculate animation progress based on scroll position
     const elementProgress = Math.max(
@@ -187,9 +303,9 @@ function processAnimationData(data: any) {
     const easedProgress = easeInOutCubic(elementProgress);
 
     // Calculate property values
-    const computedProperties: Record<string, any> = {};
-    Object.entries(properties as Record<string, any>).forEach(([prop, value]) => {
-      const { start, end } = value as any;
+    const computedProperties: Record<string, unknown> = {};
+    Object.entries(properties).forEach(([prop, value]) => {
+      const { start, end } = value as { start: unknown; end: unknown };
       if (typeof start === "number" && typeof end === "number") {
         computedProperties[prop] = interpolateNumber(start, end, easedProgress);
       } else {
@@ -198,7 +314,7 @@ function processAnimationData(data: any) {
     });
 
     return {
-      ...(element as any),
+      ...element,
       progress: easedProgress,
       properties: computedProperties,
       isVisible: elementProgress > 0 && elementProgress < 1,
@@ -210,11 +326,11 @@ function processAnimationData(data: any) {
 }
 
 // Scroll calculations optimization
-function optimizeScrollCalculations(data: any) {
-  const { scrollY, windowHeight, elements } = data as any;
+function optimizeScrollCalculations(data: OptimizeScrollPayload) {
+  const { scrollY, windowHeight, elements } = data;
 
-  return (elements as any[]).map((element) => {
-    const { offsetTop, offsetHeight, threshold = 0.1 } = element as any;
+  return elements.map((element) => {
+    const { offsetTop, offsetHeight, threshold = 0.1 } = element;
 
     const elementTop = offsetTop;
     const elementBottom = offsetTop + offsetHeight;
@@ -236,7 +352,7 @@ function optimizeScrollCalculations(data: any) {
     }
 
     return {
-      ...(element as any),
+      ...element,
       isVisible: intersectionRatio > threshold,
       intersectionRatio,
       distanceFromViewport,
@@ -245,8 +361,8 @@ function optimizeScrollCalculations(data: any) {
 }
 
 // Performance metrics calculation
-function calculatePerformanceMetrics(data: any) {
-  const { navigationTiming, paintTiming, resourceTiming } = data as any;
+function calculatePerformanceMetrics(data: PerformancePayload) {
+  const { navigationTiming, paintTiming, resourceTiming } = data;
 
   const metrics: any = {
     // Core Web Vitals approximations
@@ -255,12 +371,12 @@ function calculatePerformanceMetrics(data: any) {
 
     // Navigation timing metrics
     domContentLoaded:
-      navigationTiming?.domContentLoadedEventEnd - navigationTiming?.navigationStart || 0,
-    loadComplete: navigationTiming?.loadEventEnd - navigationTiming?.navigationStart || 0,
+      (navigationTiming?.domContentLoadedEventEnd ?? 0) - (navigationTiming?.navigationStart ?? 0),
+    loadComplete: (navigationTiming?.loadEventEnd ?? 0) - (navigationTiming?.navigationStart ?? 0),
 
     // Resource loading analysis
-    totalResources: (resourceTiming as any[])?.length || 0,
-    slowResources: (resourceTiming as any[])?.filter((r: any) => r.duration > 1000).length || 0,
+    totalResources: resourceTiming?.length || 0,
+    slowResources: resourceTiming?.filter((r) => r.duration > 1000).length || 0,
 
     // Performance score estimation
     performanceScore: 0,
@@ -279,11 +395,11 @@ function calculatePerformanceMetrics(data: any) {
 }
 
 // Testimonials data processing
-function processTestimonialsData(data: any) {
-  const { testimonials } = data as any;
+function processTestimonialsData(data: TestimonialsPayload) {
+  const { testimonials } = data;
 
-  return (testimonials as any[]).map((testimonial) => {
-    const { rating, text, name, company } = testimonial as any;
+  return testimonials.map((testimonial) => {
+    const { rating, text, name, company } = testimonial;
 
     return {
       ...(testimonial as any),
@@ -300,7 +416,7 @@ function processTestimonialsData(data: any) {
         estimatedReadTime: Math.ceil((text as string).split(" ").length / 200),
       },
       // Generate company badge color
-      companyColor: generateCompanyColor(company as string),
+      companyColor: generateCompanyColor(company),
       // Pre-process for accessibility
       ariaLabel: `${rating} star rating from ${name} at ${company}`,
     };
@@ -308,16 +424,16 @@ function processTestimonialsData(data: any) {
 }
 
 // Project data optimization
-function optimizeProjectData(data: any) {
-  const { projects } = data as any;
+function optimizeProjectData(data: ProjectsPayload) {
+  const { projects } = data;
 
-  return (projects as any[]).map((project) => {
-    const { title, technologies, image, links } = project as any;
+  return projects.map((project) => {
+    const { title, technologies, image, links } = project;
 
     return {
       ...(project as any),
       // Pre-calculate technology chips
-      technologyChips: (technologies as any[]).map((tech, index) => ({
+      technologyChips: technologies.map((tech, index) => ({
         name: tech,
         color: generateTechColor(tech),
         index,
@@ -325,25 +441,25 @@ function optimizeProjectData(data: any) {
       })),
       // Optimize image data
       imageData: {
-        ...(image as any),
-        aspectRatio: (image as any).width / (image as any).height,
-        placeholder: generateImagePlaceholder(image as any),
+        ...image,
+        aspectRatio: image.width / image.height,
+        placeholder: generateImagePlaceholder(image),
       },
       // Pre-process links for security
-      secureLinks: (links as any[]).map((link) => ({
-        ...(link as any),
-        rel: (link as any).href.startsWith("http") ? "noopener noreferrer" : undefined,
-        target: (link as any).href.startsWith("http") ? "_blank" : "_self",
+      secureLinks: links.map((link) => ({
+        ...link,
+        rel: link.href.startsWith("http") ? "noopener noreferrer" : undefined,
+        target: link.href.startsWith("http") ? "_blank" : "_self",
       })),
     };
   });
 }
 
 // Star ratings calculation with memoization
-function calculateStarRatings(data: any) {
-  const { ratings } = data as any;
+function calculateStarRatings(data: StarRatingsPayload) {
+  const { ratings } = data;
 
-  return (ratings as any[]).map(({ rating, id }) => {
+  return ratings.map(({ rating, id }) => {
     const cacheKey = `stars_${id}_${rating}`;
 
     if (workerState.cache.has(cacheKey)) {
@@ -358,7 +474,7 @@ function calculateStarRatings(data: any) {
       key: `star-${id}-${index}`,
     }));
 
-    const result = { id, rating, stars };
+    const result = { id, rating, stars } as const;
     workerState.cache.set(cacheKey, result);
 
     return result;
@@ -366,8 +482,8 @@ function calculateStarRatings(data: any) {
 }
 
 // Contact form validation
-function processContactValidation(data: any) {
-  const { fields } = data as any;
+function processContactValidation(data: ContactValidationPayload) {
+  const { fields } = data;
   const validation: Record<string, { isValid: boolean; message: string }> = {};
 
   const SAFE_EMAIL_REGEX =
@@ -375,7 +491,7 @@ function processContactValidation(data: any) {
 
   const MAX_EMAIL_LENGTH = 254;
 
-  Object.entries(fields as Record<string, any>).forEach(([fieldName, value]) => {
+  Object.entries(fields).forEach(([fieldName, value]) => {
     switch (fieldName) {
       case "email": {
         const trimmed = String(value).trim();
@@ -415,27 +531,32 @@ function processContactValidation(data: any) {
 }
 
 // Image optimization calculations
-function processImageOptimization(data: any) {
-  const { images } = data as any;
+const IMAGE_OPTIMIZED_SIZES: ReadonlyArray<{ width: number; quality: number }> = [
+  { width: 640, quality: 85 },
+  { width: 768, quality: 85 },
+  { width: 1024, quality: 80 },
+  { width: 1280, quality: 80 },
+  { width: 1920, quality: 75 },
+];
 
-  return (images as any[]).map((image) => {
-    const { src, width, height, format } = image as any;
+function processImageOptimization(data: ImagesPayload) {
+  const { images } = data;
 
-    const optimizedSizes = [
-      { width: 640, quality: 85 },
-      { width: 768, quality: 85 },
-      { width: 1024, quality: 80 },
-      { width: 1280, quality: 80 },
-      { width: 1920, quality: 75 },
-    ];
+  return images.map((image) => {
+    const { src, width, height, format } = image;
+
+    const optimizedSizes = IMAGE_OPTIMIZED_SIZES;
 
     return {
-      ...(image as any),
+      ...image,
       optimizedSizes,
       estimatedSavings: calculateImageSavings(format, width, height),
       srcset: optimizedSizes
-        .filter((size) => size.width <= width)
-        .map((size) => `${src}?w=${size.width}&q=${size.quality} ${size.width}w`)
+        .filter((size: { width: number; quality: number }) => size.width <= width)
+        .map(
+          (size: { width: number; quality: number }) =>
+            `${src}?w=${size.width}&q=${size.quality} ${size.width}w`
+        )
         .join(", "),
     };
   });
@@ -475,8 +596,8 @@ function generateTechColor(tech: string) {
 }
 
 function generateImagePlaceholder(image: { width: number; height: number }) {
-  const width = Number((image as any).width) || 1;
-  const height = Number((image as any).height) || 1;
+  const width = Number(image.width) || 1;
+  const height = Number(image.height) || 1;
   const safeWidth = Math.max(1, Math.min(width, 4000));
   const safeHeight = Math.max(1, Math.min(height, 4000));
   const svgParts = [
@@ -517,7 +638,7 @@ function calculateImageSavings(format: string, width: number, height: number) {
 self.onerror = function (error: any) {
   const err = typeof error === "string" ? { message: error } : (error as any);
   self.postMessage({
-    type: "WORKER_ERROR",
+    type: OUT_TYPES.WORKER_ERROR,
     data: {
       message: err?.message,
       filename: err?.filename,
