@@ -41,12 +41,9 @@ const OUT_TYPES = {
 
 // Explicit key & value type helpers (improves DX in editor hints)
 type MessageTypesMap = typeof MESSAGE_TYPES;
-type MessageTypeKey = keyof MessageTypesMap;
-type MessageType = MessageTypesMap[MessageTypeKey];
-
+type MessageType = MessageTypesMap[keyof MessageTypesMap];
 type OutTypesMap = typeof OUT_TYPES;
-type OutTypeKey = keyof OutTypesMap;
-type OutType = OutTypesMap[OutTypeKey];
+type OutType = OutTypesMap[keyof OutTypesMap];
 
 const HEALTH_CHECK_INTERVAL_MS = 30_000; // 30s
 
@@ -211,15 +208,11 @@ const safeBtoa = (str: string): string => {
 
 // Worker state management
 interface WorkerState {
-  isProcessing: boolean;
-  taskQueue: unknown[];
   cache: Map<string, unknown>;
   performanceMetrics: PerformanceMetrics;
 }
 
 const workerState: WorkerState = {
-  isProcessing: false,
-  taskQueue: [],
   cache: new Map(),
   performanceMetrics: {
     tasksCompleted: 0,
@@ -276,10 +269,16 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
     });
     return;
   }
-  const { type, data, id } = raw;
+  const { type, id } = raw; // raw is now narrowed to InboundPayloads
   const startTime = performance.now();
   try {
-    (handlers as any)[type](data, id, startTime);
+    // Union of handler function parameter types collapses to never when indexed by a union key.
+    // Use a controlled cast here; payload already validated by isInboundMessage.
+    (handlers as Record<string, (d: unknown, id: ID, s?: number) => void>)[type](
+      (raw as any).data,
+      id,
+      startTime
+    );
   } catch (err: any) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
