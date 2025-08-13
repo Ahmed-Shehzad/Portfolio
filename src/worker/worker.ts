@@ -50,11 +50,17 @@ type OutType = OutTypesMap[OutTypeKey];
 
 const HEALTH_CHECK_INTERVAL_MS = 30_000; // 30s
 
-// Payload Types
+// Payload & Domain Interfaces
 
 type ID = string | number | undefined;
 
-type ProcessAnimationsPayload = {
+interface PerformanceMetrics {
+  tasksCompleted: number;
+  totalProcessingTime: number;
+  averageTaskTime: number;
+}
+
+interface ProcessAnimationsPayload {
   elements: Array<{
     startOffset: number;
     endOffset: number;
@@ -63,9 +69,9 @@ type ProcessAnimationsPayload = {
     [key: string]: unknown;
   }>;
   scrollProgress: number;
-};
+}
 
-type OptimizeScrollPayload = {
+interface OptimizeScrollPayload {
   scrollY: number;
   windowHeight: number;
   elements: Array<{
@@ -74,22 +80,22 @@ type OptimizeScrollPayload = {
     threshold?: number;
     [key: string]: unknown;
   }>;
-};
+}
 
-type PerfTimings = {
+interface PerfTimings {
   domContentLoadedEventEnd?: number;
   navigationStart?: number;
   loadEventEnd?: number;
   [k: string]: any;
-};
+}
 
-type PerformancePayload = {
+interface PerformancePayload {
   navigationTiming?: PerfTimings;
   paintTiming?: Record<string, number>;
   resourceTiming?: Array<{ duration: number; [k: string]: any }>;
-};
+}
 
-type TestimonialsPayload = {
+interface TestimonialsPayload {
   testimonials: Array<{
     rating: number;
     text: string;
@@ -97,9 +103,9 @@ type TestimonialsPayload = {
     company: string;
     [k: string]: any;
   }>;
-};
+}
 
-type ProjectsPayload = {
+interface ProjectsPayload {
   projects: Array<{
     title: string;
     technologies: string[];
@@ -107,19 +113,43 @@ type ProjectsPayload = {
     links: Array<{ href: string; [k: string]: any }>;
     [k: string]: any;
   }>;
-};
+}
 
-type StarRatingsPayload = {
+interface StarRatingsPayload {
   ratings: Array<{ rating: number; id: string | number }>;
-};
+}
 
-type ContactValidationPayload = {
+interface ContactValidationPayload {
   fields: Record<string, string>;
-};
+}
 
-type ImagesPayload = {
+interface ImagesPayload {
   images: Array<{ src: string; width: number; height: number; format: string; [k: string]: any }>;
-};
+}
+
+// Outgoing message payloads (result data shapes kept broad for flexibility)
+interface OutgoingMessageMap {
+  [OUT_TYPES.ANIMATIONS_PROCESSED]: ReturnType<typeof processAnimationData>;
+  [OUT_TYPES.SCROLL_OPTIMIZED]: ReturnType<typeof optimizeScrollCalculations>;
+  [OUT_TYPES.METRICS_CALCULATED]: ReturnType<typeof calculatePerformanceMetrics>;
+  [OUT_TYPES.TESTIMONIALS_PROCESSED]: ReturnType<typeof processTestimonialsData>;
+  [OUT_TYPES.PROJECTS_OPTIMIZED]: ReturnType<typeof optimizeProjectData>;
+  [OUT_TYPES.STAR_RATINGS_CALCULATED]: ReturnType<typeof calculateStarRatings>;
+  [OUT_TYPES.CONTACT_VALIDATED]: ReturnType<typeof processContactValidation>;
+  [OUT_TYPES.IMAGES_OPTIMIZED]: ReturnType<typeof processImageOptimization>;
+  [OUT_TYPES.PERFORMANCE_STATS]: PerformanceMetrics;
+  [OUT_TYPES.CACHE_CLEARED]: boolean;
+  [OUT_TYPES.ERROR]: string;
+  [OUT_TYPES.WORKER_ERROR]: {
+    message?: string;
+    filename?: string;
+    lineno?: number;
+    colno?: number;
+  };
+  [OUT_TYPES.WORKER_HEALTH_CHECK]: PerformanceMetrics & { cacheSize: number; memoryUsage: any };
+  [OUT_TYPES.WORKER_READY]: boolean;
+  [OUT_TYPES.WORKER_LOG]: string;
+}
 
 // Central mapping of message type -> payload; keeps unions in sync automatically
 interface MessagePayloadMap {
@@ -180,16 +210,14 @@ const safeBtoa = (str: string): string => {
 };
 
 // Worker state management
-const workerState: {
+interface WorkerState {
   isProcessing: boolean;
   taskQueue: unknown[];
   cache: Map<string, unknown>;
-  performanceMetrics: {
-    tasksCompleted: number;
-    totalProcessingTime: number;
-    averageTaskTime: number;
-  };
-} = {
+  performanceMetrics: PerformanceMetrics;
+}
+
+const workerState: WorkerState = {
   isProcessing: false,
   taskQueue: [],
   cache: new Map(),
@@ -262,7 +290,12 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
 };
 
 // Helper function to post results with performance tracking
-function postResult(type: OutType, data: any, id: ID, startTime: number) {
+function postResult<T extends OutType>(
+  type: T,
+  data: OutgoingMessageMap[T],
+  id: ID,
+  startTime: number
+) {
   const processingTime = performance.now() - startTime;
 
   // Update performance metrics
