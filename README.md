@@ -1,60 +1,69 @@
-# Muhammad Ahmed Shehzad – Portfolio
+# Muhammad Ahmed Shehzad – Backend Developer Portfolio
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Ahmed-Shehzad_Portfolio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Ahmed-Shehzad_Portfolio)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Ahmed-Shehzad_Portfolio&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Ahmed-Shehzad_Portfolio)
 
-Modern, production-ready personal portfolio built with **Next.js 15 (App Router)**, **React 19**, **TypeScript (strict)**, and **Tailwind CSS v4** – optimized for static export on GitHub Pages with clean architecture, smooth marquee animations, accessibility considerations, and automated CI/CD + security audits.
+Modern, production-ready portfolio showcasing **Backend Development expertise** with **C#, .NET, TypeScript**, and **full-stack capabilities**. Built with **Next.js 15 (App Router)**, **React 19**, **TypeScript (strict)**, and **Tailwind CSS v4** – optimized for static export on GitHub Pages with clean architecture, smooth animations, AI-assisted development approach, and comprehensive CI/CD.
 
 ## ✨ Features
 
-### 🛠️ Developer Experience
+### 🛠️ Developer Experience & Technical Approach
 
-- **Strict TypeScript** + modern React patterns
-- **Flat ESLint config** (eslint v9) + Prettier (Tailwind plugin)
-- **Husky + lint-staged** quality gates
-- **Workspace setup**: `.vscode` tasks, launch + multi-root workspace file
-- **GitHub Actions**: build, quality, performance, security audits
+- **Backend-First Architecture**: Strict TypeScript with scalable server-side patterns
+- **AI-Assisted Development**: Strategic pair programming with AI for enhanced productivity and code quality
+- **Quality Gates**: Flat ESLint config (eslint v9), Prettier, Husky + lint-staged automation
+- **Professional Workspace**: `.vscode` tasks, launch configurations + multi-root workspace setup
+- **CI/CD Pipeline**: GitHub Actions for build validation, quality assurance, performance monitoring, and security audits
 
-### Design & UX
+### Design & User Experience
 
-- **Modern Design**: Clean, professional design with beautiful animations
-- **Fully Responsive**: Optimized for all device sizes and screen resolutions
-- **Interactive Animations**: Smooth CSS animations and micro-interactions
-- **Scroll Animations**: Subtle fade-in, slide-in, and scale-in animations on scroll
-- **Smooth Navigation**: Seamless scrolling between sections with active state tracking
+- **Professional Portfolio Design**: Clean, modern interface showcasing backend development expertise
+- **Responsive Excellence**: Optimized across all devices with progressive enhancement approach
+- **Smooth Interactions**: CSS animations and micro-interactions enhancing user engagement
+- **Scroll-Driven Animations**: Subtle fade-in, slide-in, and scale-in effects on content reveal
+- **Intuitive Navigation**: Seamless section transitions with active state indicators
 
-### ⚡ Performance & Optimization
+### ⚡ Performance & Technical Excellence
 
-- **Next.js 15**: Latest features including App Router and React 19 integration
-- **Web Workers**: Main-thread work reduction for better performance
-- **Static Export**: Lightning-fast loading with pre-rendered pages
-- **Bundle Optimization**: Optimized JavaScript bundles (28.8kB main route)
-- **SEO Friendly**: Comprehensive metadata, structured data, and Open Graph tags
-- **Image Optimization**: Responsive images with proper loading strategies
+- **Next.js 15 + React 19**: Cutting-edge frontend architecture with App Router
+- **Web Workers**: Background processing for optimal main-thread performance
+- **Static Export Strategy**: Pre-rendered pages for lightning-fast loading
+- **Bundle Optimization**: Efficient JavaScript delivery (28.8kB main route)
+- **SEO & Discoverability**: Comprehensive metadata, structured data, Open Graph integration
+- **Image Optimization**: Responsive asset delivery with modern loading strategies
 
-### 🛡️ Reliability & Error Handling
+### 🛡️ Reliability & Professional Standards
 
-- **Type Safe**: Full TypeScript implementation with strict type checking
-- **Root Error Boundary**: Global boundary via `ErrorBoundary` wrapper (route-level error files not yet added)
-- **Graceful Degradation**: Fallback UI + retry logic
-- **Development Debugging**: Detailed error reporting in development mode
+- **Type-Safe Development**: Full TypeScript implementation with strict checking
+- **Error Boundary System**: Global error handling via `ErrorBoundary` wrapper
+- **Graceful Degradation**: Robust fallback UI with retry mechanisms
+- **Development Excellence**: Comprehensive error reporting and debugging tools
 
-### 🌟 Web Worker Integration
+### 🌟 Advanced Web Worker Implementation
 
-- **Performance Offloading**: Moves animation & data prep logic off main thread
-- **Custom Hooks**: `useWebWorker` core + task‑specific helpers (animations, testimonials, projects, stars, contact validation, performance)
-- **Extensible Tasks**: Add new task types in `public/worker.js`
-- **Stats & Health**: Periodic performance metrics and cache controls
+- **Background Processing**: Animation calculations and data preparation off main thread
+- **Custom Hook System**: `useWebWorker` core with specialized task helpers
+- **Extensible Architecture**: Modular task system in `public/worker.js`
+- **Performance Monitoring**: Continuous metrics collection and cache optimization
 
-> Performance mindset baked in: background processing with Workers, optimized font loading, minimal layout shifts, and continuous marquee animations without seams.
+> **Backend Developer Mindset**: Performance-first architecture with background processing, optimized resource loading, minimal layout shifts, and seamless user experiences – reflecting server-side optimization principles applied to frontend development.
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Backend Focus
 
-### Frontend
+### Core Technologies (Backend Expertise)
+
+- **Primary Languages**: C#, TypeScript, JavaScript
+- **Backend Frameworks**: .NET Core/5+, ASP.NET Core, Entity Framework
+- **Database Technologies**: SQL Server, PostgreSQL, MongoDB
+- **API Development**: RESTful APIs, GraphQL (beginner level)
+- **Cloud Platforms**: AWS (beginner level)
+- **Development Approach**: AI-assisted programming with strategic pair programming
+
+### Frontend Technologies (Full-Stack Development)
 
 - **Framework**: Next.js 15 (App Router, Static Export)
 - **Language**: TypeScript 5.8+ (Strict mode)
-- **Styling**: Tailwind CSS v4 (Latest features)
+- **Styling**: Tailwind CSS v4, React ecosystem
 - **UI Components**: Custom React components with FC typing
 - **Performance**: Web Workers for background processing
 - **Icons**: Custom SVG icons optimized with SVGR

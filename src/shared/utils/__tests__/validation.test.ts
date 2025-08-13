@@ -7,7 +7,7 @@ describe("validateEmail", () => {
     expect(isValid).toBe(true);
   });
   it("rejects overly long local part", () => {
-    const longLocal = "a".repeat(70) + "@example.com";
+    const longLocal = `${"a".repeat(70)}@example.com`;
     const { isValid } = validateEmail(longLocal);
     expect(isValid).toBe(false);
   });

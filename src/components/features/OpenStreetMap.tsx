@@ -19,7 +19,8 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
   useEffect(() => {
     try {
       // Fix for default markers in react-leaflet
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      const iconDefault = L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown };
+      delete iconDefault._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
         iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
@@ -114,8 +115,8 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
         center={center}
         zoom={zoom}
         className={className}
-        scrollWheelZoom={true}
-        zoomControl={true}
+        scrollWheelZoom
+        zoomControl
         attributionControl={false}
         style={{ height: "100%", width: "100%" }}
         zoomSnap={0.5}

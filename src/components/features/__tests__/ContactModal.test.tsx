@@ -53,7 +53,10 @@ describe("ContactModal", () => {
     const onClose = vi.fn();
     render(<ContactModal isOpen onClose={onClose} />);
     const cancels = screen.getAllByRole("button", { name: /Cancel/i });
-    fireEvent.click(cancels[cancels.length - 1]);
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    const lastCancel = cancels[cancels.length - 1];
+    if (lastCancel) {
+      fireEvent.click(lastCancel);
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+    }
   });
 });

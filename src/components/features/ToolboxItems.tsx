@@ -3,13 +3,9 @@
 import { TechIcon } from "@/components/ui";
 import React, { FC, Fragment } from "react";
 import { twMerge } from "tailwind-merge";
+import type { ToolboxItem } from "@/shared/types";
 
-type ToolboxItem = {
-  title: string;
-  iconType: React.ElementType;
-};
-
-type ToolboxItemsProps = {
+export type ToolboxItemsProps = {
   items: ToolboxItem[];
   className?: string;
   itemsWrapperClassName?: string;

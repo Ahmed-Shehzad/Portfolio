@@ -58,7 +58,13 @@ const sanitize = (input) => {
   ];
   const pattern = new RegExp(
     controlRanges
-      .map(([a, b]) => `[#${a.toString(16)}-#${b.toString(16)}]`)
+      .map(([a, b]) => {
+        if (a !== undefined && b !== undefined) {
+          return `[#${a.toString(16)}-#${b.toString(16)}]`;
+        }
+        return "";
+      })
+      .filter(Boolean)
       .join("|")
       .replace(/#/g, "\\x"),
     "g"
@@ -139,7 +145,10 @@ self.onmessage = (e) => {
   try {
     // Union of handler function parameter types collapses to never when indexed by a union key.
     // Use a controlled cast here; payload already validated by isInboundMessage.
-    handlers[type](raw.data, id, startTime);
+    const handler = handlers[type];
+    if (handler) {
+      handler(raw.data, id, startTime);
+    }
   } catch (err) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
@@ -310,6 +319,7 @@ function processTestimonialsData(data) {
     });
   });
 }
+// Project data optimization
 function optimizeProjectData(data) {
   const { projects } = data;
   return projects.map((project) => {

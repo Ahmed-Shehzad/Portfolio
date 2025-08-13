@@ -19,7 +19,10 @@ describe("OptimizedImage error path", () => {
         height={100}
       />
     );
-    const img = container.querySelector("img")!;
+    const img = container.querySelector("img");
+    if (!img) {
+      throw new Error("Image element not found in DOM");
+    }
     fireEvent.error(img);
     expect(img).toBeTruthy();
   });

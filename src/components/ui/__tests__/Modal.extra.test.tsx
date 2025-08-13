@@ -7,7 +7,7 @@ describe("Modal extra branches", () => {
   it("closes on Escape key", () => {
     const onClose = vi.fn();
     render(
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen onClose={onClose}>
         <div>Content</div>
       </Modal>
     );

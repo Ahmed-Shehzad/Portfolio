@@ -41,7 +41,7 @@ export const ContactSection = () => {
               style={{
                 backgroundImage: `url(${GrainImage.src})`,
               }}
-            ></div>
+            />
             <div className="flex flex-col items-center gap-8 md:flex-row md:gap-16">
               <div>
                 <h2 className="font-serif text-2xl md:text-3xl">

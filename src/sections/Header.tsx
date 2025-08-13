@@ -47,6 +47,11 @@ const headerOptions: HeaderOption[] = [
     href: "#contact",
     id: "contact",
   },
+  {
+    title: "Resume",
+    href: "/resume.pdf",
+    id: "resume",
+  },
 ];
 
 /**
@@ -55,9 +60,25 @@ const headerOptions: HeaderOption[] = [
  */
 const NavigationItem: FC<NavigationItemProps> = (props) => {
   const { option, isActive, onClick } = props;
+  const isResume = option.id === "resume";
   const className = `nav-item ${
-    isActive ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900" : ""
+    isActive && !isResume ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900" : ""
   }`;
+
+  if (isResume) {
+    return (
+      <a
+        className={className}
+        href={option.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Download Resume as PDF"
+        download
+      >
+        {option.title}
+      </a>
+    );
+  }
 
   return (
     <a
@@ -94,7 +115,9 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
  * - aria-current for active link; semantic nav landmark with role + label.
  */
 export const Header = () => {
-  const [activeOption, setActiveOption] = useState<HeaderOption>(headerOptions[0]);
+  const [activeOption, setActiveOption] = useState<HeaderOption>(
+    headerOptions[0] ?? { id: "about", title: "About", href: "#about" }
+  );
   const [sectionElements, setSectionElements] = useState<SectionElement[]>([]);
 
   // Initialize section elements after component mounts (client-side only)
@@ -147,7 +170,7 @@ export const Header = () => {
       // Find active section using cached offsetTop values
       for (let i = sectionElements.length - 1; i >= 0; i--) {
         const section = sectionElements[i];
-        if (scrollPosition >= section.offsetTop) {
+        if (section && scrollPosition >= section.offsetTop) {
           const matchingOption = headerOptions.find((option) => option.id === section.id);
           if (matchingOption) {
             currentSection = matchingOption;
@@ -157,8 +180,10 @@ export const Header = () => {
       }
     }
 
-    updateURL(currentSection);
-    setActiveOption(currentSection);
+    if (currentSection) {
+      updateURL(currentSection);
+      setActiveOption(currentSection);
+    }
   }, [sectionElements, contactSection, updateURL]);
 
   // Throttled scroll handler

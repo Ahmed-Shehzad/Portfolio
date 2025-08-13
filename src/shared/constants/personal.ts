@@ -11,6 +11,10 @@ export const HOBBIES: Hobby[] = [
     emoji: "✍️",
   },
   {
+    title: "AI Pair Programming",
+    emoji: "🤖",
+  },
+  {
     title: "Hiking",
     emoji: "🥾",
   },

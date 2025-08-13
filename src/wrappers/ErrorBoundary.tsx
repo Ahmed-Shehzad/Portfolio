@@ -1,29 +1,33 @@
 "use client";
 
 import { Component, ErrorInfo, ReactNode } from "react";
+import type { BaseComponentProps } from "@/shared/types";
 
-interface IProps {
+interface ErrorBoundaryProps extends BaseComponentProps {
   children: ReactNode;
   fallback?: ReactNode;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
-interface IState {
+interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
-  errorInfo?: ErrorInfo;
+  error?: Error | undefined;
+  errorInfo?: ErrorInfo | undefined;
 }
 
 /**
  * ErrorBoundary component that catches JavaScript errors anywhere in the child component tree,
  * logs those errors, and displays a fallback UI instead of the component tree that crashed.
+ *
+ * Enhanced with bulletproof architecture patterns for better error handling.
  */
-export class ErrorBoundary extends Component<IProps, IState> {
-  constructor(props: IProps) {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): IState {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     // Update state so the next render will show the fallback UI
     return { hasError: true, error };
   }
@@ -47,9 +51,9 @@ export class ErrorBoundary extends Component<IProps, IState> {
   };
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    const safeErrorMessage = this.sanitizeLog(error.message || "Unknown error");
-    const safeErrorStack = this.sanitizeLog(error.stack || "");
-    const safeComponentStack = this.sanitizeLog(errorInfo.componentStack || "");
+    const safeErrorMessage = this.sanitizeLog(error.message ?? "Unknown error");
+    const safeErrorStack = this.sanitizeLog(error.stack ?? "");
+    const safeComponentStack = this.sanitizeLog(errorInfo.componentStack ?? "");
 
     // Log the sanitized error to console or error reporting service
     console.error("ErrorBoundary caught an error:", safeErrorMessage);
@@ -61,12 +65,22 @@ export class ErrorBoundary extends Component<IProps, IState> {
       errorInfo,
     });
 
-    // You can also log the error to an error reporting service here
+    // Call onError callback if provided
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
+
+    // In production, you would log to an error reporting service here
     // Example: logErrorToService({ message: safeErrorMessage, stack: safeErrorStack }, { componentStack: safeComponentStack });
   }
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
+    // Reset to initial state - now we can explicitly set undefined
+    this.setState({
+      hasError: false,
+      error: undefined,
+      errorInfo: undefined,
+    });
   };
 
   render() {

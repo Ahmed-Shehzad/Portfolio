@@ -7,7 +7,7 @@ describe("Modal", () => {
   it("renders children when open and closes on backdrop click", () => {
     const onClose = vi.fn();
     render(
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen onClose={onClose}>
         <div>Modal Content</div>
       </Modal>
     );

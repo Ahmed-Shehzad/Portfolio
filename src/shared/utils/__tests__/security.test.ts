@@ -9,7 +9,7 @@ describe("email validation constants", () => {
     expect(SAFE_EMAIL_REGEX.test("user@example.com")).toBe(true);
   });
   it("rejects overly long email", () => {
-    const longLocal = "a".repeat(MAX_EMAIL_LENGTH) + "@x.io";
+    const longLocal = `${"a".repeat(MAX_EMAIL_LENGTH)}@x.io`;
     expect(longLocal.length).toBeGreaterThan(MAX_EMAIL_LENGTH); // sanity
   });
   it("rejects invalid format", () => {
@@ -25,6 +25,7 @@ describe("security utils", () => {
   it("blocks javascript protocol", () => {
     // Build the dangerous URI in parts to avoid static analyzers flagging the literal.
     // The NOSONAR comment suppresses any remaining rule (this is an intentional security test case).
+    // eslint-disable-next-line no-script-url
     const dangerous = "javascript:" + "alert('xss')"; // NOSONAR - intentional test vector
     const result = sanitizeImageSrc(dangerous);
     expect(result).toBeNull();

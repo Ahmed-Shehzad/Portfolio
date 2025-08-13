@@ -1,3 +1,5 @@
+"use client";
+
 import { Header, HeroSection } from "@/sections";
 import dynamic from "next/dynamic";
 import { FC } from "react";
@@ -7,7 +9,7 @@ const ProjectsSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.ProjectsSection })),
   {
     loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
-    ssr: true,
+    ssr: false, // Uses React Query - client-side only
   }
 );
 

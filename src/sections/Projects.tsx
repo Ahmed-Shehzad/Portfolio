@@ -1,82 +1,10 @@
+"use client";
+
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import CheckCircleIcon from "@/assets/icons/check-circle.svg";
-import ExtraleichtPage from "@/assets/images/extraleicht.png";
-import SustaynPage from "@/assets/images/sustayn.png";
-import PlegehilfePage from "@/assets/images/verbund-pflegehilfe.png";
-import Football365ScoresPage from "@/assets/images/365-scores.png";
 import { Card, OptimizedImage, SectionHeader } from "@/components/ui";
+import { usePortfolioProjects } from "@/features/portfolio/hooks";
 import { ScrollAnimationWrapper } from "@/wrappers";
-
-const portfolioProjects = [
-  {
-    company: "Verbund Pflegehilfe",
-    year: "2008",
-    title: "Free Care Advice & Provider Matching Service",
-    results: [
-      { title: "Free personalized care consultation" },
-      { title: "Matching with local care providers" },
-      { title: "Support for obtaining care aids" },
-      { title: "Guidance on subsidies & financing" },
-      { title: "Advice on barrier-free home solutions" },
-    ],
-    link: "https://www.pflegehilfe.org",
-    image: PlegehilfePage,
-    // Actual image dimensions: 1629 x 1032, aspect ratio: ~1.58
-    imageWidth: 1629,
-    imageHeight: 1032,
-  },
-  {
-    company: "Sustayn GmbH",
-    year: "2021",
-    title: "Employee Engagement Platform for Sustainability",
-    results: [
-      { title: "Gamified sustainability engagement" },
-      { title: "Microlearning & knowledge sharing" },
-      { title: "Challenges, events & rewards" },
-      { title: "Idea management & co-determination" },
-      { title: "Integration with intranet & apps" },
-    ],
-    link: "https://app.sustayn.de",
-    image: SustaynPage,
-    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
-    imageWidth: 800,
-    imageHeight: 507,
-  },
-  {
-    company: "Extraleicht GmbH & Co. KG",
-    year: "2012",
-    title: "Extraleicht",
-    results: [
-      { title: "Heating oil price calculator" },
-      { title: "Online heating oil ordering" },
-      { title: "Tank service solutions" },
-      { title: "Lubricants & operating supplies" },
-      { title: "Customer service & contact" },
-    ],
-    link: "https://extraleicht.com",
-    image: ExtraleichtPage,
-    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
-    imageWidth: 800,
-    imageHeight: 507,
-  },
-  {
-    company: "365Scores",
-    year: "2012",
-    title: "365Scores – Real-Time Sports Scores & Personalized Updates",
-    results: [
-      { title: "Live scores and real-time sports updates" },
-      { title: "Personalized feeds for teams, leagues, and players" },
-      { title: "Comprehensive coverage of multiple sports" },
-      { title: "Sports betting insights and information" },
-      { title: "Publisher tools for live score integration and monetization" },
-    ],
-    link: "https://www.365scores.com",
-    image: Football365ScoresPage,
-    // Actual image dimensions: 800 x 507, aspect ratio: ~1.58
-    imageWidth: 1629,
-    imageHeight: 1032,
-  },
-];
 
 /**
  * ProjectsSection
@@ -88,15 +16,62 @@ const portfolioProjects = [
  * - Incremental sticky offset (index-based) yields layered scroll illusion.
  * - Staggered reveal (ScrollAnimationWrapper) enhances perceived performance.
  * - Only the first image uses priority to conserve bandwidth.
+ * - Uses React Query for data fetching with proper loading and error states.
  *
  * Performance:
- * - Static dataset colocated for simplicity / future extraction.
+ * - React Query handles caching and background updates.
  * - OptimizedImage manages quality and optional blur placeholder.
  *
  * Accessibility:
  * - Semantic list structure for result bullets; external links secured with rel attributes.
  */
 export const ProjectsSection = () => {
+  const { data: portfolioProjects, isLoading, isError } = usePortfolioProjects();
+
+  if (isLoading) {
+    return (
+      <section id="projects" className="pb-16 md:px-24 lg:py-24">
+        <div className="container">
+          <ScrollAnimationWrapper animation="fadeInUp">
+            <SectionHeader
+              eyebrow="Real World Results"
+              title="Featured Projects"
+              description="Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications."
+            />
+          </ScrollAnimationWrapper>
+          <div className="mt-10 flex items-center justify-center md:mt-20">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-emerald-300 border-r-transparent" />
+              <p className="mt-4 text-white/60">Loading projects...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !portfolioProjects) {
+    return (
+      <section id="projects" className="pb-16 md:px-24 lg:py-24">
+        <div className="container">
+          <ScrollAnimationWrapper animation="fadeInUp">
+            <SectionHeader
+              eyebrow="Real World Results"
+              title="Featured Projects"
+              description="Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications."
+            />
+          </ScrollAnimationWrapper>
+          <div className="mt-10 flex items-center justify-center md:mt-20">
+            <div className="text-center">
+              <p className="text-red-400">Failed to load projects</p>
+              <p className="mt-2 text-white/60">Please try refreshing the page</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="projects" className="pb-16 md:px-24 lg:py-24">
       <div className="container">

@@ -15,13 +15,12 @@ This document lays out the target "bulletproof" structure for the codebase.
 src/
   app/                # Next.js App Router: routes, layouts
   components/         # Reusable presentational components (cross-domain)
-  config/             # Runtime/env config (validated)
-  features/           # Vertical domain slices (testimonials, projects, ...)
+  features/           # Vertical domain slices (projects, testimonials)
   hooks/              # Cross-cutting hooks
   lib/                # Low-level pure helpers / adapters
   sections/           # Page section composition components
   shared/             # constants / types / utils shared widely
-  worker/             # Worker implementation (monolith -> planned split)
+  worker/             # Worker implementation (consolidated)
   wrappers/           # Error boundaries & context wrappers
   test/               # Global test setup
 ```
@@ -38,7 +37,7 @@ selectors.ts    # (planned) memoized derivations
 index.ts        # (future) barrel
 ```
 
-Current initialised: testimonials, projects, contact, performance (types only).
+Current initialised: projects, testimonials (cleaned up unused contact, performance types).
 
 ## Worker Modularization Plan
 
@@ -54,7 +53,8 @@ Earlier attempt failed due to keeping original definitions plus partial duplicat
 
 ## Env Handling
 
-`src/config/env.ts` centralizes reading & (later) validation. Use a schema library (e.g. Zod) when real env vars arrive.
+Removed unused `src/config/env.ts` - currently no environment variables required.
+Add back when needed with proper validation (e.g. Zod).
 
 ## Future Enhancements
 

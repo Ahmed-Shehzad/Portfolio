@@ -231,7 +231,13 @@ const sanitize = (input: unknown): string => {
   ];
   const pattern = new RegExp(
     controlRanges
-      .map(([a, b]) => `[#${a.toString(16)}-#${b.toString(16)}]`)
+      .map(([a, b]) => {
+        if (a !== undefined && b !== undefined) {
+          return `[#${a.toString(16)}-#${b.toString(16)}]`;
+        }
+        return "";
+      })
+      .filter(Boolean)
       .join("|")
       .replace(/#/g, "\\x"),
     "g"
@@ -325,11 +331,10 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
   try {
     // Union of handler function parameter types collapses to never when indexed by a union key.
     // Use a controlled cast here; payload already validated by isInboundMessage.
-    (handlers as Record<string, (d: unknown, id: ID, s: number) => void>)[type](
-      raw.data,
-      id,
-      startTime
-    );
+    const handler = (handlers as Record<string, (d: unknown, id: ID, s: number) => void>)[type];
+    if (handler) {
+      handler(raw.data, id, startTime);
+    }
   } catch (err) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
@@ -526,20 +531,10 @@ function processTestimonialsData(data: TestimonialsPayload): ProcessedTestimonia
 }
 
 // Project data optimization
-interface OptimizedProject {
-  title: string;
-  technologies: string[];
-  image: { width: number; height: number; [k: string]: unknown };
-  links: Array<{ href: string; rel?: string; target: string }>;
-  technologyChips: Array<{ name: string; color: string; index: number; key: string }>;
-  imageData: { width: number; height: number; aspectRatio: number; placeholder: string };
-  secureLinks: Array<{ href: string; rel?: string; target: string }>;
-  [k: string]: unknown;
-}
-function optimizeProjectData(data: ProjectsPayload): OptimizedProject[] {
+function optimizeProjectData(data: ProjectsPayload) {
   const { projects } = data;
 
-  return projects.map((project): OptimizedProject => {
+  return projects.map((project) => {
     const { title, technologies, image, links } = project;
 
     const technologyChips = technologies.map((tech, index) => ({
@@ -556,7 +551,7 @@ function optimizeProjectData(data: ProjectsPayload): OptimizedProject[] {
       placeholder: generateImagePlaceholder(image),
     };
 
-    const secureLinks: OptimizedProject["secureLinks"] = links.map((link) => ({
+    const secureLinks = links.map((link) => ({
       href: link.href,
       rel: link.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
       target: link.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",

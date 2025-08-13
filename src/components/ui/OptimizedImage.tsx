@@ -20,16 +20,32 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [imageError, setImageError] = useState(false);
 
   // Extract src string from either string or import object
-  const srcString = typeof src === "string" ? src : (src as any)?.src || src;
-  const webpString = typeof webpSrc === "string" ? webpSrc : (webpSrc as any)?.src;
-  const avifString = typeof avifSrc === "string" ? avifSrc : (avifSrc as any)?.src;
-  let finalFallbackSrc;
-  if (fallbackSrc) {
-    finalFallbackSrc = typeof fallbackSrc === "string" ? fallbackSrc : (fallbackSrc as any)?.src;
-  } else {
-    finalFallbackSrc = srcString;
-  }
+  const extractSrc = (source: unknown): string => {
+    if (typeof source === "string") {
+      return source;
+    }
+    if (source && typeof source === "object" && "src" in source) {
+      const srcValue = (source as { src: unknown }).src;
+      return typeof srcValue === "string" ? srcValue : String(srcValue);
+    }
+    if (source && typeof source === "object" && "default" in source) {
+      const defaultValue = (source as { default: unknown }).default;
+      if (typeof defaultValue === "string") {
+        return defaultValue;
+      }
+      if (defaultValue && typeof defaultValue === "object" && "src" in defaultValue) {
+        const srcValue = (defaultValue as { src: unknown }).src;
+        return typeof srcValue === "string" ? srcValue : String(srcValue);
+      }
+    }
+    // Fallback for any other structure
+    return String(source);
+  };
 
+  const srcString = extractSrc(src);
+  const webpString = webpSrc ? extractSrc(webpSrc) : undefined;
+  const avifString = avifSrc ? extractSrc(avifSrc) : undefined;
+  const finalFallbackSrc = fallbackSrc ? extractSrc(fallbackSrc) : srcString;
   const handleImageError = () => {
     setImageError(true);
   };
