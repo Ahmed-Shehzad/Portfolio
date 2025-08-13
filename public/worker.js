@@ -1,12 +1,8 @@
 "use strict";
-// NOTE: This file is the single source of truth for the web worker logic.
+// NOTE: This file is the single source of truth for the web worker logic. (Consolidated: previous partial files worker.constants.ts / worker.types.ts removed to prevent duplicate global declarations.)
 // It compiles to public/worker.js via `npm run build:worker`.
 // Do not edit public/worker.js directly.
-// Logic is preserved from the original JS implementation; only types were added.
-// -----------------------------------------------------------------------------
-// Constants & Enumerations
-// -----------------------------------------------------------------------------
-// Note: no module exports to allow compilation as a classic worker script
+// Logic preserved; this refactor strengthens types and applies small perf-oriented cleanups.
 const MESSAGE_TYPES = {
   PROCESS_ANIMATIONS: "PROCESS_ANIMATIONS",
   OPTIMIZE_SCROLL_CALCULATIONS: "OPTIMIZE_SCROLL_CALCULATIONS",
@@ -37,17 +33,37 @@ const OUT_TYPES = {
   WORKER_LOG: "WORKER_LOG",
 };
 const HEALTH_CHECK_INTERVAL_MS = 30000; // 30s
-// Utility: safe string conversion & control char stripping
+// Centralized constants (eliminate magic numbers for maintainability / Sonar)
+const EASING_THRESHOLD = 0.5;
+const EASING_IN_COEFF = 4;
+const EASING_OUT_BASE = 2;
+const EASING_OUT_EXP = 3;
+const STAR_DISPLAY_COUNT = 5;
+const PERF_FCP_LIMIT = 1800;
+const PERF_LCP_LIMIT = 2500;
+const PERF_DCL_LIMIT = 1500;
+const SLOW_RESOURCE_LIMIT = 1000;
+const DEFAULT_VISIBILITY_THRESHOLD = 0.1;
+const HTTP_PREFIX = "http";
+const EMAIL_MAX_LEN = 254;
+const READING_WPM = 200; // average reading speed words/minute
+// Utility: fast control-char stripping via regex
 const sanitize = (input) => {
   const raw =
     typeof input === "string" ? input : String(input !== null && input !== void 0 ? input : "");
-  return raw
-    .split("")
-    .filter((c) => {
-      const code = c.charCodeAt(0);
-      return !(code <= 31 || (code >= 127 && code <= 159));
-    })
-    .join("");
+  // Build regex at runtime to avoid control character parsing issues
+  const controlRanges = [
+    [0x0000, 0x001f],
+    [0x007f, 0x009f],
+  ];
+  const pattern = new RegExp(
+    controlRanges
+      .map(([a, b]) => `[#${a.toString(16)}-#${b.toString(16)}]`)
+      .join("|")
+      .replace(/#/g, "\\x"),
+    "g"
+  );
+  return raw.replace(pattern, "");
 };
 // Safe base64 encode (btoa can throw for unicode) – degrade gracefully.
 const safeBtoa = (str) => {
@@ -64,10 +80,7 @@ const safeBtoa = (str) => {
     }
   }
 };
-// Worker state management
 const workerState = {
-  isProcessing: false,
-  taskQueue: [],
   cache: new Map(),
   performanceMetrics: {
     tasksCompleted: 0,
@@ -105,25 +118,32 @@ const handlers = {
   },
 };
 // Main message handler (single responsibility + validation)
+// Type guard to validate inbound message
+function isInboundMessage(msg) {
+  if (!msg || typeof msg !== "object") return false;
+  const t = msg.type;
+  return typeof t === "string" && t in handlers;
+}
 self.onmessage = (e) => {
-  const payload = (e === null || e === void 0 ? void 0 : e.data) || {};
-  const { type, data, id } = payload;
-  if (!type) {
-    self.postMessage({ type: OUT_TYPES.ERROR, data: "Missing message type", id });
+  const raw = (e === null || e === void 0 ? void 0 : e.data) || {};
+  if (!isInboundMessage(raw)) {
+    self.postMessage({
+      type: OUT_TYPES.ERROR,
+      data: "Missing or unknown message type",
+      id: raw.id,
+    });
     return;
   }
-  const handler = handlers[type];
-  if (!handler) {
-    self.postMessage({ type: OUT_TYPES.ERROR, data: `Unknown task type: ${sanitize(type)}`, id });
-    return;
-  }
+  const { type, id } = raw; // raw is now narrowed to InboundPayloads
   const startTime = performance.now();
   try {
-    handler(data, id, startTime);
+    // Union of handler function parameter types collapses to never when indexed by a union key.
+    // Use a controlled cast here; payload already validated by isInboundMessage.
+    handlers[type](raw.data, id, startTime);
   } catch (err) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
-      data: sanitize((err === null || err === void 0 ? void 0 : err.message) || "Unknown error"),
+      data: sanitize(err instanceof Error ? err.message : String(err)),
       id,
     });
   }
@@ -167,7 +187,7 @@ function processAnimationData(data) {
       if (typeof start === "number" && typeof end === "number") {
         computedProperties[prop] = interpolateNumber(start, end, easedProgress);
       } else {
-        computedProperties[prop] = easedProgress > 0.5 ? end : start;
+        computedProperties[prop] = easedProgress > EASING_THRESHOLD ? end : start;
       }
     });
     return Object.assign(Object.assign({}, element), {
@@ -183,7 +203,7 @@ function processAnimationData(data) {
 function optimizeScrollCalculations(data) {
   const { scrollY, windowHeight, elements } = data;
   return elements.map((element) => {
-    const { offsetTop, offsetHeight, threshold = 0.1 } = element;
+    const { offsetTop, offsetHeight, threshold = DEFAULT_VISIBILITY_THRESHOLD } = element;
     const elementTop = offsetTop;
     const elementBottom = offsetTop + offsetHeight;
     const viewportTop = scrollY;
@@ -207,8 +227,8 @@ function optimizeScrollCalculations(data) {
     });
   });
 }
-// Performance metrics calculation
 function calculatePerformanceMetrics(data) {
+  var _a, _b, _c, _d;
   const { navigationTiming, paintTiming, resourceTiming } = data;
   const metrics = {
     // Core Web Vitals approximations
@@ -222,46 +242,57 @@ function calculatePerformanceMetrics(data) {
         : paintTiming["largest-contentful-paint"]) || 0,
     // Navigation timing metrics
     domContentLoaded:
-      (navigationTiming === null || navigationTiming === void 0
-        ? void 0
-        : navigationTiming.domContentLoadedEventEnd) -
-        (navigationTiming === null || navigationTiming === void 0
+      ((_a =
+        navigationTiming === null || navigationTiming === void 0
           ? void 0
-          : navigationTiming.navigationStart) || 0,
+          : navigationTiming.domContentLoadedEventEnd) !== null && _a !== void 0
+        ? _a
+        : 0) -
+      ((_b =
+        navigationTiming === null || navigationTiming === void 0
+          ? void 0
+          : navigationTiming.navigationStart) !== null && _b !== void 0
+        ? _b
+        : 0),
     loadComplete:
-      (navigationTiming === null || navigationTiming === void 0
-        ? void 0
-        : navigationTiming.loadEventEnd) -
-        (navigationTiming === null || navigationTiming === void 0
+      ((_c =
+        navigationTiming === null || navigationTiming === void 0
           ? void 0
-          : navigationTiming.navigationStart) || 0,
+          : navigationTiming.loadEventEnd) !== null && _c !== void 0
+        ? _c
+        : 0) -
+      ((_d =
+        navigationTiming === null || navigationTiming === void 0
+          ? void 0
+          : navigationTiming.navigationStart) !== null && _d !== void 0
+        ? _d
+        : 0),
     // Resource loading analysis
     totalResources:
       (resourceTiming === null || resourceTiming === void 0 ? void 0 : resourceTiming.length) || 0,
     slowResources:
       (resourceTiming === null || resourceTiming === void 0
         ? void 0
-        : resourceTiming.filter((r) => r.duration > 1000).length) || 0,
+        : resourceTiming.filter((r) => r.duration > SLOW_RESOURCE_LIMIT).length) || 0,
     // Performance score estimation
     performanceScore: 0,
   };
   // Calculate simple performance score
   let score = 100;
-  if (metrics.fcp > 1800) score -= 20;
-  if (metrics.lcp > 2500) score -= 25;
-  if (metrics.domContentLoaded > 1500) score -= 15;
+  if (metrics.fcp > PERF_FCP_LIMIT) score -= 20;
+  if (metrics.lcp > PERF_LCP_LIMIT) score -= 25;
+  if (metrics.domContentLoaded > PERF_DCL_LIMIT) score -= 15;
   if (metrics.slowResources > 0) score -= metrics.slowResources * 5;
   metrics.performanceScore = Math.max(0, score);
   return metrics;
 }
-// Testimonials data processing
 function processTestimonialsData(data) {
   const { testimonials } = data;
   return testimonials.map((testimonial) => {
     const { rating, text, name, company } = testimonial;
     return Object.assign(Object.assign({}, testimonial), {
       // Pre-calculate star display data
-      stars: Array.from({ length: 5 }, (_, i) => ({
+      stars: Array.from({ length: STAR_DISPLAY_COUNT }, (_, i) => ({
         filled: i < rating,
         index: i,
         key: `star-${name}-${i}`,
@@ -270,7 +301,7 @@ function processTestimonialsData(data) {
       textMetrics: {
         length: text.length,
         wordCount: text.split(" ").length,
-        estimatedReadTime: Math.ceil(text.split(" ").length / 200),
+        estimatedReadTime: Math.ceil(text.split(" ").length / READING_WPM),
       },
       // Generate company badge color
       companyColor: generateCompanyColor(company),
@@ -279,35 +310,42 @@ function processTestimonialsData(data) {
     });
   });
 }
-// Project data optimization
 function optimizeProjectData(data) {
   const { projects } = data;
   return projects.map((project) => {
     const { title, technologies, image, links } = project;
-    return Object.assign(Object.assign({}, project), {
-      // Pre-calculate technology chips
-      technologyChips: technologies.map((tech, index) => ({
-        name: tech,
-        color: generateTechColor(tech),
-        index,
-        key: `tech-${title}-${tech}`,
+    const technologyChips = technologies.map((tech, index) => ({
+      name: tech,
+      color: generateTechColor(tech),
+      index,
+      key: `tech-${title}-${tech}`,
+    }));
+    const imageData = {
+      width: image.width,
+      height: image.height,
+      aspectRatio: image.width / image.height,
+      placeholder: generateImagePlaceholder(image),
+    };
+    const secureLinks = links.map((link) => ({
+      href: link.href,
+      rel: link.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
+      target: link.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",
+    }));
+    return {
+      title,
+      technologies: [...technologies],
+      image: { width: image.width, height: image.height },
+      links: links.map((l) => ({
+        href: l.href,
+        target: l.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",
+        rel: l.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
       })),
-      // Optimize image data
-      imageData: Object.assign(Object.assign({}, image), {
-        aspectRatio: image.width / image.height,
-        placeholder: generateImagePlaceholder(image),
-      }),
-      // Pre-process links for security
-      secureLinks: links.map((link) =>
-        Object.assign(Object.assign({}, link), {
-          rel: link.href.startsWith("http") ? "noopener noreferrer" : undefined,
-          target: link.href.startsWith("http") ? "_blank" : "_self",
-        })
-      ),
-    });
+      technologyChips,
+      imageData,
+      secureLinks,
+    };
   });
 }
-// Star ratings calculation with memoization
 function calculateStarRatings(data) {
   const { ratings } = data;
   return ratings.map(({ rating, id }) => {
@@ -315,7 +353,7 @@ function calculateStarRatings(data) {
     if (workerState.cache.has(cacheKey)) {
       return workerState.cache.get(cacheKey);
     }
-    const stars = Array.from({ length: 5 }, (_, index) => ({
+    const stars = Array.from({ length: STAR_DISPLAY_COUNT }, (_, index) => ({
       filled: index < Math.floor(rating),
       halfFilled: index < rating && index >= Math.floor(rating),
       empty: index >= Math.ceil(rating),
@@ -333,7 +371,8 @@ function processContactValidation(data) {
   const validation = {};
   const SAFE_EMAIL_REGEX =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63})+$/;
-  const MAX_EMAIL_LENGTH = 254;
+  // Removed local numeric literal; referencing EMAIL_MAX_LEN constant
+  const MAX_EMAIL_LENGTH = EMAIL_MAX_LEN;
   Object.entries(fields).forEach(([fieldName, value]) => {
     switch (fieldName) {
       case "email": {
@@ -368,17 +407,18 @@ function processContactValidation(data) {
   return { validation, isFormValid };
 }
 // Image optimization calculations
+const IMAGE_OPTIMIZED_SIZES = [
+  { width: 640, quality: 85 },
+  { width: 768, quality: 85 },
+  { width: 1024, quality: 80 },
+  { width: 1280, quality: 80 },
+  { width: 1920, quality: 75 },
+];
 function processImageOptimization(data) {
   const { images } = data;
   return images.map((image) => {
     const { src, width, height, format } = image;
-    const optimizedSizes = [
-      { width: 640, quality: 85 },
-      { width: 768, quality: 85 },
-      { width: 1024, quality: 80 },
-      { width: 1280, quality: 80 },
-      { width: 1920, quality: 75 },
-    ];
+    const optimizedSizes = IMAGE_OPTIMIZED_SIZES;
     return Object.assign(Object.assign({}, image), {
       optimizedSizes,
       estimatedSavings: calculateImageSavings(format, width, height),
@@ -391,7 +431,9 @@ function processImageOptimization(data) {
 }
 // Utility functions
 function easeInOutCubic(t) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  return t < EASING_THRESHOLD
+    ? EASING_IN_COEFF * t * t * t
+    : 1 - Math.pow(-EASING_OUT_BASE * t + EASING_OUT_BASE, EASING_OUT_EXP) / 2;
 }
 function interpolateNumber(start, end, progress) {
   return start + (end - start) * progress;
@@ -454,25 +496,23 @@ function calculateImageSavings(format, width, height) {
 }
 // Error handling
 self.onerror = function (error) {
-  const err = typeof error === "string" ? { message: error } : error;
+  const err = error instanceof Error ? error : new Error(String(error));
   self.postMessage({
-    type: "WORKER_ERROR",
+    type: OUT_TYPES.WORKER_ERROR,
     data: {
-      message: err === null || err === void 0 ? void 0 : err.message,
-      filename: err === null || err === void 0 ? void 0 : err.filename,
-      lineno: err === null || err === void 0 ? void 0 : err.lineno,
-      colno: err === null || err === void 0 ? void 0 : err.colno,
+      message: err.message,
     },
   });
 };
 // Performance monitoring
 setInterval(() => {
   if (workerState.performanceMetrics.tasksCompleted <= 0) return;
-  const mem = (performance === null || performance === void 0 ? void 0 : performance.memory)
+  const perfWithMem = performance;
+  const mem = perfWithMem.memory
     ? {
-        used: performance.memory.usedJSHeapSize,
-        total: performance.memory.totalJSHeapSize,
-        limit: performance.memory.jsHeapSizeLimit,
+        used: perfWithMem.memory.usedJSHeapSize,
+        total: perfWithMem.memory.totalJSHeapSize,
+        limit: perfWithMem.memory.jsHeapSizeLimit,
       }
     : null;
   self.postMessage({

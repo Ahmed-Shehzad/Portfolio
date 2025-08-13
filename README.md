@@ -254,6 +254,12 @@ portfolio/
 └── README.md                  # Project documentation
 ```
 
+For deeper architectural conventions see [ARCHITECTURE.md](./docs/ARCHITECTURE.md).
+
+```
+
+```
+
 > Note: Route-level error pages (`error.tsx`, `global-error.tsx`, `loading.tsx`, `not-found.tsx`) are not present. Add them if you require granular App Router error handling & custom 404.
 
 ## Seamless Marquee Animations

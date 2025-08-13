@@ -1,4 +1,4 @@
-// NOTE: This file is the single source of truth for the web worker logic.
+// NOTE: This file is the single source of truth for the web worker logic. (Consolidated: previous partial files worker.constants.ts / worker.types.ts removed to prevent duplicate global declarations.)
 // It compiles to public/worker.js via `npm run build:worker`.
 // Do not edit public/worker.js directly.
 // Logic preserved; this refactor strengthens types and applies small perf-oriented cleanups.
@@ -75,6 +75,20 @@ type OutTypesMap = typeof OUT_TYPES;
 type OutType = OutTypesMap[keyof OutTypesMap];
 
 const HEALTH_CHECK_INTERVAL_MS = 30_000; // 30s
+// Centralized constants (eliminate magic numbers for maintainability / Sonar)
+const EASING_THRESHOLD = 0.5;
+const EASING_IN_COEFF = 4;
+const EASING_OUT_BASE = 2;
+const EASING_OUT_EXP = 3;
+const STAR_DISPLAY_COUNT = 5;
+const PERF_FCP_LIMIT = 1800;
+const PERF_LCP_LIMIT = 2500;
+const PERF_DCL_LIMIT = 1500;
+const SLOW_RESOURCE_LIMIT = 1000;
+const DEFAULT_VISIBILITY_THRESHOLD = 0.1;
+const HTTP_PREFIX = "http";
+const EMAIL_MAX_LEN = 254;
+const READING_WPM = 200; // average reading speed words/minute
 
 // Payload & Domain Interfaces
 
@@ -258,24 +272,24 @@ const workerState: WorkerState = {
 
 // Handler map to reduce switch complexity
 const handlers: {
-  [K in MessageType]: (data: MessagePayloadMap[K], id: ID, start?: number) => void;
+  [K in MessageType]: (data: MessagePayloadMap[K], id: ID, start: number) => void;
 } = {
   [MESSAGE_TYPES.PROCESS_ANIMATIONS]: (data, id, start) =>
-    postResult(OUT_TYPES.ANIMATIONS_PROCESSED, processAnimationData(data), id, start!),
+    postResult(OUT_TYPES.ANIMATIONS_PROCESSED, processAnimationData(data), id, start),
   [MESSAGE_TYPES.OPTIMIZE_SCROLL_CALCULATIONS]: (data, id, start) =>
-    postResult(OUT_TYPES.SCROLL_OPTIMIZED, optimizeScrollCalculations(data), id, start!),
+    postResult(OUT_TYPES.SCROLL_OPTIMIZED, optimizeScrollCalculations(data), id, start),
   [MESSAGE_TYPES.CALCULATE_PERFORMANCE_METRICS]: (data, id, start) =>
-    postResult(OUT_TYPES.METRICS_CALCULATED, calculatePerformanceMetrics(data), id, start!),
+    postResult(OUT_TYPES.METRICS_CALCULATED, calculatePerformanceMetrics(data), id, start),
   [MESSAGE_TYPES.PROCESS_TESTIMONIALS]: (data, id, start) =>
-    postResult(OUT_TYPES.TESTIMONIALS_PROCESSED, processTestimonialsData(data), id, start!),
+    postResult(OUT_TYPES.TESTIMONIALS_PROCESSED, processTestimonialsData(data), id, start),
   [MESSAGE_TYPES.OPTIMIZE_PROJECT_DATA]: (data, id, start) =>
-    postResult(OUT_TYPES.PROJECTS_OPTIMIZED, optimizeProjectData(data), id, start!),
+    postResult(OUT_TYPES.PROJECTS_OPTIMIZED, optimizeProjectData(data), id, start),
   [MESSAGE_TYPES.CALCULATE_STAR_RATINGS]: (data, id, start) =>
-    postResult(OUT_TYPES.STAR_RATINGS_CALCULATED, calculateStarRatings(data), id, start!),
+    postResult(OUT_TYPES.STAR_RATINGS_CALCULATED, calculateStarRatings(data), id, start),
   [MESSAGE_TYPES.PROCESS_CONTACT_VALIDATION]: (data, id, start) =>
-    postResult(OUT_TYPES.CONTACT_VALIDATED, processContactValidation(data), id, start!),
+    postResult(OUT_TYPES.CONTACT_VALIDATED, processContactValidation(data), id, start),
   [MESSAGE_TYPES.OPTIMIZE_IMAGES]: (data, id, start) =>
-    postResult(OUT_TYPES.IMAGES_OPTIMIZED, processImageOptimization(data), id, start!),
+    postResult(OUT_TYPES.IMAGES_OPTIMIZED, processImageOptimization(data), id, start),
   [MESSAGE_TYPES.GET_PERFORMANCE_STATS]: (_data, id) =>
     self.postMessage({
       type: OUT_TYPES.PERFORMANCE_STATS,
@@ -311,8 +325,8 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
   try {
     // Union of handler function parameter types collapses to never when indexed by a union key.
     // Use a controlled cast here; payload already validated by isInboundMessage.
-    (handlers as Record<string, (d: unknown, id: ID, s?: number) => void>)[type](
-      (raw as InboundPayloads).data,
+    (handlers as Record<string, (d: unknown, id: ID, s: number) => void>)[type](
+      raw.data,
       id,
       startTime
     );
@@ -378,7 +392,7 @@ function processAnimationData(data: ProcessAnimationsPayload) {
       if (typeof start === "number" && typeof end === "number") {
         computedProperties[prop] = interpolateNumber(start, end, easedProgress);
       } else {
-        computedProperties[prop] = easedProgress > 0.5 ? end : start;
+        computedProperties[prop] = easedProgress > EASING_THRESHOLD ? end : start;
       }
     });
 
@@ -399,7 +413,7 @@ function optimizeScrollCalculations(data: OptimizeScrollPayload) {
   const { scrollY, windowHeight, elements } = data;
 
   return elements.map((element) => {
-    const { offsetTop, offsetHeight, threshold = 0.1 } = element;
+    const { offsetTop, offsetHeight, threshold = DEFAULT_VISIBILITY_THRESHOLD } = element;
 
     const elementTop = offsetTop;
     const elementBottom = offsetTop + offsetHeight;
@@ -453,7 +467,7 @@ function calculatePerformanceMetrics(data: PerformancePayload): CalculatedPerfor
 
     // Resource loading analysis
     totalResources: resourceTiming?.length || 0,
-    slowResources: resourceTiming?.filter((r) => r.duration > 1000).length || 0,
+    slowResources: resourceTiming?.filter((r) => r.duration > SLOW_RESOURCE_LIMIT).length || 0,
 
     // Performance score estimation
     performanceScore: 0,
@@ -461,9 +475,9 @@ function calculatePerformanceMetrics(data: PerformancePayload): CalculatedPerfor
 
   // Calculate simple performance score
   let score = 100;
-  if (metrics.fcp > 1800) score -= 20;
-  if (metrics.lcp > 2500) score -= 25;
-  if (metrics.domContentLoaded > 1500) score -= 15;
+  if (metrics.fcp > PERF_FCP_LIMIT) score -= 20;
+  if (metrics.lcp > PERF_LCP_LIMIT) score -= 25;
+  if (metrics.domContentLoaded > PERF_DCL_LIMIT) score -= 15;
   if (metrics.slowResources > 0) score -= metrics.slowResources * 5;
 
   metrics.performanceScore = Math.max(0, score);
@@ -492,16 +506,16 @@ function processTestimonialsData(data: TestimonialsPayload): ProcessedTestimonia
     return {
       ...testimonial,
       // Pre-calculate star display data
-      stars: Array.from({ length: 5 }, (_, i) => ({
+      stars: Array.from({ length: STAR_DISPLAY_COUNT }, (_, i) => ({
         filled: i < rating,
         index: i,
         key: `star-${name}-${i}`,
       })),
       // Calculate text metrics for layout
       textMetrics: {
-        length: (text as string).length,
-        wordCount: (text as string).split(" ").length,
-        estimatedReadTime: Math.ceil((text as string).split(" ").length / 200),
+        length: text.length,
+        wordCount: text.split(" ").length,
+        estimatedReadTime: Math.ceil(text.split(" ").length / READING_WPM),
       },
       // Generate company badge color
       companyColor: generateCompanyColor(company),
@@ -544,8 +558,8 @@ function optimizeProjectData(data: ProjectsPayload): OptimizedProject[] {
 
     const secureLinks: OptimizedProject["secureLinks"] = links.map((link) => ({
       href: link.href,
-      rel: link.href.startsWith("http") ? "noopener noreferrer" : undefined,
-      target: link.href.startsWith("http") ? "_blank" : "_self",
+      rel: link.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
+      target: link.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",
     }));
 
     return {
@@ -554,8 +568,8 @@ function optimizeProjectData(data: ProjectsPayload): OptimizedProject[] {
       image: { width: image.width, height: image.height },
       links: links.map((l) => ({
         href: l.href,
-        target: l.href.startsWith("http") ? "_blank" : "_self",
-        rel: l.href.startsWith("http") ? "noopener noreferrer" : undefined,
+        target: l.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",
+        rel: l.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
       })),
       technologyChips,
       imageData,
@@ -587,7 +601,7 @@ function calculateStarRatings(data: StarRatingsPayload): StarRatingResult[] {
       return workerState.cache.get(cacheKey) as StarRatingResult;
     }
 
-    const stars: StarEntry[] = Array.from({ length: 5 }, (_, index) => ({
+    const stars: StarEntry[] = Array.from({ length: STAR_DISPLAY_COUNT }, (_, index) => ({
       filled: index < Math.floor(rating),
       halfFilled: index < rating && index >= Math.floor(rating),
       empty: index >= Math.ceil(rating),
@@ -595,7 +609,7 @@ function calculateStarRatings(data: StarRatingsPayload): StarRatingResult[] {
       key: `star-${id}-${index}`,
     }));
     const result: StarRatingResult = { id, rating, stars };
-    workerState.cache.set(cacheKey, result as StarRatingResult);
+    workerState.cache.set(cacheKey, result);
 
     return result;
   });
@@ -609,8 +623,8 @@ function processContactValidation(data: ContactValidationPayload) {
   const SAFE_EMAIL_REGEX =
     /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63})+$/;
 
-  const MAX_EMAIL_LENGTH = 254;
-
+  // Removed local numeric literal; referencing EMAIL_MAX_LEN constant
+  const MAX_EMAIL_LENGTH = EMAIL_MAX_LEN;
   Object.entries(fields).forEach(([fieldName, value]) => {
     switch (fieldName) {
       case "email": {
@@ -623,7 +637,6 @@ function processContactValidation(data: ContactValidationPayload) {
         };
         break;
       }
-
       case "name":
         validation[fieldName] = {
           isValid: String(value).trim().length >= 2,
@@ -631,7 +644,6 @@ function processContactValidation(data: ContactValidationPayload) {
             String(value).trim().length >= 2 ? "" : "Name must be at least 2 characters long",
         };
         break;
-
       case "message":
         validation[fieldName] = {
           isValid: String(value).trim().length >= 10,
@@ -639,14 +651,11 @@ function processContactValidation(data: ContactValidationPayload) {
             String(value).trim().length >= 10 ? "" : "Message must be at least 10 characters long",
         };
         break;
-
       default:
         validation[fieldName] = { isValid: true, message: "" };
     }
   });
-
   const isFormValid = Object.values(validation).every((field) => field.isValid);
-
   return { validation, isFormValid };
 }
 
@@ -684,7 +693,9 @@ function processImageOptimization(data: ImagesPayload) {
 
 // Utility functions
 function easeInOutCubic(t: number) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  return t < EASING_THRESHOLD
+    ? EASING_IN_COEFF * t * t * t
+    : 1 - Math.pow(-EASING_OUT_BASE * t + EASING_OUT_BASE, EASING_OUT_EXP) / 2;
 }
 
 function interpolateNumber(start: number, end: number, progress: number) {
