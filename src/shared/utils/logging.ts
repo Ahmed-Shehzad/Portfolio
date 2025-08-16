@@ -14,7 +14,16 @@ export const sanitizeLogInput = (input: unknown): string => {
     return 'null';
   }
 
-  const stringInput = typeof input === 'string' ? input : String(input);
+  let stringInput: string;
+  if (typeof input === 'string') {
+    stringInput = input;
+  } else if (typeof input === 'number' || typeof input === 'boolean') {
+    stringInput = String(input);
+  } else if (input && typeof input === 'object' && 'toString' in input && typeof input.toString === 'function') {
+    stringInput = input.toString();
+  } else {
+    stringInput = '[object]';
+  }
   
   return stringInput
     // Remove carriage returns and newlines
@@ -23,6 +32,7 @@ export const sanitizeLogInput = (input: unknown): string => {
     // Remove tabs
     .replace(/\t/g, ' ')
     // Remove other control characters (0-31 and 127-159)
+    // eslint-disable-next-line no-control-regex
     .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
     // Limit length to prevent log flooding
     .slice(0, 1000)
@@ -51,6 +61,7 @@ export const secureLog = {
   info: (message: string, ...args: unknown[]) => {
     const sanitizedMessage = sanitizeLogInput(message);
     const sanitizedArgs = args.map(sanitizeLogInput);
+    // eslint-disable-next-line no-console
     console.log(`[INFO] ${sanitizedMessage}`, ...sanitizedArgs);
   },
   
@@ -70,6 +81,7 @@ export const secureLog = {
     if (process.env.NODE_ENV === 'development') {
       const sanitizedMessage = sanitizeLogInput(message);
       const sanitizedArgs = args.map(sanitizeLogInput);
+      // eslint-disable-next-line no-console
       console.debug(`[DEBUG] ${sanitizedMessage}`, ...sanitizedArgs);
     }
   }

@@ -26,7 +26,7 @@ export function sanitizeImageSrc(src: string): string | null {
     }
 
     return url.href;
-  } catch (error) {
+  } catch {
     secureLog.warn("Invalid image source provided:", src);
     return null;
   }

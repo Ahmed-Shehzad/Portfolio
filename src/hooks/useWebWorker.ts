@@ -94,7 +94,7 @@ export const useWebWorker = () => {
           }
           tasksRef.current.delete(id);
           if (type === "ERROR") {
-            const errorMessage = typeof data === "string" ? data : String(data);
+            const errorMessage = typeof data === "string" ? data : (data && typeof data === 'object' && 'toString' in data ? data.toString() : '[object]');
             task.reject(new Error(errorMessage));
           } else {
             task.resolve({
@@ -133,8 +133,8 @@ export const useWebWorker = () => {
               secureLog.error("Worker error:", typeof data === 'string' ? data : 'Unknown worker error');
               const errorMessage =
                 data && typeof data === "object" && "message" in data
-                  ? String((data as { message: unknown }).message)
-                  : String(data);
+                  ? ((data as { message: unknown }).message?.toString() || 'Unknown message')
+                  : (data && typeof data === 'object' && 'toString' in data ? data.toString() : '[object]');
               setError(errorMessage);
               break;
             }

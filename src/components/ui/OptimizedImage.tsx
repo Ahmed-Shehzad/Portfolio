@@ -26,7 +26,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     }
     if (source && typeof source === "object" && "src" in source) {
       const srcValue = (source as { src: unknown }).src;
-      return typeof srcValue === "string" ? srcValue : String(srcValue);
+      return typeof srcValue === "string" ? srcValue : (typeof srcValue === 'number' ? String(srcValue) : '');
     }
     if (source && typeof source === "object" && "default" in source) {
       const defaultValue = (source as { default: unknown }).default;
@@ -35,11 +35,11 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       }
       if (defaultValue && typeof defaultValue === "object" && "src" in defaultValue) {
         const srcValue = (defaultValue as { src: unknown }).src;
-        return typeof srcValue === "string" ? srcValue : String(srcValue);
+        return typeof srcValue === "string" ? srcValue : (typeof srcValue === 'number' ? String(srcValue) : '');
       }
     }
     // Fallback for any other structure
-    return String(source);
+    return typeof source === 'number' ? String(source) : '';
   };
 
   const srcString = extractSrc(src);
