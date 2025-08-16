@@ -56,6 +56,8 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
 
         {/* Modal Content */}
         <div
+          role="dialog"
+          aria-modal="true"
           className={`relative z-10 mx-4 w-full max-w-lg transform transition-all duration-300 ${
             isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
@@ -88,6 +90,8 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
 
         {/* Modal Content */}
         <div
+          role="dialog"
+          aria-modal="true"
           className={`relative z-10 mx-4 w-full max-w-lg transform transition-all duration-300 ${
             isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}

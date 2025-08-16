@@ -116,30 +116,43 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
  */
 export const Header = () => {
   const [activeOption, setActiveOption] = useState<HeaderOption>(
-    headerOptions[0] ?? { id: "about", title: "About", href: "#about" }
+    headerOptions[0] || { title: "Home", href: "#home", id: "home" }
   );
   const [sectionElements, setSectionElements] = useState<SectionElement[]>([]);
 
   // Initialize section elements after component mounts (client-side only)
   useEffect(() => {
-    const elements = headerOptions
-      .map((option) => {
-        const element = document.getElementById(option.id);
-        return element
-          ? {
-              id: option.id,
-              element,
-              offsetTop: element.offsetTop,
-            }
-          : null;
-      })
-      .filter((section): section is SectionElement => section !== null);
+    const updateElements = () => {
+      const elements = headerOptions
+        .map((option) => {
+          const element = document.getElementById(option.id);
+          return element
+            ? {
+                id: option.id,
+                element,
+                offsetTop: element.offsetTop,
+              }
+            : null;
+        })
+        .filter((section): section is SectionElement => section !== null);
 
-    setSectionElements(elements);
+      setSectionElements(elements);
+    };
+
+    updateElements();
+    window.addEventListener("resize", updateElements);
+    return () => window.removeEventListener("resize", updateElements);
   }, []);
 
   // Memoize contact section for bottom detection
   const contactSection = useMemo(() => headerOptions.find((option) => option.id === "contact"), []);
+
+  // Create lookup map for O(1) section id to HeaderOption mapping
+  const optionsMap = useMemo(() => {
+    const map = new Map<string, HeaderOption>();
+    headerOptions.forEach((option) => map.set(option.id, option));
+    return map;
+  }, []);
 
   // Optimized URL update function
   const updateURL = useCallback((section: HeaderOption) => {
@@ -154,24 +167,22 @@ export const Header = () => {
 
   // Optimized active section detection
   const updateActiveSection = useCallback(() => {
-    if (typeof window === "undefined" || sectionElements.length === 0) return; // SSR check
+    if (typeof window === "undefined" || sectionElements.length === 0) return;
+
+    const scrollPosition = window.scrollY + SCROLL_OFFSET;
+    const windowBottom = window.innerHeight + window.scrollY;
+    const documentHeight = document.documentElement.scrollHeight - BOTTOM_THRESHOLD;
+    const isAtBottom = windowBottom >= documentHeight;
 
     let currentSection = headerOptions[0];
-    const scrollPosition = window.scrollY + SCROLL_OFFSET;
-
-    // Check if at bottom of page
-    const isAtBottom =
-      window.innerHeight + window.scrollY >=
-      document.documentElement.scrollHeight - BOTTOM_THRESHOLD;
 
     if (isAtBottom && contactSection) {
       currentSection = contactSection;
     } else {
-      // Find active section using cached offsetTop values
       for (let i = sectionElements.length - 1; i >= 0; i--) {
         const section = sectionElements[i];
         if (section && scrollPosition >= section.offsetTop) {
-          const matchingOption = headerOptions.find((option) => option.id === section.id);
+          const matchingOption = optionsMap.get(section.id);
           if (matchingOption) {
             currentSection = matchingOption;
             break;
@@ -184,7 +195,7 @@ export const Header = () => {
       updateURL(currentSection);
       setActiveOption(currentSection);
     }
-  }, [sectionElements, contactSection, updateURL]);
+  }, [sectionElements, contactSection, updateURL, optionsMap]);
 
   // Throttled scroll handler
   // Use bfcache-compatible scroll listener
@@ -207,13 +218,17 @@ export const Header = () => {
 
       if (typeof window === "undefined") return; // SSR check
 
-      const element = document.getElementById(option.id);
-      if (element) {
-        const scrollToPosition = element.offsetTop - HEADER_OFFSET;
-        window.scrollTo({
-          top: Math.max(0, scrollToPosition),
-          behavior: "smooth",
-        });
+      try {
+        const element = document.getElementById(option.id);
+        if (element && typeof element.offsetTop === "number") {
+          const scrollToPosition = element.offsetTop - HEADER_OFFSET;
+          window.scrollTo({
+            top: Math.max(0, scrollToPosition),
+            behavior: "smooth",
+          });
+        }
+      } catch (error) {
+        console.warn(`Failed to scroll to section ${option.id}:`, error);
       }
     },
     [updateURL]

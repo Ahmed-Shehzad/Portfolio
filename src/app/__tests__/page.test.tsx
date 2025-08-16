@@ -23,6 +23,12 @@ vi.mock("next/dynamic", () => ({
     const MockComponent = vi.fn(() => {
       // Determine which component based on the import function
       const importStr = importFn.toString();
+      if (importStr.includes("HeaderSection")) {
+        return <header data-testid="header">Header</header>;
+      }
+      if (importStr.includes("HeroSection")) {
+        return <section data-testid="hero">Hero</section>;
+      }
       if (importStr.includes("ProjectsSection")) {
         return <section data-testid="projects">Projects</section>;
       }

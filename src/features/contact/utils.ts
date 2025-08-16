@@ -25,16 +25,16 @@ export const validateField = (
     return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${rule.minLength} characters`;
   }
 
+  // Additional email length validation (check before pattern)
+  if (fieldName === "email" && value.length > MAX_EMAIL_LENGTH) {
+    return "Email address is too long";
+  }
+
   if (rule.pattern && !rule.pattern.test(value)) {
     if (fieldName === "email") {
       return "Please enter a valid email address";
     }
     return `Invalid ${fieldName} format`;
-  }
-
-  // Additional email length validation
-  if (fieldName === "email" && value.length > MAX_EMAIL_LENGTH) {
-    return "Email address is too long";
   }
 
   return undefined;

@@ -5,13 +5,13 @@
 // Types
 export type {
   PerformanceMetrics,
-  WebWorkerTask,
-  WebWorkerResponse,
   UseWebWorkerReturn,
+  WebWorkerResponse,
+  WebWorkerTask,
 } from "./types";
 
 // Constants
-export { WORKER_TASK_TIMEOUT_MS, PERFORMANCE_THRESHOLDS, WORKER_TASKS } from "./constants";
+export { METRICS_CONFIG, PERFORMANCE_THRESHOLDS } from "./constants";
 
 // Hooks (re-export the existing useWebWorker from hooks)
 // This creates a cleaner API while maintaining backward compatibility

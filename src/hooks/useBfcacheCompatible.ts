@@ -30,6 +30,8 @@ export const useBfcacheCompatibleTimeout = () => {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handlePageHide = () => {
       // Clear all timeouts when page is hidden for bfcache compatibility
       clearAllTimeouts();
@@ -59,6 +61,8 @@ export const useBfcacheCompatibleScrollListener = (callback: () => void) => {
   callbackRef.current = callback;
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     let ticking = false;
 
     const handleScroll = () => {
