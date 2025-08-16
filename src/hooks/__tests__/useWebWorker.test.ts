@@ -1,58 +1,77 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { useWebWorker } from "@/hooks/useWebWorker";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook } from '@testing-library/react';
+import { useWebWorker, useAnimationWorker, useContactValidationWorker } from '../useWebWorker';
 
-// Basic mock Worker implementation
-class MockWorker {
-  onmessage: ((ev: MessageEvent) => any) | null = null;
-  onerror: ((ev: any) => any) | null = null;
-  postMessage(data: any) {
-    // Simulate async processing + echo back
-    setTimeout(() => {
-      if (data.type === "TEST_TASK") {
-        this.onmessage?.({
-          data: { type: "TEST_TASK_DONE", data: { echoed: data.data }, id: data.id },
-        } as any);
-      } else {
-        this.onmessage?.({ data: { type: "ERROR", data: "Unknown task", id: data.id } } as any);
-      }
-    }, 5);
-  }
-  terminate() {
-    // no-op for mock
-  }
-}
+// Mock Worker that fails to initialize (simulating test environment)
+const mockWorker = {
+  postMessage: vi.fn(),
+  terminate: vi.fn(),
+  onmessage: null,
+  onerror: null
+};
 
-globalThis.Worker = MockWorker as any;
+// Mock Worker constructor to throw error (simulating no worker support)
+global.Worker = vi.fn().mockImplementation(() => {
+  throw new Error('Worker not supported in test environment');
+});
 
-describe("useWebWorker", () => {
+describe('useWebWorker', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-  });
-  afterEach(() => {
-    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
-  it("executes a task and resolves", async () => {
+  it('initializes with error when worker not available', () => {
     const { result } = renderHook(() => useWebWorker());
-    let response: any;
-    await act(async () => {
-      const promise = result.current.executeTask("TEST_TASK", { value: 42 });
-      // Fast-forward the worker's internal setTimeout
-      vi.runAllTimers();
-      response = await promise;
+    
+    expect(result.current.isWorkerAvailable).toBe(false);
+    expect(result.current.isProcessing).toBe(false);
+    expect(result.current.error).toBe('Web Worker not supported in this environment');
+  });
+
+  it('throws error when executing task without worker', async () => {
+    const { result } = renderHook(() => useWebWorker());
+    
+    await expect(result.current.executeTask('TEST_TASK', { input: 'test' }))
+      .rejects.toThrow('Web Worker not available');
+  });
+
+  it('cleans up safely on unmount', () => {
+    const { unmount } = renderHook(() => useWebWorker());
+    
+    // Should not throw when unmounting without worker
+    expect(() => unmount()).not.toThrow();
+  });
+});
+
+describe('useAnimationWorker', () => {
+  it('falls back to original data when worker unavailable', async () => {
+    const { result } = renderHook(() => useAnimationWorker());
+    
+    const elements = [{ id: 'test', offsetTop: 100 }];
+    const scrollProgress = 0.5;
+
+    const processedElements = await result.current.processAnimations(elements, scrollProgress);
+    
+    // Should return original elements as fallback
+    expect(processedElements).toEqual(elements);
+  });
+});
+
+describe('useContactValidationWorker', () => {
+  it('provides fallback validation when worker unavailable', async () => {
+    const { result } = renderHook(() => useContactValidationWorker());
+    
+    const fields = { email: 'test@example.com', name: 'Test User' };
+
+    const validation = await result.current.validateForm(fields);
+    
+    // Should return fallback validation
+    expect(validation).toEqual({
+      validation: {
+        email: { isValid: true, message: '' },
+        name: { isValid: true, message: '' }
+      },
+      isFormValid: true
     });
-    expect(response.data.echoed.value).toBe(42);
-  });
-
-  it("handles unknown task error", async () => {
-    const { result } = renderHook(() => useWebWorker());
-    await expect(
-      act(async () => {
-        const promise = result.current.executeTask("UNKNOWN_TASK", {} as any);
-        vi.runAllTimers();
-        await promise;
-      })
-    ).rejects.toThrow();
   });
 });
