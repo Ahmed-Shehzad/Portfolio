@@ -32,7 +32,10 @@ export const submitContactForm = async (
     // );
     // return response.data;
   } catch (error) {
-    secureLog.error("Contact form submission error:", error instanceof Error ? error.message : 'Unknown error');
+    secureLog.error(
+      "Contact form submission error:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
 
     return {
       success: false,

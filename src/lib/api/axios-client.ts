@@ -75,7 +75,7 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
       return config;
     },
     (error) => {
-      secureLog.error("API Request Error:", error.message || 'Unknown error');
+      secureLog.error("API Request Error:", error.message || "Unknown error");
       return Promise.reject(ApiError.fromAxiosError(error));
     }
   );
@@ -102,12 +102,12 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
 
       if (error.response && error.response.status >= 500) {
         // Handle server errors - log as error since these are actual errors
-        secureLog.error("Server Error:", error.response?.data || 'Unknown server error');
+        secureLog.error("Server Error:", error.response?.data || "Unknown server error");
       }
 
       if (error.code === "NETWORK_ERROR") {
         // Handle network errors - log as error since these are actual errors
-        secureLog.error("Network Error:", error.message || 'Unknown network error');
+        secureLog.error("Network Error:", error.message || "Unknown network error");
       }
 
       return Promise.reject(ApiError.fromAxiosError(error));

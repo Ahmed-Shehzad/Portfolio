@@ -58,7 +58,10 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
       }, 2000);
     },
     onError: (error) => {
-      secureLog.error("Error submitting form:", error instanceof Error ? error.message : 'Unknown error');
+      secureLog.error(
+        "Error submitting form:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
     },
   });
 

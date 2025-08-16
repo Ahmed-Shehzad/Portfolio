@@ -11,7 +11,7 @@ on:
 jobs:
   sonarqube:
     name: SonarCloud Scan
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       NEXT_TELEMETRY_DISABLED: 1
     steps:
@@ -36,19 +36,11 @@ jobs:
         run: npm run test:ci # Also converts JUnit to generic test execution report
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # Optional: if using SonarCloud and not set in properties file
-          SONAR_HOST_URL: https://sonarcloud.io
-        with:
-          args: >-
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.testExecutionReportPaths=coverage/generic-report.xml
 
       - name: Quality Gate (wait)
-        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
+        uses: SonarSource/sonarqube-quality-gate-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          scanMetadataReportFile: .scannerwork/report-task.txt

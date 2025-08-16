@@ -94,7 +94,12 @@ export const useWebWorker = () => {
           }
           tasksRef.current.delete(id);
           if (type === "ERROR") {
-            const errorMessage = typeof data === "string" ? data : (data && typeof data === 'object' && 'toString' in data ? data.toString() : '[object]');
+            const errorMessage =
+              typeof data === "string"
+                ? data
+                : data && typeof data === "object" && "toString" in data
+                  ? data.toString()
+                  : "[object]";
             task.reject(new Error(errorMessage));
           } else {
             task.resolve({
@@ -130,11 +135,16 @@ export const useWebWorker = () => {
             case "WORKER_HEALTH_CHECK":
               break;
             case "WORKER_ERROR": {
-              secureLog.error("Worker error:", typeof data === 'string' ? data : 'Unknown worker error');
+              secureLog.error(
+                "Worker error:",
+                typeof data === "string" ? data : "Unknown worker error"
+              );
               const errorMessage =
                 data && typeof data === "object" && "message" in data
-                  ? ((data as { message: unknown }).message?.toString() || 'Unknown message')
-                  : (data && typeof data === 'object' && 'toString' in data ? data.toString() : '[object]');
+                  ? (data as { message: unknown }).message?.toString() || "Unknown message"
+                  : data && typeof data === "object" && "toString" in data
+                    ? data.toString()
+                    : "[object]";
               setError(errorMessage);
               break;
             }
@@ -142,11 +152,17 @@ export const useWebWorker = () => {
         }
 
         workerRef.current.onerror = (error) => {
-          secureLog.error("Worker initialization error:", error instanceof Error ? error.message : 'Unknown error');
+          secureLog.error(
+            "Worker initialization error:",
+            error instanceof Error ? error.message : "Unknown error"
+          );
           setError("Failed to initialize web worker");
         };
       } catch (error) {
-        secureLog.warn("Web Worker not available:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.warn(
+          "Web Worker not available:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         setError("Web Worker not supported in this environment");
       }
     }
@@ -255,7 +271,10 @@ export const useAnimationWorker = () => {
         });
         return result.data;
       } catch (error) {
-        secureLog.error("Animation processing failed:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.error(
+          "Animation processing failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return elements; // Fallback to original data
       }
     },
@@ -278,7 +297,10 @@ export const useScrollWorker = () => {
         });
         return result.data;
       } catch (error) {
-        secureLog.error("Scroll optimization failed:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.error(
+          "Scroll optimization failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return elements;
       }
     },
@@ -297,7 +319,10 @@ export const useTestimonialsWorker = () => {
         const result = await executeTask("PROCESS_TESTIMONIALS", { testimonials });
         return result.data;
       } catch (error) {
-        secureLog.error("Testimonials processing failed:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.error(
+          "Testimonials processing failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return testimonials;
       }
     },
@@ -316,7 +341,10 @@ export const useProjectsWorker = () => {
         const result = await executeTask("OPTIMIZE_PROJECT_DATA", { projects });
         return result.data;
       } catch (error) {
-        secureLog.error("Projects optimization failed:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.error(
+          "Projects optimization failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return projects;
       }
     },
@@ -335,7 +363,10 @@ export const useStarRatingsWorker = () => {
         const result = await executeTask("CALCULATE_STAR_RATINGS", { ratings });
         return result.data;
       } catch (error) {
-        secureLog.error("Star ratings calculation failed:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.error(
+          "Star ratings calculation failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return ratings.map(({ rating, id }) => ({
           id,
           rating,
@@ -362,7 +393,10 @@ export const useContactValidationWorker = () => {
         const result = await executeTask("PROCESS_CONTACT_VALIDATION", { fields });
         return result.data;
       } catch (error) {
-        secureLog.error("Form validation failed:", error instanceof Error ? error.message : 'Unknown error');
+        secureLog.error(
+          "Form validation failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         // Fallback validation
         return {
           validation: Object.fromEntries(
@@ -399,7 +433,10 @@ export const usePerformanceWorker = () => {
 
       return result.data;
     } catch (error) {
-      secureLog.error("Performance metrics calculation failed:", error instanceof Error ? error.message : 'Unknown error');
+      secureLog.error(
+        "Performance metrics calculation failed:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
       return null;
     }
   }, [executeTask]);

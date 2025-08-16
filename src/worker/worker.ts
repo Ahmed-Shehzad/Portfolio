@@ -224,14 +224,19 @@ type InboundPayloads = {
 // Utility: fast control-char stripping via regex
 const sanitize = (input: unknown): string => {
   let raw: string;
-  if (typeof input === 'string') {
+  if (typeof input === "string") {
     raw = input;
-  } else if (typeof input === 'number' || typeof input === 'boolean') {
+  } else if (typeof input === "number" || typeof input === "boolean") {
     raw = String(input);
-  } else if (input && typeof input === 'object' && 'toString' in input && typeof input.toString === 'function') {
+  } else if (
+    input &&
+    typeof input === "object" &&
+    "toString" in input &&
+    typeof input.toString === "function"
+  ) {
     raw = input.toString();
   } else {
-    raw = input ? '[object]' : '';
+    raw = input ? "[object]" : "";
   }
   // Build regex at runtime to avoid control character parsing issues
   const controlRanges = [
@@ -347,7 +352,13 @@ self.onmessage = (e: MessageEvent<InboundPayloads | Record<string, unknown>>) =>
   } catch (err) {
     self.postMessage({
       type: OUT_TYPES.ERROR,
-      data: sanitize(err instanceof Error ? err.message : (err && typeof err === 'object' && 'toString' in err ? err.toString() : '[object]')),
+      data: sanitize(
+        err instanceof Error
+          ? err.message
+          : err && typeof err === "object" && "toString" in err
+            ? err.toString()
+            : "[object]"
+      ),
       id,
     });
   }
@@ -632,7 +643,9 @@ function processContactValidation(data: ContactValidationPayload) {
   Object.entries(fields).forEach(([fieldName, value]) => {
     switch (fieldName) {
       case "email": {
-        const trimmed = (typeof value === 'string' ? value : (typeof value === 'number' ? String(value) : '')).trim();
+        const trimmed = (
+          typeof value === "string" ? value : typeof value === "number" ? String(value) : ""
+        ).trim();
         const isReasonableLength = trimmed.length <= MAX_EMAIL_LENGTH;
         const isValid = isReasonableLength && SAFE_EMAIL_REGEX.test(trimmed);
         validation[fieldName] = {
@@ -643,16 +656,20 @@ function processContactValidation(data: ContactValidationPayload) {
       }
       case "name":
         validation[fieldName] = {
-          isValid: (typeof value === 'string' ? value : '').trim().length >= 2,
+          isValid: (typeof value === "string" ? value : "").trim().length >= 2,
           message:
-            (typeof value === 'string' ? value : '').trim().length >= 2 ? "" : "Name must be at least 2 characters long",
+            (typeof value === "string" ? value : "").trim().length >= 2
+              ? ""
+              : "Name must be at least 2 characters long",
         };
         break;
       case "message":
         validation[fieldName] = {
-          isValid: (typeof value === 'string' ? value : '').trim().length >= 10,
+          isValid: (typeof value === "string" ? value : "").trim().length >= 10,
           message:
-            (typeof value === 'string' ? value : '').trim().length >= 10 ? "" : "Message must be at least 10 characters long",
+            (typeof value === "string" ? value : "").trim().length >= 10
+              ? ""
+              : "Message must be at least 10 characters long",
         };
         break;
       default:
@@ -771,7 +788,12 @@ function calculateImageSavings(format: string, width: number, height: number) {
 
 // Error handling
 self.onerror = function (error: unknown) {
-  const err = error instanceof Error ? error : new Error(error && typeof error === 'object' && 'toString' in error ? error.toString() : '[object]');
+  const err =
+    error instanceof Error
+      ? error
+      : new Error(
+          error && typeof error === "object" && "toString" in error ? error.toString() : "[object]"
+        );
   self.postMessage({
     type: OUT_TYPES.WORKER_ERROR,
     data: {

@@ -28,7 +28,10 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
         shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
       });
     } catch (error) {
-      secureLog.error("Failed to configure default Leaflet icons:", error instanceof Error ? error.message : 'Unknown error');
+      secureLog.error(
+        "Failed to configure default Leaflet icons:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
       // Continue without custom icon configuration - Leaflet will use fallbacks
     }
   }, []);
@@ -40,7 +43,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
     typeof center[0] !== "number" ||
     typeof center[1] !== "number"
   ) {
-    secureLog.error("Invalid center coordinates provided", 'Invalid coordinates format');
+    secureLog.error("Invalid center coordinates provided", "Invalid coordinates format");
     return (
       <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
         <div className="text-center">
@@ -79,7 +82,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
       // Sanitize the image source to prevent XSS
       const sanitizedSrc = sanitizeImageSrc(markerImage.src);
       if (!sanitizedSrc) {
-        secureLog.warn("Invalid or unsafe image source, falling back to default marker", '');
+        secureLog.warn("Invalid or unsafe image source, falling back to default marker", "");
         return undefined;
       }
 
@@ -102,7 +105,10 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
         iconAnchor: [30, 30],
       });
     } catch (error) {
-      secureLog.error("Failed to create custom marker icon:", error instanceof Error ? error.message : 'Unknown error');
+      secureLog.error(
+        "Failed to create custom marker icon:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
       // Return undefined to fall back to default marker
       return undefined;
     }
@@ -166,12 +172,15 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
       }
     } else {
       // Handle non-Error objects
-      secureLog.error("Unknown map error:", 'Non-Error object thrown');
+      secureLog.error("Unknown map error:", "Non-Error object thrown");
       errorDetails = "Unknown error occurred";
     }
 
     // Log additional context for debugging
-    secureLog.error("Map error context", `center: ${center}, zoom: ${zoom}, hasMarkerImage: ${!!markerImage}`);
+    secureLog.error(
+      "Map error context",
+      `center: ${center}, zoom: ${zoom}, hasMarkerImage: ${!!markerImage}`
+    );
 
     return (
       <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">

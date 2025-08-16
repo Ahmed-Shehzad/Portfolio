@@ -66,7 +66,10 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
       document.body
     );
   } catch (error) {
-    secureLog.error("Error creating modal portal:", error instanceof Error ? error.message : 'Unknown error');
+    secureLog.error(
+      "Error creating modal portal:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
     // Fallback: render the modal inline if createPortal fails
     return (
       <div

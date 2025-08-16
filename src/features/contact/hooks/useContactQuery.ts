@@ -61,7 +61,10 @@ export const useSubmitContactForm = (options?: {
     },
 
     onError: (error) => {
-      secureLog.error("Contact form submission failed:", error instanceof Error ? error.message : 'Unknown error');
+      secureLog.error(
+        "Contact form submission failed:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
 
       // Call custom onError callback if provided
       options?.onError?.(error);

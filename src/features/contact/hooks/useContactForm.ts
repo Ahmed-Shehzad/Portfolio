@@ -98,7 +98,10 @@ export const useContactForm = () => {
 
       return result;
     } catch (error) {
-      secureLog.error("Contact form submission error:", error instanceof Error ? error.message : 'Unknown error');
+      secureLog.error(
+        "Contact form submission error:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
 
       setFormState((prev) => ({
         ...prev,
