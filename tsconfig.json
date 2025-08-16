@@ -19,8 +19,17 @@
       }
     ],
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] },
-    "allowArbitraryExtensions": true
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/config/*": ["./src/config/*"]
+    },
+    "allowArbitraryExtensions": true,
+    // Additional strict type checking (bulletproof configuration)
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "next-env.d.ts",

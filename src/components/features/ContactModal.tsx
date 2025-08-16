@@ -2,7 +2,9 @@
 
 import GrainImage from "@/assets/images/grain.jpg";
 import { Modal } from "@/components/ui";
+import { useSubmitContactForm } from "@/features/contact/hooks";
 import { useBfcacheCompatibleTimeout } from "@/hooks/useBfcacheCompatible";
+import { secureLog } from "@/shared/utils/logging";
 import { FormEvent, useCallback, useState } from "react";
 
 interface IContactModalProps {
@@ -37,15 +39,46 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-  const { setBfcacheTimeout } = useBfcacheCompatibleTimeout();
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
     subject?: string;
     message?: string;
   }>({});
+
+  const { setBfcacheTimeout } = useBfcacheCompatibleTimeout();
+
+  // Use React Query mutation for form submission
+  const submitContactFormMutation = useSubmitContactForm({
+    onSuccess: () => {
+      // Reset form and close modal after successful submission
+      setBfcacheTimeout(() => {
+        resetForm();
+        onClose();
+      }, 2000);
+    },
+    onError: (error) => {
+      secureLog.error(
+        "Error submitting form:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    },
+  });
+
+  const isSubmitting = submitContactFormMutation.isPending;
+
+  // Determine submit status without nested ternary operators
+  const getSubmitStatus = (): "success" | "error" | "idle" => {
+    if (submitContactFormMutation.isSuccess) {
+      return "success";
+    }
+    if (submitContactFormMutation.isError) {
+      return "error";
+    }
+    return "idle";
+  };
+
+  const submitStatus = getSubmitStatus();
 
   // Generic validation function
   const validateField = useCallback((fieldName: string, value: string): string => {
@@ -126,8 +159,8 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
   const resetForm = useCallback(() => {
     setFormData({ name: "", email: "", subject: "", message: "" });
     setErrors({});
-    setSubmitStatus("idle");
-  }, []);
+    submitContactFormMutation.reset();
+  }, [submitContactFormMutation]);
 
   const handleCancel = useCallback(() => {
     resetForm();
@@ -143,31 +176,10 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
         return; // Don't submit if form is invalid
       }
 
-      setIsSubmitting(true);
-      setSubmitStatus("idle");
-
-      try {
-        // Simulate API call - replace with your actual endpoint
-        await new Promise((resolve) => setBfcacheTimeout(() => resolve(undefined), 2000));
-
-        // Send the data to your backend endpoint
-        // await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) });
-
-        setSubmitStatus("success");
-
-        // Reset form and close modal after successful submission
-        setBfcacheTimeout(() => {
-          resetForm();
-          onClose(); // Only close after successful submission
-        }, 2000);
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        setSubmitStatus("error");
-      } finally {
-        setIsSubmitting(false);
-      }
+      // Submit using React Query mutation
+      submitContactFormMutation.mutate(formData);
     },
-    [validateForm, resetForm, onClose, setBfcacheTimeout]
+    [validateForm, formData, submitContactFormMutation]
   );
 
   return (

@@ -18,16 +18,14 @@ export const ScrollAnimationWrapper: FC<ScrollAnimationWrapperProps> = memo(
   ({
     children,
     animation = "fadeInUp",
-    delay = 0,
+    delay: _delay = 0,
     className = "",
     staggerChildren = false,
     threshold = 0.1,
     as: Component = "div",
   }) => {
-    const { elementRef, isVisible } = useScrollAnimation({
+    const { ref: elementRef, isVisible } = useScrollAnimation({
       threshold,
-      delay,
-      triggerOnce: true,
       rootMargin: "0px 0px -20px 0px",
     });
 

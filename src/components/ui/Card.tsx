@@ -19,7 +19,7 @@ export const Card: FC<ComponentPropsWithoutRef<"div">> = (props) => {
         style={{
           backgroundImage: `url(${GrainImage.src})`,
         }}
-      ></div>
+      />
       {children}
     </div>
   );

@@ -1,22 +1,38 @@
-import { Header, HeroSection } from "@/sections";
+"use client";
+
 import dynamic from "next/dynamic";
 import { FC } from "react";
 
-// Prioritize above-the-fold sections with higher loading priority
+// Header uses scroll listeners and window - disable SSR
+const HeaderSection = dynamic(
+  () => import("@/sections").then((mod) => ({ default: mod.HeaderSection })),
+  {
+    ssr: false,
+  }
+);
+
+// Hero uses document.getElementById - disable SSR
+const HeroSection = dynamic(
+  () => import("@/sections").then((mod) => ({ default: mod.HeroSection })),
+  {
+    ssr: false,
+  }
+);
+
+// All sections client-side only to prevent SSR window access issues
 const ProjectsSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.ProjectsSection })),
   {
     loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
-    ssr: true,
+    ssr: false,
   }
 );
 
-// Below-the-fold sections can load with lower priority
 const TapeSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.TapeSection })),
   {
     loading: () => <div className="h-32 animate-pulse rounded-lg bg-gray-800/20" />,
-    ssr: true, // Keep SSR for SEO but with lower priority
+    ssr: false,
   }
 );
 
@@ -24,7 +40,7 @@ const TestimonialsSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.TestimonialsSection })),
   {
     loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
-    ssr: true, // Keep SSR for SEO
+    ssr: false,
   }
 );
 
@@ -32,7 +48,7 @@ const AboutSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.AboutSection })),
   {
     loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
-    ssr: true, // Keep SSR for SEO
+    ssr: false,
   }
 );
 
@@ -40,19 +56,19 @@ const ContactSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.ContactSection })),
   {
     loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
-    ssr: true, // Keep SSR for SEO
+    ssr: false,
   }
 );
 
-const Footer = dynamic(() => import("@/sections").then((mod) => ({ default: mod.Footer })), {
+const Footer = dynamic(() => import("@/sections").then((mod) => ({ default: mod.FooterSection })), {
   loading: () => <div className="h-32 animate-pulse rounded-lg bg-gray-800/20" />,
-  ssr: true, // Footer still benefits from SSR
+  ssr: false,
 });
 
 const Home: FC = () => {
   return (
     <>
-      <Header />
+      <HeaderSection />
       <HeroSection />
       <ProjectsSection />
       <TapeSection />

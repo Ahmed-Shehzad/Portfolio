@@ -107,17 +107,20 @@ jobs:
           echo "📊 Bundle size analysis..."
 
           # Check main bundle size (should be optimized)
-          MAIN_SIZE=$(du -sh out/_next/static/chunks/pages/_app-*.js 2>/dev/null | cut -f1 || echo "N/A")
-          INDEX_SIZE=$(du -sh out/index.html | cut -f1)
-
-          echo "📦 Main bundle size: $MAIN_SIZE"
-          echo "📄 Index page size: $INDEX_SIZE"
+          if [ -f "out/index.html" ]; then
+            INDEX_SIZE=$(du -sh out/index.html | cut -f1)
+            echo "📄 Index page size: $INDEX_SIZE"
+          else
+            echo "⚠️  Index page not found"
+          fi
 
           # Check if static assets exist
-          if [ ! -d "out/_next/static" ]; then
-            echo "⚠️  Static assets directory not found"
-          else
+          if [ -d "out/_next/static" ]; then
+            STATIC_SIZE=$(du -sh out/_next/static | cut -f1)
+            echo "📦 Static assets size: $STATIC_SIZE"
             echo "✅ Static assets directory exists"
+          else
+            echo "⚠️  Static assets directory not found"
           fi
 
       - name: Validate SEO Files

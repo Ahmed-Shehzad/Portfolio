@@ -26,21 +26,26 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { secureLog } from "@/shared/utils/logging";
 
 // Web Worker configuration constants
 const WORKER_TASK_TIMEOUT_MS = 30000; // 30 seconds timeout for tasks
 
+import type { Project } from "@/features/projects/types";
+import type { Testimonial } from "@/features/testimonials/types";
+import type { SectionElement } from "@/features/navigation/types";
+
 interface WorkerTask {
   id: string;
   type: string;
-  data: any;
-  resolve: (value: any) => void;
-  reject: (reason: any) => void;
+  data: unknown;
+  resolve: (value: { data: unknown; processingTime?: number | undefined }) => void;
+  reject: (reason: Error) => void;
 }
 
-interface WorkerResponse {
+interface WorkerResponse<TData = unknown> {
   type: string;
-  data: any;
+  data: TData;
   id?: string;
   processingTime?: number;
 }
@@ -66,47 +71,98 @@ export const useWebWorker = () => {
         workerRef.current.onmessage = (e: MessageEvent<WorkerResponse>) => {
           const { type, data, id, processingTime } = e.data;
 
+          // Handle task responses
           if (id && tasksRef.current.has(id)) {
-            const task = tasksRef.current.get(id)!;
-            tasksRef.current.delete(id);
-
-            if (type === "ERROR") {
-              task.reject(new Error(data));
-            } else {
-              task.resolve({ data, processingTime });
-            }
-
-            // Update processing state
-            setIsProcessing(tasksRef.current.size > 0);
+            handleWorkerTaskResponse(type, data, id, processingTime);
           }
 
           // Handle global messages
-          switch (type) {
-            case "WORKER_READY":
-              console.log("Web Worker ready for tasks");
-              break;
-
-            case "PERFORMANCE_STATS":
-              setStats(data);
-              break;
-
-            case "WORKER_HEALTH_CHECK":
-              // Optional: Handle worker health monitoring
-              break;
-
-            case "WORKER_ERROR":
-              console.error("Worker error:", data);
-              setError(data.message);
-              break;
-          }
+          handleWorkerGlobalMessage(type, data);
         };
 
+        // Helper: handle task responses
+        function handleWorkerTaskResponse(
+          type: string,
+          data: unknown,
+          id: string,
+          processingTime?: number
+        ) {
+          const task = tasksRef.current.get(id);
+          if (!task) {
+            secureLog.error("Task not found for ID:", id);
+            return;
+          }
+          tasksRef.current.delete(id);
+          if (type === "ERROR") {
+            const errorMessage =
+              typeof data === "string"
+                ? data
+                : data && typeof data === "object" && "toString" in data
+                  ? data.toString()
+                  : "[object]";
+            task.reject(new Error(errorMessage));
+          } else {
+            task.resolve({
+              data,
+              processingTime: processingTime ?? undefined,
+            });
+          }
+          setIsProcessing(tasksRef.current.size > 0);
+        }
+
+        // Helper: handle global messages
+        function handleWorkerGlobalMessage(type: string, data: unknown) {
+          switch (type) {
+            case "WORKER_READY":
+              break;
+            case "PERFORMANCE_STATS":
+              if (
+                data &&
+                typeof data === "object" &&
+                "tasksCompleted" in data &&
+                "averageTaskTime" in data &&
+                "totalProcessingTime" in data
+              ) {
+                setStats(
+                  data as {
+                    tasksCompleted: number;
+                    averageTaskTime: number;
+                    totalProcessingTime: number;
+                  }
+                );
+              }
+              break;
+            case "WORKER_HEALTH_CHECK":
+              break;
+            case "WORKER_ERROR": {
+              secureLog.error(
+                "Worker error:",
+                typeof data === "string" ? data : "Unknown worker error"
+              );
+              const errorMessage =
+                data && typeof data === "object" && "message" in data
+                  ? (data as { message: unknown }).message?.toString() || "Unknown message"
+                  : data && typeof data === "object" && "toString" in data
+                    ? data.toString()
+                    : "[object]";
+              setError(errorMessage);
+              break;
+            }
+          }
+        }
+
         workerRef.current.onerror = (error) => {
-          console.error("Worker initialization error:", error);
+          secureLog.error(
+            "Worker initialization error:",
+            error instanceof Error ? error.message : "Unknown error"
+          );
           setError("Failed to initialize web worker");
         };
       } catch (error) {
-        console.warn("Web Worker not available:", error);
+        secureLog.warn(
+          "Web Worker not available:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         setError("Web Worker not supported in this environment");
       }
     }
@@ -120,7 +176,10 @@ export const useWebWorker = () => {
 
   // Execute task in web worker
   const executeTask = useCallback(
-    async (type: string, data: any): Promise<{ data: any; processingTime?: number }> => {
+    async <TData = unknown, TResult = unknown>(
+      type: string,
+      data: TData
+    ): Promise<{ data: TResult; processingTime?: number }> => {
       if (!workerRef.current) {
         throw new Error("Web Worker not available");
       }
@@ -140,11 +199,25 @@ export const useWebWorker = () => {
       })();
 
       return new Promise((resolve, reject) => {
-        tasksRef.current.set(id, { id, type, data, resolve, reject });
+        tasksRef.current.set(id, {
+          id,
+          type,
+          data,
+          resolve: resolve as (value: {
+            data: unknown;
+            processingTime?: number | undefined;
+          }) => void,
+          reject,
+        });
         setIsProcessing(true);
         setError(null);
 
-        workerRef.current!.postMessage({ type, data, id });
+        if (workerRef.current) {
+          workerRef.current.postMessage({ type, data, id });
+        } else {
+          reject(new Error("Web Worker not available"));
+          return;
+        }
 
         // Set timeout to prevent hanging
         setTimeout(() => {
@@ -189,7 +262,7 @@ export const useAnimationWorker = () => {
   const { executeTask, isProcessing } = useWebWorker();
 
   const processAnimations = useCallback(
-    async (elements: any[], scrollProgress: number) => {
+    async (elements: SectionElement[], scrollProgress: number) => {
       try {
         const result = await executeTask("PROCESS_ANIMATIONS", {
           elements,
@@ -198,7 +271,10 @@ export const useAnimationWorker = () => {
         });
         return result.data;
       } catch (error) {
-        console.error("Animation processing failed:", error);
+        secureLog.error(
+          "Animation processing failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return elements; // Fallback to original data
       }
     },
@@ -212,7 +288,7 @@ export const useScrollWorker = () => {
   const { executeTask } = useWebWorker();
 
   const optimizeScrollCalculations = useCallback(
-    async (scrollY: number, elements: any[]) => {
+    async (scrollY: number, elements: SectionElement[]) => {
       try {
         const result = await executeTask("OPTIMIZE_SCROLL_CALCULATIONS", {
           scrollY,
@@ -221,7 +297,10 @@ export const useScrollWorker = () => {
         });
         return result.data;
       } catch (error) {
-        console.error("Scroll optimization failed:", error);
+        secureLog.error(
+          "Scroll optimization failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return elements;
       }
     },
@@ -235,12 +314,15 @@ export const useTestimonialsWorker = () => {
   const { executeTask, isProcessing } = useWebWorker();
 
   const processTestimonials = useCallback(
-    async (testimonials: any[]) => {
+    async (testimonials: Testimonial[]) => {
       try {
         const result = await executeTask("PROCESS_TESTIMONIALS", { testimonials });
         return result.data;
       } catch (error) {
-        console.error("Testimonials processing failed:", error);
+        secureLog.error(
+          "Testimonials processing failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return testimonials;
       }
     },
@@ -254,12 +336,15 @@ export const useProjectsWorker = () => {
   const { executeTask, isProcessing } = useWebWorker();
 
   const optimizeProjects = useCallback(
-    async (projects: any[]) => {
+    async (projects: Project[]) => {
       try {
         const result = await executeTask("OPTIMIZE_PROJECT_DATA", { projects });
         return result.data;
       } catch (error) {
-        console.error("Projects optimization failed:", error);
+        secureLog.error(
+          "Projects optimization failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return projects;
       }
     },
@@ -278,7 +363,10 @@ export const useStarRatingsWorker = () => {
         const result = await executeTask("CALCULATE_STAR_RATINGS", { ratings });
         return result.data;
       } catch (error) {
-        console.error("Star ratings calculation failed:", error);
+        secureLog.error(
+          "Star ratings calculation failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         return ratings.map(({ rating, id }) => ({
           id,
           rating,
@@ -305,7 +393,10 @@ export const useContactValidationWorker = () => {
         const result = await executeTask("PROCESS_CONTACT_VALIDATION", { fields });
         return result.data;
       } catch (error) {
-        console.error("Form validation failed:", error);
+        secureLog.error(
+          "Form validation failed:",
+          error instanceof Error ? error.message : "Unknown error"
+        );
         // Fallback validation
         return {
           validation: Object.fromEntries(
@@ -342,7 +433,10 @@ export const usePerformanceWorker = () => {
 
       return result.data;
     } catch (error) {
-      console.error("Performance metrics calculation failed:", error);
+      secureLog.error(
+        "Performance metrics calculation failed:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
       return null;
     }
   }, [executeTask]);

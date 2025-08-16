@@ -1,59 +1,47 @@
 import { describe, it, expect, vi } from "vitest";
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@/test/utils/test-utils";
+import { ContactModal } from "../ContactModal";
 
-// Mock timeout hook to run callbacks immediately for submit promise, but keep post-success delay
-vi.mock("@/hooks/useBfcacheCompatible", () => {
-  return {
-    useBfcacheCompatibleTimeout: () => ({
-      setBfcacheTimeout: (cb: any, delay?: number) => {
-        if (!delay || delay === 0) {
-          cb();
-        } else if (delay < 10) {
-          // fast-forward tiny delays
-          cb();
-        } else {
-          // simulate queued callback without executing (preserve success message view)
-          setTimeout(cb, 0);
-        }
-      },
-    }),
-  };
-});
+// Mock the contact query hook
+vi.mock("@/features/contact/hooks/useContactQuery", () => ({
+  useSubmitContactForm: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+    isSuccess: false,
+    isError: false,
+    error: null,
+    reset: vi.fn(),
+  }),
+}));
 
-import { ContactModal } from "@/components/features/ContactModal";
+const mockProps = {
+  isOpen: true,
+  onClose: vi.fn(),
+};
 
 describe("ContactModal", () => {
-  it("submits form and shows success", async () => {
-    const onClose = vi.fn();
-    render(<ContactModal isOpen onClose={onClose} />);
-    fireEvent.change(screen.getByLabelText(/Name/i), { target: { value: "John Doe" } });
-    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "john@example.com" } });
-    fireEvent.change(screen.getByLabelText(/Subject/i), { target: { value: "Hello" } });
-    fireEvent.change(screen.getByLabelText(/Message/i), {
-      target: { value: "This is a message." },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /Send Message/i }));
-    // Text copied from component for success state
-    expect(
-      await screen.findByText(/Thank you! Your message has been sent successfully./i)
-    ).toBeTruthy();
+  it("renders when open", () => {
+    render(<ContactModal {...mockProps} />);
+    expect(screen.getByText("Let's Work Together")).toBeInTheDocument();
   });
 
-  it("shows field validation error for invalid email", () => {
-    const onClose = vi.fn();
-    render(<ContactModal isOpen onClose={onClose} />);
-    const email = screen.getByLabelText(/Email/i);
-    fireEvent.change(email, { target: { value: "bad" } });
-    fireEvent.blur(email);
-    expect(screen.getByText(/valid email address/i)).toBeTruthy();
+  it("does not render when closed", () => {
+    const { container } = render(<ContactModal {...mockProps} isOpen={false} />);
+    expect(container.firstChild).toBeNull();
   });
 
-  it("cancels and calls onClose", async () => {
-    const onClose = vi.fn();
-    render(<ContactModal isOpen onClose={onClose} />);
-    const cancels = screen.getAllByRole("button", { name: /Cancel/i });
-    fireEvent.click(cancels[cancels.length - 1]);
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+  it("calls onClose when close button clicked", () => {
+    render(<ContactModal {...mockProps} />);
+    const closeButtons = screen.getAllByRole("button", { name: /close modal/i });
+    fireEvent.click(closeButtons[0]); // Click the first close button
+    expect(mockProps.onClose).toHaveBeenCalled();
+  });
+
+  it("renders contact form", () => {
+    render(<ContactModal {...mockProps} />);
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/subject/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
   });
 });

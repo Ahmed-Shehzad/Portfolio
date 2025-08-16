@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["WebWorker", "ES2020"],
+    "module": "none",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "outFile": "./public/worker.js",
+    "allowJs": false,
+    "checkJs": false
+  },
+  "include": ["src/worker/worker.ts"]
+}

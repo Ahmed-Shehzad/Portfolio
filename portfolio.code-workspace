@@ -21,6 +21,9 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "javascript.preferences.importModuleSpecifier": "non-relative",
     "editor.rulers": [100],
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "typescript.referencesCodeLens.enabled": true,
   },
   "extensions": {
     "recommendations": [

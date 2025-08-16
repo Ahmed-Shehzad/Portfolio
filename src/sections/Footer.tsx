@@ -20,7 +20,7 @@ const footerLinks = [
 export const Footer = () => {
   return (
     <footer className="relative overflow-x-clip md:px-24">
-      <div className="absolute bottom-0 left-1/2 -z-10 h-[400px] w-[1600px] -translate-x-1/2 bg-emerald-300/30 [mask-image:radial-gradient(50%_50%_at_bottom_center,black,transparent)]"></div>
+      <div className="absolute bottom-0 left-1/2 -z-10 h-[400px] w-[1600px] -translate-x-1/2 bg-emerald-300/30 [mask-image:radial-gradient(50%_50%_at_bottom_center,black,transparent)]" />
 
       <div className="relative z-10 container">
         <ScrollAnimationWrapper animation="fadeInUp">

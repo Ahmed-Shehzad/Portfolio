@@ -1,5 +1,6 @@
 "use client";
 
+import { secureLog } from "@/shared/utils/logging";
 import { ReactNode, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 
@@ -20,6 +21,9 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
   );
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -37,60 +41,26 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
 
   if (!isOpen) return null;
 
+  const modalContent = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <button
+        className="absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+        aria-label="Close modal"
+      />
+      <dialog open aria-modal="true" className="relative z-10 mx-4 w-full max-w-lg">
+        {children}
+      </dialog>
+    </div>
+  );
+
   try {
-    return createPortal(
-      <div
-        className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {/* Backdrop */}
-        <button
-          className={`absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm transition-all duration-300 ${
-            isOpen ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={onClose}
-          aria-label="Close modal"
-        />
-
-        {/* Modal Content */}
-        <div
-          className={`relative z-10 mx-4 w-full max-w-lg transform transition-all duration-300 ${
-            isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
-          }`}
-        >
-          {children}
-        </div>
-      </div>,
-      document.body
-    );
+    return createPortal(modalContent, document.body);
   } catch (error) {
-    console.error("Error creating modal portal:", error);
-    // Fallback: render the modal inline if createPortal fails
-    return (
-      <div
-        className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {/* Backdrop */}
-        <button
-          className={`absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm transition-all duration-300 ${
-            isOpen ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={onClose}
-          aria-label="Close modal"
-        />
-
-        {/* Modal Content */}
-        <div
-          className={`relative z-10 mx-4 w-full max-w-lg transform transition-all duration-300 ${
-            isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
-          }`}
-        >
-          {children}
-        </div>
-      </div>
+    secureLog.error(
+      "Error creating modal portal:",
+      error instanceof Error ? error.message : "Unknown error"
     );
+    return modalContent;
   }
 };

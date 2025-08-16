@@ -1,0 +1,4 @@
+{
+  "connector": "local",
+  "formatters": ["summary"]
+}

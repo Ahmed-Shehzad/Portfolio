@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
   }),
   webpack(config) {
     // Remove the default Next.js svg loader if present
-    config.module.rules = config.module.rules.map((rule: any) => {
+    config.module.rules = config.module.rules.map((rule: { test?: RegExp; exclude?: RegExp }) => {
       if (rule?.test?.toString().includes("svg")) {
         return { ...rule, exclude: /\.svg$/ };
       }

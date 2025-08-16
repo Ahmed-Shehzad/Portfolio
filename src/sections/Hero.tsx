@@ -5,7 +5,6 @@ import SparkleIcon from "@/assets/icons/sparkle.svg";
 import StarIcon from "@/assets/icons/star.svg";
 import GrainImage from "@/assets/images/grain.jpg";
 import PortraitImage from "@/assets/images/me.jpg";
-import MemojiImage from "@/assets/images/memoji-computer.png";
 import { HeroOrbit } from "@/components/layout";
 import { OptimizedImage } from "@/components/ui";
 import { memo, useCallback } from "react";
@@ -57,12 +56,12 @@ export const HeroSection = memo(() => {
           style={{
             backgroundImage: `url(${GrainImage.src})`,
           }}
-        ></div>
-        <div className="hero-ring size-[620px]"></div>
-        <div className="hero-ring size-[820px]"></div>
-        <div className="hero-ring size-[1020px]"></div>
-        <div className="hero-ring size-[1220px]"></div>
-        <div className="hero-ring size-[1480px]"></div>
+        />
+        <div className="hero-ring size-[620px]" />
+        <div className="hero-ring size-[820px]" />
+        <div className="hero-ring size-[1020px]" />
+        <div className="hero-ring size-[1220px]" />
+        <div className="hero-ring size-[1480px]" />
 
         <HeroOrbit
           size={430}
@@ -176,27 +175,11 @@ export const HeroSection = memo(() => {
         </HeroOrbit>
       </div>
       <div className="relative z-10 container">
-        <div className="flex flex-col items-center">
-          <OptimizedImage
-            src={MemojiImage}
-            alt="Muhammad Ahmed - Friendly cartoon avatar with computer, representing a full-stack developer"
-            width={100}
-            height={100}
-            className="size-[100px]"
-            priority
-          />
-          <div className="inline-flex items-center gap-4 rounded-lg border border-gray-800 bg-gray-950 px-4 py-1.5">
-            <div className="relative size-2.5 rounded-full bg-green-500">
-              <div className="animation-ping absolute inset-0 rounded-full bg-green-500"></div>
-            </div>
-            <div className="text-sm font-medium">Available for new projects</div>
-          </div>
-        </div>
         <div className="mx-auto max-w-lg p-8 md:max-w-2xl lg:max-w-5xl">
           <div className="container rounded-4xl border border-neutral-400/20 bg-neutral-400/20 p-8 pt-2 text-neutral-300 backdrop-blur-[1px] transition-all duration-300 hover:bg-neutral-400/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)]">
             <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:gap-8">
               <div className="relative flex-shrink-0">
-                <div className="absolute inset-0 translate-y-2 transform rounded-full bg-gradient-to-b from-transparent to-black/50 blur-lg"></div>
+                <div className="absolute inset-0 translate-y-2 transform rounded-full bg-gradient-to-b from-transparent to-black/50 blur-lg" />
                 <OptimizedImage
                   src={PortraitImage}
                   alt="Muhammad Ahmed Shehzad - Professional headshot of a full-stack developer"
@@ -210,6 +193,12 @@ export const HeroSection = memo(() => {
                 <h1 className="font-serif text-3xl tracking-wide md:text-5xl">
                   <span className="block">Muhammad Ahmed Shehzad</span>
                 </h1>
+                <div className="mt-3 inline-flex items-center gap-4 rounded-lg border border-gray-800 bg-gray-950 px-4 py-1.5">
+                  <div className="relative size-2.5 rounded-full bg-green-500">
+                    <div className="animation-ping absolute inset-0 rounded-full bg-green-500" />
+                  </div>
+                  <div className="text-sm font-medium">Available for new projects</div>
+                </div>
               </div>
             </div>
           </div>

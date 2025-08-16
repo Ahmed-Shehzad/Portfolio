@@ -11,7 +11,9 @@ export const useBfcacheCompatibleTimeout = () => {
 
   const setBfcacheTimeout = (callback: () => void, delay: number): NodeJS.Timeout => {
     const timeoutId = setTimeout(() => {
-      timeoutIds.current.delete(timeoutId);
+      if (timeoutIds.current.has(timeoutId)) {
+        timeoutIds.current.delete(timeoutId);
+      }
       callback();
     }, delay);
 
@@ -21,7 +23,9 @@ export const useBfcacheCompatibleTimeout = () => {
 
   const clearBfcacheTimeout = (timeoutId: NodeJS.Timeout) => {
     clearTimeout(timeoutId);
-    timeoutIds.current.delete(timeoutId);
+    if (timeoutIds.current.has(timeoutId)) {
+      timeoutIds.current.delete(timeoutId);
+    }
   };
 
   const clearAllTimeouts = () => {
@@ -30,6 +34,8 @@ export const useBfcacheCompatibleTimeout = () => {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handlePageHide = () => {
       // Clear all timeouts when page is hidden for bfcache compatibility
       clearAllTimeouts();
@@ -59,6 +65,8 @@ export const useBfcacheCompatibleScrollListener = (callback: () => void) => {
   callbackRef.current = callback;
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     let ticking = false;
 
     const handleScroll = () => {
@@ -96,68 +104,4 @@ export const useBfcacheCompatibleScrollListener = (callback: () => void) => {
       window.removeEventListener("pagehide", handlePageHide);
     };
   }, []);
-};
-
-/**
- * Hook for bfcache-compatible intersection observers
- */
-export const useBfcacheCompatibleIntersectionObserver = (
-  elementRef: React.RefObject<HTMLElement>,
-  callback: (entries: IntersectionObserverEntry[]) => void,
-  options: IntersectionObserverInit = {}
-) => {
-  const callbackRef = useRef(callback);
-  callbackRef.current = callback;
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    const element = elementRef.current;
-    if (!element) return;
-
-    const createObserver = () => {
-      return new IntersectionObserver((entries) => callbackRef.current(entries), options);
-    };
-
-    const startObserving = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-      observerRef.current = createObserver();
-      observerRef.current.observe(element);
-    };
-
-    const stopObserving = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
-      }
-    };
-
-    const handlePageShow = (event: PageTransitionEvent) => {
-      // Re-create observer if page was restored from bfcache
-      if (event.persisted) {
-        startObserving();
-      }
-    };
-
-    const handlePageHide = () => {
-      // Disconnect observer when page is hidden
-      stopObserving();
-    };
-
-    // Initial setup
-    startObserving();
-
-    // Bfcache event listeners
-    window.addEventListener("pageshow", handlePageShow, { passive: true });
-    window.addEventListener("pagehide", handlePageHide, { passive: true });
-
-    return () => {
-      stopObserving();
-      window.removeEventListener("pageshow", handlePageShow);
-      window.removeEventListener("pagehide", handlePageHide);
-    };
-  }, [elementRef, options]);
-
-  return observerRef;
 };

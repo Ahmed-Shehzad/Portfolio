@@ -9,7 +9,15 @@ import path from "node:path";
 const [, , inputPath, outputPath] = process.argv;
 
 function fail(msg) {
-  console.error(`convert-junit-to-generic: ${msg}`);
+  const sanitized = String(msg)
+    .replace(/[\r\n\t]/g, " ")
+    .split("")
+    .filter((char) => {
+      const code = char.charCodeAt(0);
+      return !(code <= 31 || (code >= 127 && code <= 159));
+    })
+    .join("");
+  console.error(`convert-junit-to-generic: ${sanitized}`);
   process.exit(1);
 }
 
@@ -79,4 +87,4 @@ out += "</testExecutions>\n";
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, out, "utf8");
-console.log(`Generic test execution report written: ${outputPath} (${files.size} files)`);
+console.error(`Generic test execution report written: ${outputPath} (${files.size} files)`);

@@ -1,14 +1,46 @@
-import { describe, it, expect } from "vitest";
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-
-// Minimal smoke test to raise coverage on simple UI component
+import { describe, it, expect, afterEach } from "vitest";
+import { render, screen, cleanup } from "@/test/utils/test-utils";
+import { SectionHeader } from "../SectionHeader";
 
 describe("SectionHeader", () => {
-  it("renders title and description", () => {
-    render(<SectionHeader title="Demo" description="Desc" eyebrow="EYEBROW" />);
-    expect(screen.getByText("Demo")).toBeTruthy();
-    expect(screen.getByText("Desc")).toBeTruthy();
+  afterEach(() => {
+    cleanup();
+  });
+
+  const defaultProps = {
+    title: "Test Title",
+    eyebrow: "Test Eyebrow",
+    description: "Test description",
+  };
+
+  it("renders all text content", () => {
+    render(<SectionHeader {...defaultProps} />);
+    expect(screen.getByText("Test Title")).toBeInTheDocument();
+    expect(screen.getByText("Test Eyebrow")).toBeInTheDocument();
+    expect(screen.getByText("Test description")).toBeInTheDocument();
+  });
+
+  it("has correct heading structure", () => {
+    render(<SectionHeader {...defaultProps} />);
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading).toHaveTextContent("Test Title");
+  });
+
+  it("applies gradient styling to eyebrow", () => {
+    render(<SectionHeader {...defaultProps} />);
+    const eyebrow = screen.getByText("Test Eyebrow");
+    expect(eyebrow).toHaveClass("bg-gradient-to-r", "from-emerald-300", "to-sky-400");
+  });
+
+  it("has centered layout", () => {
+    render(<SectionHeader {...defaultProps} />);
+    const eyebrow = screen.getByText("Test Eyebrow");
+    const title = screen.getByText("Test Title");
+    const description = screen.getByText("Test description");
+
+    expect(eyebrow).toHaveClass("text-center");
+    expect(title).toHaveClass("text-center");
+    expect(description).toHaveClass("text-center");
   });
 });

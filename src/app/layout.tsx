@@ -1,12 +1,13 @@
 // Direct import instead of barrel to avoid any potential circular or undefined export issues
 import { ErrorBoundaryWrapper } from "@/wrappers/ErrorBoundaryWrapper";
+import { QueryProvider } from "@/lib/query/provider";
 import type { Metadata } from "next";
 import { Calistoga, Inter } from "next/font/google";
 import { FC, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import "./globals.css";
 
-interface IRootLayoutProps {
+interface RootLayoutProps {
   children: ReactNode;
 }
 
@@ -26,20 +27,22 @@ const calistoga = Calistoga({
 });
 
 export const metadata: Metadata = {
-  title: "Muhammad Ahmed Shehzad - Full Stack Developer",
+  title: "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
   description:
-    "Full Stack Developer specializing in TypeScript, React, Next.js, C#, .NET, and modern web technologies. Building high-quality, user-friendly web applications.",
+    "Backend Developer specializing in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.",
   keywords: [
-    "Full Stack Developer",
+    "Backend Developer",
+    "Full Stack Engineer",
+    "C#",
+    ".NET",
     "TypeScript",
     "React",
     "Next.js",
-    "C#",
-    ".NET",
+    "Server-side Development",
+    "API Development",
     "Web Developer",
     "Software Engineer",
-    "Frontend Developer",
-    "Backend Developer",
+    "Database Architecture",
   ],
   authors: [{ name: "Muhammad Ahmed Shehzad" }],
   creator: "Muhammad Ahmed Shehzad",
@@ -48,9 +51,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Muhammad Ahmed Shehzad - Full Stack Developer",
+    title: "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
     description:
-      "Portfolio of Muhammad Ahmed Shehzad, a Full Stack Developer specializing in TypeScript, React, Next.js, C#, .NET, and modern web technologies.",
+      "Backend Developer specializing in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.",
     url: "https://ahmed-shehzad.github.io/Portfolio",
     siteName: "Muhammad Ahmed Shehzad - Portfolio",
     images: [
@@ -95,7 +98,7 @@ export const metadata: Metadata = {
  * @param children - The React node(s) to be rendered within the layout.
  * @returns The root HTML structure with applied class names and children content.
  */
-const RootLayout: FC<IRootLayoutProps> = ({ children }) => {
+const RootLayout: FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <head>
@@ -122,18 +125,20 @@ const RootLayout: FC<IRootLayoutProps> = ({ children }) => {
                 "https://github.com/Ahmed-Shehzad",
                 "https://linkedin.com/in/muhammad-ahmed-shehzad",
               ],
-              jobTitle: "Full Stack Developer",
+              jobTitle: "Backend Developer & Full Stack Engineer",
               worksFor: {
                 "@type": "Organization",
                 name: "Freelance",
               },
               knowsAbout: [
+                "C#",
+                ".NET",
                 "TypeScript",
                 "React",
                 "Next.js",
-                "C#",
-                ".NET",
-                "Web Development",
+                "Backend Development",
+                "API Design",
+                "Database Architecture",
                 "Full Stack Development",
                 "Software Engineering",
               ],
@@ -172,7 +177,9 @@ const RootLayout: FC<IRootLayoutProps> = ({ children }) => {
           "bg-gray-900 font-sans text-white antialiased"
         )}
       >
-        <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
+        <ErrorBoundaryWrapper>
+          <QueryProvider>{children}</QueryProvider>
+        </ErrorBoundaryWrapper>
       </body>
     </html>
   );

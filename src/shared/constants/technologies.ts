@@ -6,11 +6,21 @@ import NpgsqlIcon from "@/assets/icons/postgresql.svg";
 import ReactIcon from "@/assets/icons/react.svg";
 import TypeScriptIcon from "@/assets/icons/square-ts.svg";
 import TailwindIcon from "@/assets/icons/tailwind.svg";
+import GraphQLIcon from "@/assets/icons/graphql.svg";
+import AWSIcon from "@/assets/icons/aws.svg";
 
 import type { ToolboxItem } from "../types";
 
-// Toolbox/Technology items
+// Backend expertise with full-stack capabilities
 export const TOOLBOX_ITEMS: ToolboxItem[] = [
+  {
+    title: "C#",
+    iconType: CSharpIcon,
+  },
+  {
+    title: ".NET",
+    iconType: DotnetIcon,
+  },
   {
     title: "TypeScript",
     iconType: TypeScriptIcon,
@@ -28,19 +38,19 @@ export const TOOLBOX_ITEMS: ToolboxItem[] = [
     iconType: NpgsqlIcon,
   },
   {
-    title: "Tailwind CSS",
-    iconType: TailwindIcon,
-  },
-  {
-    title: "C#",
-    iconType: CSharpIcon,
-  },
-  {
-    title: ".NET",
-    iconType: DotnetIcon,
+    title: "GraphQL",
+    iconType: GraphQLIcon,
   },
   {
     title: "Docker",
     iconType: DockerIcon,
+  },
+  {
+    title: "AWS",
+    iconType: AWSIcon,
+  },
+  {
+    title: "Tailwind CSS",
+    iconType: TailwindIcon,
   },
 ];
