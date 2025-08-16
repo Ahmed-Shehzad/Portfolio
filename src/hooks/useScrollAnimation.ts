@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface UseScrollAnimationOptions {
   threshold?: number | number[];
@@ -20,7 +20,7 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
       {
         threshold: options.threshold || 0.1,
         root: options.root || null,
-        rootMargin: options.rootMargin || '0px',
+        rootMargin: options.rootMargin || "0px",
       }
     );
 

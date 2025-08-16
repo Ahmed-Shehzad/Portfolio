@@ -32,7 +32,7 @@ vi.mock("next/navigation", () => ({
 // Mock Next.js dynamic imports
 vi.mock("next/dynamic", () => ({
   __esModule: true,
-  default: (fn: () => Promise<any>) => {
+  default: (_fn: () => Promise<unknown>) => {
     const Component = vi.fn().mockImplementation(() => null);
     Component.displayName = "MockedDynamicComponent";
     return Component;
