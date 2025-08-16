@@ -18,7 +18,7 @@ vi.mock("@/components/ui", () => ({
     </div>
   )),
   OptimizedImage: vi.fn(({ alt, className }) => (
-    <div alt={alt} className={className} data-testid="optimized-image" />
+    <div className={className} data-testid="optimized-image" aria-label={alt} />
   )),
   SectionHeader: vi.fn(({ title, eyebrow, description }) => (
     <div data-testid="section-header">

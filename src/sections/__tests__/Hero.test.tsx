@@ -32,7 +32,7 @@ vi.mock("@/components/layout", () => ({
 
 vi.mock("@/components/ui", () => ({
   OptimizedImage: vi.fn(({ alt, className }) => (
-    <div alt={alt} className={className} data-testid="optimized-image" />
+    <div className={className} data-testid="optimized-image" aria-label={alt} />
   )),
 }));
 
@@ -40,10 +40,9 @@ describe("HeroSection", () => {
   beforeEach(() => {
     // Mock getElementById
     global.document.getElementById = vi.fn((_id) => {
-      const mockElement = {
-        scrollIntoView: vi.fn(),
-      };
-      return mockElement as unknown as Element;
+      const element = document.createElement("div");
+      element.scrollIntoView = vi.fn();
+      return element;
     });
   });
 
@@ -70,7 +69,8 @@ describe("HeroSection", () => {
     render(<HeroSection />);
 
     const exploreButtons = screen.getAllByRole("button", { name: /explore my work/i });
-    fireEvent.click(exploreButtons[0]);
+    expect(exploreButtons[0]).toBeDefined();
+    fireEvent.click(exploreButtons[0]!);
 
     expect(document.getElementById).toHaveBeenCalledWith("projects");
   });
@@ -79,7 +79,8 @@ describe("HeroSection", () => {
     render(<HeroSection />);
 
     const connectButtons = screen.getAllByRole("button", { name: /let's connect/i });
-    fireEvent.click(connectButtons[0]);
+    expect(connectButtons[0]).toBeDefined();
+    fireEvent.click(connectButtons[0]!);
 
     expect(document.getElementById).toHaveBeenCalledWith("contact");
   });
@@ -96,7 +97,7 @@ describe("HeroSection", () => {
 
     const images = screen.getAllByTestId("optimized-image");
     expect(images[0]).toHaveAttribute(
-      "alt",
+      "aria-label",
       "Muhammad Ahmed Shehzad - Professional headshot of a full-stack developer"
     );
   });

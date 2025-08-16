@@ -123,8 +123,7 @@ describe("ErrorBoundary", () => {
   });
 
   it("shows error details in development", () => {
-    const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = "development";
+    vi.stubEnv("NODE_ENV", "development");
 
     render(
       <ErrorBoundary>
@@ -134,7 +133,7 @@ describe("ErrorBoundary", () => {
 
     expect(screen.getByText("Show Error Details (Development)")).toBeInTheDocument();
 
-    process.env.NODE_ENV = originalEnv;
+    vi.unstubAllEnvs();
   });
 
   it("sanitizes error messages", () => {

@@ -40,7 +40,14 @@ describe("useAnimationWorker", () => {
   it("falls back to original data when worker unavailable", async () => {
     const { result } = renderHook(() => useAnimationWorker());
 
-    const elements = [{ id: "test", offsetTop: 100 }];
+    const elements = [
+      {
+        id: "test",
+        element: document.createElement("div"),
+        top: 100,
+        height: 200,
+      },
+    ];
     const scrollProgress = 0.5;
 
     const processedElements = await result.current.processAnimations(elements, scrollProgress);

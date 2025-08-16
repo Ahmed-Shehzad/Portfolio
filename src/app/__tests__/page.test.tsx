@@ -42,7 +42,7 @@ vi.mock("next/dynamic", () => ({
         return <footer data-testid="footer">Footer</footer>;
       }
       return <div data-testid="dynamic-component">Dynamic Component</div>;
-    });
+    }) as React.ComponentType & { displayName?: string };
     MockComponent.displayName = "MockedDynamicComponent";
     return MockComponent;
   },

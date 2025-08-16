@@ -85,8 +85,9 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 beforeAll(() => {
-  // Mock crypto.randomUUID
+  // Mock crypto.randomUUID with deterministic counter for tests
+  let counter = 0;
   Object.defineProperty(global.crypto, "randomUUID", {
-    value: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
+    value: () => `test-uuid-${(++counter).toString(36).padStart(9, "0")}`,
   });
 });

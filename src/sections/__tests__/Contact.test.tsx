@@ -49,7 +49,8 @@ describe("ContactSection", () => {
     render(<ContactSection />);
 
     const contactButtons = screen.getAllByRole("button", { name: /contact me/i });
-    fireEvent.click(contactButtons[0]);
+    expect(contactButtons[0]).toBeDefined();
+    fireEvent.click(contactButtons[0]!);
 
     await waitFor(() => {
       expect(screen.getByTestId("contact-modal")).toBeInTheDocument();
@@ -60,7 +61,8 @@ describe("ContactSection", () => {
     render(<ContactSection />);
 
     const contactButtons = screen.getAllByRole("button", { name: /contact me/i });
-    fireEvent.click(contactButtons[0]);
+    expect(contactButtons[0]).toBeDefined();
+    fireEvent.click(contactButtons[0]!);
 
     await waitFor(() => {
       expect(screen.getByTestId("contact-modal")).toBeInTheDocument();

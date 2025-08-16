@@ -22,10 +22,12 @@ describe("Header", () => {
     });
 
     // Mock document methods
-    global.document.getElementById = vi.fn((_id) => ({
-      offsetTop: 100,
-      scrollIntoView: vi.fn(),
-    }));
+    global.document.getElementById = vi.fn((_id) => {
+      const element = document.createElement("div");
+      Object.defineProperty(element, "offsetTop", { value: 100 });
+      element.scrollIntoView = vi.fn();
+      return element;
+    });
 
     // Mock history
     Object.defineProperty(window, "history", {
@@ -58,7 +60,8 @@ describe("Header", () => {
     render(<Header />);
 
     const projectsLinks = screen.getAllByText("Projects");
-    fireEvent.click(projectsLinks[0]);
+    expect(projectsLinks[0]).toBeDefined();
+    fireEvent.click(projectsLinks[0]!);
 
     expect(document.getElementById).toHaveBeenCalledWith("projects");
   });
@@ -92,10 +95,11 @@ describe("Header", () => {
     render(<Header />);
 
     const projectsLinks = screen.getAllByText("Projects");
+    expect(projectsLinks[0]).toBeDefined();
     const event = new MouseEvent("click", { bubbles: true });
     const preventDefaultSpy = vi.spyOn(event, "preventDefault");
 
-    fireEvent(projectsLinks[0], event);
+    fireEvent(projectsLinks[0]!, event);
     expect(preventDefaultSpy).toHaveBeenCalled();
   });
 });

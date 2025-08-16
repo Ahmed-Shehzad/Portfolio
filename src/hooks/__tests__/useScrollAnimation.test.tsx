@@ -49,7 +49,7 @@ describe("useScrollAnimation", () => {
   });
 
   it("callback function is properly set up", () => {
-    let observerCallback: IntersectionObserverCallback;
+    let observerCallback: IntersectionObserverCallback | undefined;
 
     (IntersectionObserver as any).mockImplementation((callback: IntersectionObserverCallback) => {
       observerCallback = callback;
