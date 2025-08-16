@@ -36,9 +36,10 @@ jobs:
         run: npm run test:ci # Also converts JUnit to generic test execution report
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
 
       - name: Quality Gate (wait)
         uses: SonarSource/sonarqube-quality-gate-action@master
