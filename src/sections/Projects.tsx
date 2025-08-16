@@ -84,11 +84,13 @@ export const ProjectsSection = () => {
         </ScrollAnimationWrapper>
         <div className="mt-10 flex flex-col gap-20 md:mt-20">
           {portfolioProjects.map((project, projectIndex) => {
+            const stickyOffset = `calc(64px + ${projectIndex * 40}px)`;
+
             return (
               <Card
                 key={project.title}
                 className="sticky px-8 pt-8 pb-0 md:px-10 md:pt-12 lg:px-20 lg:pt-16"
-                style={{ top: `calc(64px + ${projectIndex * 40}px)` }}
+                style={{ top: stickyOffset }}
               >
                 <ScrollAnimationWrapper
                   animation="fadeInUp"
@@ -99,9 +101,7 @@ export const ProjectsSection = () => {
                   <div className="lg:grid lg:grid-cols-2 lg:gap-16">
                     <div className="lg:pb-16">
                       <div className="inline-flex bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-sm font-bold tracking-widest text-transparent uppercase">
-                        <span>{project.company}</span>
-                        <span>&bull;</span>
-                        <span>{project.year}</span>
+                        {project.company} &bull; {project.year}
                       </div>
                       <h3 className="mt-2 font-serif text-2xl md:mt-5 md:text-4xl">
                         {project.title}
@@ -147,7 +147,7 @@ export const ProjectsSection = () => {
                             alt={`${project.title} screenshot showcasing the ${project.company} project from ${project.year}`}
                             width={project.imageWidth}
                             height={project.imageHeight}
-                            className="h-full w-full object-cover md:object-cover"
+                            className="h-full w-full object-cover"
                             priority={projectIndex === 0}
                             quality={90}
                             placeholder="blur"

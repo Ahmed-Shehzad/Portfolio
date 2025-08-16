@@ -55,9 +55,16 @@ export const usePortfolioProject = (projectId: string, options?: { enabled?: boo
     queryKey: queryKeys.projectDetail(projectId),
 
     queryFn: async (): Promise<PortfolioProject | null> => {
+      // Validate and sanitize projectId
+      if (!projectId || typeof projectId !== "string" || projectId.trim().length === 0) {
+        return null;
+      }
+
+      const sanitizedId = projectId.toLowerCase().trim();
+
       // For now, find from static data
       const project = PORTFOLIO_PROJECTS.find(
-        (p) => p.title.toLowerCase().replace(/\s+/g, "-") === projectId.toLowerCase()
+        (p) => p.title.toLowerCase().replace(/\s+/g, "-") === sanitizedId
       );
 
       return project ?? null;

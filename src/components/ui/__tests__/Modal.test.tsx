@@ -1,6 +1,5 @@
-import React from "react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@/test/utils/test-utils";
+import { cleanup, fireEvent, render, screen } from "@/test/utils/test-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Modal } from "../Modal";
 
 describe("Modal", () => {
@@ -75,7 +74,7 @@ describe("Modal", () => {
       </Modal>
     );
 
-    expect(document.body.style.overflow).toBe("unset");
+    expect(document.body.style.overflow).toBe("hidden");
   });
 
   it("restores body scroll when closed", () => {

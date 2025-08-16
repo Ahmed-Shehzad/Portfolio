@@ -163,15 +163,17 @@ self.onmessage = (e) => {
       handler(raw.data, id, startTime);
     }
   } catch (err) {
+    let errorMessage;
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    } else if (err && typeof err === "object" && "toString" in err) {
+      errorMessage = err.toString();
+    } else {
+      errorMessage = "[object]";
+    }
     self.postMessage({
       type: OUT_TYPES.ERROR,
-      data: sanitize(
-        err instanceof Error
-          ? err.message
-          : err && typeof err === "object" && "toString" in err
-            ? err.toString()
-            : "[object]"
-      ),
+      data: sanitize(errorMessage),
       id,
     });
   }
@@ -194,7 +196,7 @@ function postResult(type, data, id, startTime) {
 }
 // Animation processing functions
 function processAnimationData(data) {
-  const cacheKey = `animation_${JSON.stringify(data)}`;
+  const cacheKey = `animation_${data.scrollProgress}_${data.elements.length}`;
   if (workerState.cache.has(cacheKey)) {
     return workerState.cache.get(cacheKey);
   }
@@ -326,11 +328,14 @@ function processTestimonialsData(data) {
         key: `star-${name}-${i}`,
       })),
       // Calculate text metrics for layout
-      textMetrics: {
-        length: text.length,
-        wordCount: text.split(" ").length,
-        estimatedReadTime: Math.ceil(text.split(" ").length / READING_WPM),
-      },
+      textMetrics: (() => {
+        const wordCount = text.split(" ").length;
+        return {
+          length: text.length,
+          wordCount,
+          estimatedReadTime: Math.ceil(wordCount / READING_WPM),
+        };
+      })(),
       // Generate company badge color
       companyColor: generateCompanyColor(company),
       // Pre-process for accessibility
@@ -355,20 +360,19 @@ function optimizeProjectData(data) {
       aspectRatio: image.width / image.height,
       placeholder: generateImagePlaceholder(image),
     };
-    const secureLinks = links.map((link) => ({
-      href: link.href,
-      rel: link.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
-      target: link.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",
-    }));
+    const secureLinks = links.map((link) => {
+      const isExternal = link.href.startsWith(HTTP_PREFIX);
+      return {
+        href: link.href,
+        rel: isExternal ? "noopener noreferrer" : undefined,
+        target: isExternal ? "_blank" : "_self",
+      };
+    });
     return {
       title,
       technologies: [...technologies],
       image: { width: image.width, height: image.height },
-      links: links.map((l) => ({
-        href: l.href,
-        target: l.href.startsWith(HTTP_PREFIX) ? "_blank" : "_self",
-        rel: l.href.startsWith(HTTP_PREFIX) ? "noopener noreferrer" : undefined,
-      })),
+      links: secureLinks,
       technologyChips,
       imageData,
       secureLinks,
@@ -382,10 +386,12 @@ function calculateStarRatings(data) {
     if (workerState.cache.has(cacheKey)) {
       return workerState.cache.get(cacheKey);
     }
+    const floorRating = Math.floor(rating);
+    const ceilRating = Math.ceil(rating);
     const stars = Array.from({ length: STAR_DISPLAY_COUNT }, (_, index) => ({
-      filled: index < Math.floor(rating),
-      halfFilled: index < rating && index >= Math.floor(rating),
-      empty: index >= Math.ceil(rating),
+      filled: index < floorRating,
+      halfFilled: index < rating && index >= floorRating,
+      empty: index >= ceilRating,
       index,
       key: `star-${id}-${index}`,
     }));
@@ -394,49 +400,34 @@ function calculateStarRatings(data) {
     return result;
   });
 }
+// Contact form validation helpers
+const validateEmail = (value) => {
+  const SAFE_EMAIL_REGEX =
+    /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63})+$/;
+  const trimmed = (typeof value === "string" ? value : "").trim();
+  const isValid = trimmed.length <= EMAIL_MAX_LEN && SAFE_EMAIL_REGEX.test(trimmed);
+  return { isValid, message: isValid ? "" : "Please enter a valid email address" };
+};
+const validateName = (value) => {
+  const isValid = (typeof value === "string" ? value : "").trim().length >= 2;
+  return { isValid, message: isValid ? "" : "Name must be at least 2 characters long" };
+};
+const validateMessage = (value) => {
+  const isValid = (typeof value === "string" ? value : "").trim().length >= 10;
+  return { isValid, message: isValid ? "" : "Message must be at least 10 characters long" };
+};
 // Contact form validation
 function processContactValidation(data) {
   const { fields } = data;
+  const validationMap = {
+    email: validateEmail,
+    name: validateName,
+    message: validateMessage,
+  };
   const validation = {};
-  const SAFE_EMAIL_REGEX =
-    /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63})+$/;
-  // Removed local numeric literal; referencing EMAIL_MAX_LEN constant
-  const MAX_EMAIL_LENGTH = EMAIL_MAX_LEN;
   Object.entries(fields).forEach(([fieldName, value]) => {
-    switch (fieldName) {
-      case "email": {
-        const trimmed = (
-          typeof value === "string" ? value : typeof value === "number" ? String(value) : ""
-        ).trim();
-        const isReasonableLength = trimmed.length <= MAX_EMAIL_LENGTH;
-        const isValid = isReasonableLength && SAFE_EMAIL_REGEX.test(trimmed);
-        validation[fieldName] = {
-          isValid,
-          message: isValid ? "" : "Please enter a valid email address",
-        };
-        break;
-      }
-      case "name":
-        validation[fieldName] = {
-          isValid: (typeof value === "string" ? value : "").trim().length >= 2,
-          message:
-            (typeof value === "string" ? value : "").trim().length >= 2
-              ? ""
-              : "Name must be at least 2 characters long",
-        };
-        break;
-      case "message":
-        validation[fieldName] = {
-          isValid: (typeof value === "string" ? value : "").trim().length >= 10,
-          message:
-            (typeof value === "string" ? value : "").trim().length >= 10
-              ? ""
-              : "Message must be at least 10 characters long",
-        };
-        break;
-      default:
-        validation[fieldName] = { isValid: true, message: "" };
-    }
+    const validator = validationMap[fieldName];
+    validation[fieldName] = validator ? validator(value) : { isValid: true, message: "" };
   });
   const isFormValid = Object.values(validation).every((field) => field.isValid);
   return { validation, isFormValid };
@@ -453,12 +444,10 @@ function processImageOptimization(data) {
   const { images } = data;
   return images.map((image) => {
     const { src, width, height, format } = image;
-    const optimizedSizes = IMAGE_OPTIMIZED_SIZES;
     return Object.assign(Object.assign({}, image), {
-      optimizedSizes,
+      IMAGE_OPTIMIZED_SIZES,
       estimatedSavings: calculateImageSavings(format, width, height),
-      srcset: optimizedSizes
-        .filter((size) => size.width <= width)
+      srcset: IMAGE_OPTIMIZED_SIZES.filter((size) => size.width <= width)
         .map((size) => `${src}?w=${size.width}&q=${size.quality} ${size.width}w`)
         .join(", "),
     });
@@ -498,8 +487,8 @@ function generateTechColor(tech) {
 function generateImagePlaceholder(image) {
   const width = Number(image.width) || 1;
   const height = Number(image.height) || 1;
-  const safeWidth = Math.max(1, Math.min(width, 4000));
-  const safeHeight = Math.max(1, Math.min(height, 4000));
+  const safeWidth = Math.max(1, Math.min(Math.floor(width), 4000));
+  const safeHeight = Math.max(1, Math.min(Math.floor(height), 4000));
   const svgParts = [
     `<svg width="${safeWidth}" height="${safeHeight}" viewBox="0 0 ${safeWidth} ${safeHeight}" xmlns="http://www.w3.org/2000/svg">`,
     '<rect width="100%" height="100%" fill="#f3f4f6"/>',
@@ -531,12 +520,18 @@ function calculateImageSavings(format, width, height) {
 }
 // Error handling
 self.onerror = function (error) {
-  const err =
-    error instanceof Error
-      ? error
-      : new Error(
-          error && typeof error === "object" && "toString" in error ? error.toString() : "[object]"
-        );
+  let err;
+  if (error instanceof Error) {
+    err = error;
+  } else {
+    let errorMessage;
+    if (error && typeof error === "object" && "toString" in error) {
+      errorMessage = error.toString();
+    } else {
+      errorMessage = "[object]";
+    }
+    err = new Error(errorMessage);
+  }
   self.postMessage({
     type: OUT_TYPES.WORKER_ERROR,
     data: {

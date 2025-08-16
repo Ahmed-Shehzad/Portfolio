@@ -50,7 +50,7 @@ describe("performance utilities", () => {
       expect(score).toBe(80);
     });
 
-    it("penalizes poor LCP", () => {
+    it("reduces score for high LCP", () => {
       const score = computePerformanceScore({
         fcp: 1000,
         lcp: PERF_LCP_LIMIT + 100,

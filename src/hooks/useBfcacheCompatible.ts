@@ -11,7 +11,9 @@ export const useBfcacheCompatibleTimeout = () => {
 
   const setBfcacheTimeout = (callback: () => void, delay: number): NodeJS.Timeout => {
     const timeoutId = setTimeout(() => {
-      timeoutIds.current.delete(timeoutId);
+      if (timeoutIds.current.has(timeoutId)) {
+        timeoutIds.current.delete(timeoutId);
+      }
       callback();
     }, delay);
 
@@ -21,7 +23,9 @@ export const useBfcacheCompatibleTimeout = () => {
 
   const clearBfcacheTimeout = (timeoutId: NodeJS.Timeout) => {
     clearTimeout(timeoutId);
-    timeoutIds.current.delete(timeoutId);
+    if (timeoutIds.current.has(timeoutId)) {
+      timeoutIds.current.delete(timeoutId);
+    }
   };
 
   const clearAllTimeouts = () => {

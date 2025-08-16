@@ -111,6 +111,9 @@ const testimonials = [
  * - Descriptive avatar alt text; duplicated track excluded from accessibility tree.
  */
 export const TestimonialsSection = memo(() => {
+  // Memoize testimonials key to avoid recalculation
+  const testimonialsKey = useMemo(() => testimonials.map((t) => t.name).join("-"), []);
+
   // Memoize star rating JSX to prevent re-renders
   const starRating = useMemo(
     () => (
@@ -143,11 +146,7 @@ export const TestimonialsSection = memo(() => {
           <div className="-my-4 mt-12 flex overflow-x-clip [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] py-4 lg:mt-24">
             <div className="flex flex-none animate-[move-left_45s_linear_infinite] gap-8 pr-8 will-change-transform hover:[animation-play-state:paused]">
               {[0, 1].map((repeatIndex) => (
-                <Fragment
-                  key={`card-fragment-repeat-${repeatIndex}-${testimonials
-                    .map((t) => t.name)
-                    .join("-")}`}
-                >
+                <Fragment key={`card-fragment-repeat-${repeatIndex}-${testimonialsKey}`}>
                   {testimonials.map((testimonial) => {
                     return (
                       <Card

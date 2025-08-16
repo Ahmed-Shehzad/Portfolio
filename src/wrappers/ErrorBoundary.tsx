@@ -11,8 +11,8 @@ interface ErrorBoundaryProps extends BaseComponentProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error | undefined;
-  errorInfo?: ErrorInfo | undefined;
+  error?: Error;
+  errorInfo?: ErrorInfo;
 }
 
 /**
@@ -56,14 +56,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     const safeComponentStack = this.sanitizeLog(errorInfo.componentStack ?? "");
 
     // Log the sanitized error to console or error reporting service
-    console.error("ErrorBoundary caught an error:", safeErrorMessage);
-    console.error("Error stack:", safeErrorStack);
-    console.error("Component stack:", safeComponentStack);
-
-    this.setState({
-      error,
-      errorInfo,
+    console.error("ErrorBoundary caught an error:", {
+      message: safeErrorMessage,
+      stack: safeErrorStack,
+      componentStack: safeComponentStack,
     });
+
+    this.setState({ error, errorInfo });
 
     // Call onError callback if provided
     if (this.props.onError) {
@@ -75,12 +74,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   handleRetry = () => {
-    // Reset to initial state - now we can explicitly set undefined
-    this.setState({
-      hasError: false,
-      error: undefined,
-      errorInfo: undefined,
-    });
+    // Reset to initial state
+    this.setState({ hasError: false });
   };
 
   render() {
@@ -112,7 +107,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </button>
 
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  try {
+                    window.location.reload();
+                  } catch {
+                    window.location.replace(window.location.href);
+                  }
+                }}
                 className="w-full cursor-pointer rounded-lg bg-gray-700 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600"
               >
                 Reload Page

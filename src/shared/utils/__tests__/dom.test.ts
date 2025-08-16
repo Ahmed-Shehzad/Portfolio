@@ -19,7 +19,7 @@ describe("dom utilities", () => {
   describe("scrollToElement", () => {
     it("does nothing when not in browser", () => {
       const originalWindow = global.window;
-      // @ts-expect-error - testing undefined window
+      // @ts-expect-error testing undefined window
       delete global.window;
 
       expect(() => scrollToElement("test")).not.toThrow();

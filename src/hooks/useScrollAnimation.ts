@@ -24,11 +24,15 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentElement = ref.current;
+    if (currentElement) {
+      observer.observe(currentElement);
     }
 
     return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
       observer.disconnect();
     };
   }, [options.threshold, options.root, options.rootMargin]);

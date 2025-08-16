@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { Modal } from "../Modal";
 
 describe("Modal Extended Coverage", () => {
@@ -34,7 +34,7 @@ describe("Modal Extended Coverage", () => {
       </Modal>
     );
 
-    expect(document.body.style.overflow).toBe("");
+    expect(document.body.style.overflow).toBe("hidden");
 
     rerender(
       <Modal isOpen={false} onClose={vi.fn()}>

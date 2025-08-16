@@ -1,7 +1,29 @@
 "use client";
 
 import Image, { ImageProps, StaticImageData } from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+
+const convertToString = (value: unknown): string => {
+  if (typeof value === "string") return value;
+  if (typeof value === "number") return String(value);
+  return "";
+};
+
+const extractSrc = (source: unknown): string => {
+  if (typeof source === "string") return source;
+  if (typeof source === "number") return String(source);
+  if (!source || typeof source !== "object") return "";
+
+  const obj = source as Record<string, unknown>;
+  if (obj.src) return convertToString(obj.src);
+  if (obj.default) {
+    if (typeof obj.default === "string") return obj.default;
+    if (obj.default && typeof obj.default === "object" && "src" in obj.default) {
+      return convertToString((obj.default as { src: unknown }).src);
+    }
+  }
+  return "";
+};
 
 interface OptimizedImageProps extends ImageProps {
   webpSrc?: string | StaticImageData;
@@ -19,48 +41,22 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 }) => {
   const [imageError, setImageError] = useState(false);
 
-  // Extract src string from either string or import object
-  const extractSrc = (source: unknown): string => {
-    if (typeof source === "string") {
-      return source;
-    }
-    if (source && typeof source === "object" && "src" in source) {
-      const srcValue = (source as { src: unknown }).src;
-      return typeof srcValue === "string"
-        ? srcValue
-        : typeof srcValue === "number"
-          ? String(srcValue)
-          : "";
-    }
-    if (source && typeof source === "object" && "default" in source) {
-      const defaultValue = (source as { default: unknown }).default;
-      if (typeof defaultValue === "string") {
-        return defaultValue;
-      }
-      if (defaultValue && typeof defaultValue === "object" && "src" in defaultValue) {
-        const srcValue = (defaultValue as { src: unknown }).src;
-        return typeof srcValue === "string"
-          ? srcValue
-          : typeof srcValue === "number"
-            ? String(srcValue)
-            : "";
-      }
-    }
-    // Fallback for any other structure
-    return typeof source === "number" ? String(source) : "";
-  };
-
-  const srcString = extractSrc(src);
-  const webpString = webpSrc ? extractSrc(webpSrc) : undefined;
-  const avifString = avifSrc ? extractSrc(avifSrc) : undefined;
-  const finalFallbackSrc = fallbackSrc ? extractSrc(fallbackSrc) : srcString;
+  const { srcString, webpString, avifString, finalFallbackSrc } = useMemo(() => {
+    const srcStr = extractSrc(src);
+    return {
+      srcString: srcStr,
+      webpString: webpSrc ? extractSrc(webpSrc) : undefined,
+      avifString: avifSrc ? extractSrc(avifSrc) : undefined,
+      finalFallbackSrc: fallbackSrc ? extractSrc(fallbackSrc) : srcStr,
+    };
+  }, [src, webpSrc, avifSrc, fallbackSrc]);
   const handleImageError = () => {
     setImageError(true);
   };
 
   // If there's an error, use fallback
   if (imageError) {
-    return <Image src={finalFallbackSrc} alt={alt} onError={handleImageError} {...props} />;
+    return <Image src={finalFallbackSrc} alt={alt} {...props} />;
   }
 
   // If custom next-gen formats are provided, use picture element

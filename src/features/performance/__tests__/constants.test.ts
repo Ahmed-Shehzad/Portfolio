@@ -5,6 +5,8 @@ describe("performance constants", () => {
   it("exports performance thresholds", () => {
     expect(PERFORMANCE_THRESHOLDS).toBeDefined();
     expect(typeof PERFORMANCE_THRESHOLDS).toBe("object");
+    expect(PERFORMANCE_THRESHOLDS).toHaveProperty("FCP");
+    expect(PERFORMANCE_THRESHOLDS).toHaveProperty("LCP");
     expect(PERFORMANCE_THRESHOLDS.FCP).toBeGreaterThan(0);
     expect(PERFORMANCE_THRESHOLDS.LCP).toBeGreaterThan(0);
   });

@@ -44,17 +44,11 @@ export const AboutSection = memo(() => {
           />
         </ScrollAnimationWrapper>
 
-        <PersonalIntroduction />
-        <div className="mt-16">
+        <div className="space-y-16">
+          <PersonalIntroduction />
           <ProfessionalGrowth />
-        </div>
-        <div className="mt-16">
           <CoreValues />
-        </div>
-        <div className="mt-16">
           <CoreStrengths />
-        </div>
-        <div className="mt-16">
           <BeyondWork />
         </div>
       </div>

@@ -52,19 +52,17 @@ export const useContactForm = () => {
    */
   const submitForm = useCallback(async (): Promise<ContactSubmissionResult> => {
     // Start submission
-    setFormState((prev) => ({
-      ...prev,
-      isSubmitting: true,
-      submitStatus: "idle",
-    }));
+    setFormState((prev) => ({ ...prev, isSubmitting: true, submitStatus: "idle" }));
 
     try {
-      // Validate form
-      if (!validateForm()) {
+      // Validate form without updating state
+      const validation = validateContactForm(formState.data);
+      if (!validation.isValid) {
         setFormState((prev) => ({
           ...prev,
           isSubmitting: false,
-          submitStatus: "error",
+          submitStatus: "error" as const,
+          errors: validation.errors,
         }));
 
         return {
@@ -114,7 +112,7 @@ export const useContactForm = () => {
         message: ERROR_MESSAGE,
       };
     }
-  }, [formState.data, validateForm]);
+  }, [formState.data]);
 
   /**
    * Resets the form to initial state

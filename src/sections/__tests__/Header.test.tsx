@@ -59,9 +59,11 @@ describe("Header", () => {
   it("handles navigation click", () => {
     render(<Header />);
 
-    const projectsLinks = screen.getAllByText("Projects");
-    expect(projectsLinks[0]).toBeDefined();
-    fireEvent.click(projectsLinks[0]!);
+    const projectsLink = screen.getAllByText("Projects")[0];
+    expect(projectsLink).toBeDefined();
+    if (projectsLink) {
+      fireEvent.click(projectsLink);
+    }
 
     expect(document.getElementById).toHaveBeenCalledWith("projects");
   });
@@ -94,12 +96,14 @@ describe("Header", () => {
   it("prevents default on navigation clicks", () => {
     render(<Header />);
 
-    const projectsLinks = screen.getAllByText("Projects");
-    expect(projectsLinks[0]).toBeDefined();
-    const event = new MouseEvent("click", { bubbles: true });
-    const preventDefaultSpy = vi.spyOn(event, "preventDefault");
+    const projectsLink = screen.getAllByText("Projects")[0];
+    expect(projectsLink).toBeDefined();
+    if (projectsLink) {
+      const event = new MouseEvent("click", { bubbles: true });
+      const preventDefaultSpy = vi.spyOn(event, "preventDefault");
 
-    fireEvent(projectsLinks[0]!, event);
-    expect(preventDefaultSpy).toHaveBeenCalled();
+      fireEvent(projectsLink, event);
+      expect(preventDefaultSpy).toHaveBeenCalled();
+    }
   });
 });

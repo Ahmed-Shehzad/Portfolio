@@ -1,6 +1,6 @@
 import React from "react";
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@/test/utils/test-utils";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, cleanup } from "@/test/utils/test-utils";
 import { AboutSection } from "../About";
 
 // Mock components and assets
@@ -50,6 +50,9 @@ vi.mock("@/assets/images/me.jpg", () => ({
 }));
 
 describe("AboutSection", () => {
+  beforeEach(() => {
+    cleanup();
+  });
   it("renders section header", () => {
     render(<AboutSection />);
 
@@ -57,13 +60,13 @@ describe("AboutSection", () => {
   });
 
   it("renders all about components", () => {
-    render(<AboutSection />);
+    const { container } = render(<AboutSection />);
 
-    expect(screen.getAllByTestId("personal-introduction")[0]).toBeInTheDocument();
-    expect(screen.getAllByTestId("professional-growth")[0]).toBeInTheDocument();
-    expect(screen.getAllByTestId("core-values")[0]).toBeInTheDocument();
-    expect(screen.getAllByTestId("core-strengths")[0]).toBeInTheDocument();
-    expect(screen.getAllByTestId("beyond-work")[0]).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="personal-introduction"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="professional-growth"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="core-values"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="core-strengths"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="beyond-work"]')).toBeInTheDocument();
   });
 
   it("has correct section id", () => {
@@ -73,9 +76,9 @@ describe("AboutSection", () => {
   });
 
   it("renders scroll animation wrapper", () => {
-    render(<AboutSection />);
+    const { container } = render(<AboutSection />);
 
-    expect(screen.getAllByTestId("scroll-wrapper")[0]).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="scroll-wrapper"]')).toBeInTheDocument();
   });
 
   it("renders without errors", () => {

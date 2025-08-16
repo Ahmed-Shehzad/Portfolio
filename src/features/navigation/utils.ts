@@ -12,10 +12,10 @@ import { SCROLL_OFFSET, HEADER_OFFSET, BOTTOM_THRESHOLD } from "./constants";
  */
 export const getSectionElements = (): SectionElement[] => {
   const sections = document.querySelectorAll("section[id]");
+  const scrollTop = window.pageYOffset ?? document.documentElement.scrollTop;
 
   return Array.from(sections).map((section) => {
     const rect = section.getBoundingClientRect();
-    const scrollTop = window.pageYOffset ?? document.documentElement.scrollTop;
 
     return {
       element: section,
