@@ -9,6 +9,7 @@ import { useCallback, useState } from "react";
 import type { ContactFormData, ContactFormState, ContactSubmissionResult } from "../types";
 import { INITIAL_FORM_DATA, SUCCESS_MESSAGE, ERROR_MESSAGE } from "../constants";
 import { validateContactForm, sanitizeFormData } from "../utils";
+import { secureLog } from "@/shared/utils/logging";
 
 export const useContactForm = () => {
   const [formState, setFormState] = useState<ContactFormState>({
@@ -97,7 +98,7 @@ export const useContactForm = () => {
 
       return result;
     } catch (error) {
-      console.error("Contact form submission error:", error);
+      secureLog.error("Contact form submission error:", error instanceof Error ? error.message : 'Unknown error');
 
       setFormState((prev) => ({
         ...prev,

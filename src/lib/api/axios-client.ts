@@ -8,6 +8,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { ENV_CONFIG } from "@/config";
 import type { ApiResponse } from "@/shared/types";
+import { secureLog } from "@/shared/utils/logging";
 
 // Enhanced API Error class
 export class ApiError extends Error {
@@ -65,7 +66,7 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
 
       // Log request in development
       if (ENV_CONFIG.isDevelopment) {
-        console.warn(`API Request: ${config.method?.toUpperCase()} ${config.url}`, {
+        secureLog.debug(`API Request: ${config.method?.toUpperCase()} ${config.url}`, {
           params: config.params,
           data: config.data,
         });
@@ -74,7 +75,7 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
       return config;
     },
     (error) => {
-      console.warn("API Request Error:", error);
+      secureLog.error("API Request Error:", error.message || 'Unknown error');
       return Promise.reject(ApiError.fromAxiosError(error));
     }
   );
@@ -84,7 +85,7 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
     (response: AxiosResponse) => {
       // Log response in development
       if (ENV_CONFIG.isDevelopment) {
-        console.warn(`API Response: ${response.status} ${response.config.url}`, response.data);
+        secureLog.debug(`API Response: ${response.status} ${response.config.url}`, response.data);
       }
 
       return response;
@@ -101,12 +102,12 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
 
       if (error.response && error.response.status >= 500) {
         // Handle server errors - log as error since these are actual errors
-        console.error("Server Error:", error.response.data);
+        secureLog.error("Server Error:", error.response?.data || 'Unknown server error');
       }
 
       if (error.code === "NETWORK_ERROR") {
         // Handle network errors - log as error since these are actual errors
-        console.error("Network Error:", error.message);
+        secureLog.error("Network Error:", error.message || 'Unknown network error');
       }
 
       return Promise.reject(ApiError.fromAxiosError(error));

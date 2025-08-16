@@ -5,6 +5,7 @@ import { StaticImageData } from "next/image";
 import { useEffect } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { escapeHtmlAttribute, sanitizeImageSrc } from "@/shared/utils";
+import { secureLog } from "@/shared/utils/logging";
 
 interface IOpenStreetMapProps {
   center: [number, number];
@@ -27,7 +28,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
         shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
       });
     } catch (error) {
-      console.error("Failed to configure default Leaflet icons:", error);
+      secureLog.error("Failed to configure default Leaflet icons:", error instanceof Error ? error.message : 'Unknown error');
       // Continue without custom icon configuration - Leaflet will use fallbacks
     }
   }, []);
@@ -39,7 +40,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
     typeof center[0] !== "number" ||
     typeof center[1] !== "number"
   ) {
-    console.error("Invalid center coordinates provided:", center);
+    secureLog.error("Invalid center coordinates provided", 'Invalid coordinates format');
     return (
       <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
         <div className="text-center">
@@ -56,7 +57,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
   }
 
   if (typeof zoom !== "number" || zoom < 0 || zoom > 20) {
-    console.error("Invalid zoom level provided:", zoom);
+    secureLog.error("Invalid zoom level provided", `Zoom: ${zoom}`);
     return (
       <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
         <div className="text-center">
@@ -78,7 +79,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
       // Sanitize the image source to prevent XSS
       const sanitizedSrc = sanitizeImageSrc(markerImage.src);
       if (!sanitizedSrc) {
-        console.warn("Invalid or unsafe image source, falling back to default marker");
+        secureLog.warn("Invalid or unsafe image source, falling back to default marker", '');
         return undefined;
       }
 
@@ -101,7 +102,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
         iconAnchor: [30, 30],
       });
     } catch (error) {
-      console.error("Failed to create custom marker icon:", error);
+      secureLog.error("Failed to create custom marker icon:", error instanceof Error ? error.message : 'Unknown error');
       // Return undefined to fall back to default marker
       return undefined;
     }
@@ -139,7 +140,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
         case "NetworkError":
         case "TypeError":
           if (error.message.includes("fetch") || error.message.includes("network")) {
-            console.error("Map network error:", error);
+            secureLog.error("Map network error:", error.message);
             errorDetails = "Network connection issue";
             errorMessage = "Unable to load map tiles";
           }
@@ -147,37 +148,30 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
 
         case "ReferenceError":
         case "InvalidDataError":
-          console.error("Map data error:", error);
+          secureLog.error("Map data error:", error.message);
           errorDetails = "Invalid map data or configuration";
           errorMessage = "Map configuration error";
           break;
 
         case "InitializationError":
-          console.error("Map initialization error:", error);
+          secureLog.error("Map initialization error:", error.message);
           errorDetails = "Failed to initialize map components";
           errorMessage = "Map failed to initialize";
           break;
 
         default:
-          console.error("Map rendering error:", error);
+          secureLog.error("Map rendering error:", error.message);
           errorDetails = `Error: ${error.name} - ${error.message}`;
           break;
       }
     } else {
       // Handle non-Error objects
-      console.error("Unknown map error:", error);
+      secureLog.error("Unknown map error:", 'Non-Error object thrown');
       errorDetails = "Unknown error occurred";
     }
 
     // Log additional context for debugging
-    console.error("Map error context:", {
-      center,
-      zoom,
-      className,
-      hasMarkerImage: !!markerImage,
-      errorType: error instanceof Error ? error.name : typeof error,
-      timestamp: new Date().toISOString(),
-    });
+    secureLog.error("Map error context", `center: ${center}, zoom: ${zoom}, hasMarkerImage: ${!!markerImage}`);
 
     return (
       <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">

@@ -2,6 +2,7 @@
 
 import { ReactNode, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { secureLog } from "@/shared/utils/logging";
 
 interface IModalProps {
   children: ReactNode;
@@ -65,7 +66,7 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
       document.body
     );
   } catch (error) {
-    console.error("Error creating modal portal:", error);
+    secureLog.error("Error creating modal portal:", error instanceof Error ? error.message : 'Unknown error');
     // Fallback: render the modal inline if createPortal fails
     return (
       <div

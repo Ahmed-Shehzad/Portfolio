@@ -7,6 +7,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/axios-client";
 import { queryKeys } from "@/lib/query/config";
+import { secureLog } from "@/shared/utils/logging";
 import type { ContactFormData, ContactSubmissionResult } from "../types";
 
 // Constants to avoid magic numbers
@@ -60,7 +61,7 @@ export const useSubmitContactForm = (options?: {
     },
 
     onError: (error) => {
-      console.warn("Contact form submission failed:", error);
+      secureLog.error("Contact form submission failed:", error instanceof Error ? error.message : 'Unknown error');
 
       // Call custom onError callback if provided
       options?.onError?.(error);

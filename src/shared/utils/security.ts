@@ -1,3 +1,5 @@
+import { secureLog } from "./logging";
+
 /**
  * Sanitize image source to prevent XSS attacks
  * @param src - The image source URL to sanitize
@@ -19,13 +21,13 @@ export function sanitizeImageSrc(src: string): string | null {
 
     // Only allow http, https protocols
     if (!["http:", "https:"].includes(url.protocol)) {
-      console.warn("Invalid protocol in image source:", url.protocol);
+      secureLog.warn("Invalid protocol in image source:", url.protocol);
       return null;
     }
 
     return url.href;
   } catch (error) {
-    console.warn("Invalid image source provided:", src, error);
+    secureLog.warn("Invalid image source provided:", src);
     return null;
   }
 }

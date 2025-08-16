@@ -5,6 +5,7 @@
  */
 
 import type { ContactFormData, ContactSubmissionResult } from "@/features/contact";
+import { secureLog } from "@/shared/utils/logging";
 
 /**
  * Submits contact form data
@@ -31,7 +32,7 @@ export const submitContactForm = async (
     // );
     // return response.data;
   } catch (error) {
-    console.error("Contact form submission error:", error);
+    secureLog.error("Contact form submission error:", error instanceof Error ? error.message : 'Unknown error');
 
     return {
       success: false,

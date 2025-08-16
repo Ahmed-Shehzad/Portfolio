@@ -4,6 +4,7 @@ import GrainImage from "@/assets/images/grain.jpg";
 import { Modal } from "@/components/ui";
 import { useSubmitContactForm } from "@/features/contact/hooks";
 import { useBfcacheCompatibleTimeout } from "@/hooks/useBfcacheCompatible";
+import { secureLog } from "@/shared/utils/logging";
 import { FormEvent, useCallback, useState } from "react";
 
 interface IContactModalProps {
@@ -57,7 +58,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
       }, 2000);
     },
     onError: (error) => {
-      console.warn("Error submitting form:", error);
+      secureLog.error("Error submitting form:", error instanceof Error ? error.message : 'Unknown error');
     },
   });
 
