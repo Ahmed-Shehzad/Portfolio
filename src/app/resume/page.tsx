@@ -6,7 +6,7 @@ import { PrintButton } from "./components/PrintButton";
 export default function ResumePage() {
   return (
     <div
-      className="min-h-screen overflow-x-auto bg-gradient-to-b from-slate-900 to-slate-950 p-6"
+      className="min-h-screen overflow-x-auto bg-gradient-to-b from-slate-900 to-slate-950 p-6 print:min-h-0 print:overflow-visible print:bg-white print:p-0"
       style={{ minWidth: "1024px" }}
     >
       {/* Print Button - Hidden when printing */}
@@ -20,7 +20,7 @@ export default function ResumePage() {
           <aside className="bg-gray-50 p-8">
             <div className="flex flex-col items-center text-center">
               {/* Profile image */}
-              <div className="mb-4 size-20 overflow-hidden rounded-full border-4 border-gray-200">
+              <div className="mb-4 size-30 overflow-hidden rounded-full border-4 border-gray-200">
                 <Image
                   src={meImage}
                   alt="Muhammad Ahmed Shehzad"
@@ -118,7 +118,7 @@ export default function ResumePage() {
                 <div className="flex items-center gap-2">
                   <span>💼</span>
                   <Link
-                    href="https://www.linkedin.com/in/muhammad-ahmed-shehzad-a2697b150/"
+                    href="https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-blue-500 hover:underline"
@@ -197,7 +197,7 @@ export default function ResumePage() {
             <section className="print-compact mb-8">
               <h3 className="mb-3 text-lg font-semibold text-green-500">Profile</h3>
               <p className="text-sm leading-relaxed text-gray-700">
-                I&apos;m a software developer with over 5 years of experience building web
+                I&apos;m a software engineer with over 5 years of experience building web
                 applications. I enjoy working on both frontend and backend development, and I&apos;m
                 passionate about writing clean, maintainable code. I&apos;ve worked with various
                 technologies and love learning new ones to solve interesting problems.
@@ -234,7 +234,7 @@ export default function ResumePage() {
                 <article>
                   <div className="mb-2">
                     <h4 className="font-semibold text-gray-900">
-                      Software Developer — Sustayn GmbH
+                      Software Engineer — Sustayn GmbH
                     </h4>
                     <p className="text-xs text-gray-500">Feb 2022 – Jul 2023 · Essen</p>
                   </div>
@@ -282,7 +282,7 @@ export default function ResumePage() {
                 <article>
                   <div className="mb-2">
                     <h4 className="font-semibold text-gray-900">
-                      Software Developer — SODEFA GmbH Co. & KG
+                      Software Engineer — SODEFA GmbH Co. & KG
                     </h4>
                     <p className="text-xs text-gray-500">Aug 2019 – Sep 2021 · Hürth</p>
                   </div>

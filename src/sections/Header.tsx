@@ -2,6 +2,7 @@
 
 import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 interface HeaderOption {
   title: string;
@@ -54,9 +55,9 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
 
   if (isResume) {
     return (
-      <a className={className} href={option.href} aria-label="View Resume Page">
+      <Link className={className} href={option.href} aria-label="View Resume Page">
         {option.title}
-      </a>
+      </Link>
     );
   }
 
