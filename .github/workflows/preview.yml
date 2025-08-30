@@ -5,6 +5,12 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
 
+# Ensure workflow has necessary permissions
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,6 +25,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      issues: write # Required for commenting on PRs
 
     steps:
       - name: Checkout repository
@@ -49,29 +56,37 @@ jobs:
 
       - name: Comment PR with build status
         uses: actions/github-script@v7
+        continue-on-error: true # Don't fail the workflow if commenting fails
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const comment = `## 🚀 Preview Build Complete
+            try {
+              const comment = `## 🚀 Preview Build Complete
 
-            ✅ **Build Status**: Successful
-            📦 **Artifacts**: Available for download
-            🔍 **Changes**: This PR includes changes to the portfolio
+              ✅ **Build Status**: Successful
+              📦 **Artifacts**: Available for download
+              🔍 **Changes**: This PR includes changes to the portfolio
 
-            ### Quick Links
-            - 📱 [Production Site](https://ahmed-shehzad.github.io/Portfolio)
-            - � [Build Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+              ### Quick Links
+              - 📱 [Production Site](https://ahmed-shehzad.github.io/Portfolio)
+              - 🔗 [Build Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
-            > Build completed from commit: \`${{ github.event.pull_request.head.sha }}\`
+              > Build completed from commit: \`${{ github.event.pull_request.head.sha }}\`
 
-            ---
-            *This preview build will be updated when you push new commits to this PR.*`;
+              ---
+              *This preview build will be updated when you push new commits to this PR.*`;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              console.log('✅ PR comment posted successfully');
+            } catch (error) {
+              console.error('❌ Failed to post PR comment:', error.message);
+              // Don't throw - just log the error
+            }
 
   validate-build:
     name: Validate Build Output
@@ -79,6 +94,11 @@ jobs:
     needs: [build-preview]
     if: github.event.pull_request.draft == false
     timeout-minutes: 10
+
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write # Required for commenting on PRs
 
     steps:
       - name: Download build artifacts
@@ -115,21 +135,29 @@ jobs:
       - name: Comment validation results
         if: always()
         uses: actions/github-script@v7
+        continue-on-error: true # Don't fail the workflow if commenting fails
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const status = '${{ job.status }}' === 'success' ? '✅ Valid' : '❌ Invalid';
-            const comment = `## 🔍 Build Validation
+            try {
+              const status = '${{ job.status }}' === 'success' ? '✅ Valid' : '❌ Invalid';
+              const comment = `## 🔍 Build Validation
 
-            **Status**: ${status}
+              **Status**: ${status}
 
-            ${status.includes('✅') ?
-              'Build artifacts are valid and ready for deployment! 🎉' :
-              'Build validation failed. Please check the build process.'
-            }`;
+              ${status.includes('✅') ?
+                'Build artifacts are valid and ready for deployment! 🎉' :
+                'Build validation failed. Please check the build process.'
+              }`;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              console.log('✅ Validation comment posted successfully');
+            } catch (error) {
+              console.error('❌ Failed to post validation comment:', error.message);
+              // Don't throw - just log the error
+            }
