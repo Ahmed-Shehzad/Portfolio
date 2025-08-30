@@ -6,6 +6,7 @@ const config: Config = {
     "./src/sections/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./public/resume.html",
   ],
   theme: {
     screens: {
@@ -24,6 +25,10 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)"],
         serif: ["var(--font-serif)"],
+      },
+      colors: {
+        primary: "#1f9a8b",
+        accent: "#16a34a",
       },
     },
   },

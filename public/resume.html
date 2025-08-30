@@ -6,41 +6,17 @@
     <title>Resume — Muhammad Ahmed Shehzad (Tailwind v4)</title>
 
     <!--
-    Tailwind CDN (official): loads Tailwind JIT and generates the CSS at runtime.
-    This uses the canonical CDN endpoint. If you open the file *offline* the CDN won't load,
-    so a small fallback CSS is included below to keep the layout readable.
+    Tailwind CSS from project dependencies: uses the locally built CSS file that includes
+    all the project's Tailwind configuration and the classes used in this resume.
   -->
 
-    <script>
-      /* Tailwind config (optional) — define before loading the CDN script */
-      tailwind = {
-        config: {
-          theme: {
-            extend: {
-              colors: {
-                primary: "#1f9a8b",
-                accent: "#16a34a",
-              },
-            },
-          },
-        },
-      };
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="_next/static/css/dc10540dbed9ccfa.css" />
 
-    <!-- Minimal fallback CSS in case CDN is blocked/offline. This is intentionally small. -->
+    <!-- Minimal fallback CSS in case the built CSS file is not available -->
     <style>
-      /* Basic fallback so the file is usable without Tailwind */
-      :root {
-        --bg: #0f1724;
-        --panel: #ffffff;
-        --muted: #6b7280;
-        --accent: #16a34a;
-      }
+      /* Basic fallback styles - only essential layout if Tailwind fails to load */
       html,
       body {
-        height: 100%;
-        margin: 0;
         font-family:
           Inter,
           ui-sans-serif,
@@ -49,228 +25,184 @@
           "Segoe UI",
           Roboto,
           "Helvetica Neue",
-          Arial;
+          Arial,
+          sans-serif;
+        margin: 0;
+        padding: 0;
       }
-      body {
-        background: linear-gradient(180deg, #0b1220 0%, #0b0f14 100%);
-        padding: 24px;
-      }
-      .resume-shell {
-        max-width: 980px;
-        margin: 0 auto;
-        background: var(--panel);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.6);
-        border: 8px solid rgba(255, 255, 255, 0.02);
-      }
-      .resume-grid {
-        display: flex;
-        flex-direction: column;
-      }
-      .sidebar {
-        background: #fbfbfb;
-        padding: 28px;
-        border-right: 0;
-      }
-      .main {
-        padding: 28px;
-      }
+
+      /* Minimal grid fallback */
       @media (min-width: 768px) {
-        .resume-grid {
-          flex-direction: row;
+        .md\:grid-cols-\[320px_1fr\] {
+          display: grid;
+          grid-template-columns: 320px 1fr;
         }
-        .sidebar {
-          width: 300px;
-          border-right: 1px solid #eef2f6;
-        }
-        .main {
-          flex: 1;
-        }
-      }
-      .avatar {
-        width: 88px;
-        height: 88px;
-        border-radius: 9999px;
-        display: block;
-        margin: 0 auto;
-        border: 4px solid #f3f4f6;
-      }
-      .h1 {
-        font-size: 22px;
-        font-weight: 700;
-      }
-      .muted {
-        color: var(--muted);
-      }
-      .section-title {
-        color: var(--accent);
-        font-weight: 600;
-        margin-top: 18px;
-      }
-      .skill-dots span {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 9999px;
-        margin-right: 6px;
-        background: #e6eef6;
-      }
-      .skill-dots span.filled {
-        background: var(--accent);
-      }
-      .small {
-        font-size: 13px;
-        color: #111827;
-      }
-      .list {
-        margin-top: 10px;
       }
     </style>
   </head>
-  <body>
-    <div class="resume-shell">
-      <div class="resume-grid md:grid md:grid-cols-[300px_1fr]">
+  <body class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-6">
+    <div class="mx-auto max-w-4xl overflow-hidden rounded-xl bg-white shadow-2xl">
+      <div class="grid grid-cols-1 md:grid-cols-[320px_1fr]">
         <!-- SIDEBAR -->
-        <aside class="sidebar p-6 md:p-8">
+        <aside class="bg-gray-50 p-6 md:p-8">
           <div class="flex flex-col items-center text-center">
             <!-- inline SVG avatar to avoid external image -->
-            <svg
-              class="avatar mb-4"
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-label="avatar"
-            >
-              <defs>
-                <linearGradient id="g" x1="0" x2="1">
-                  <stop offset="0" stop-color="#1f2937" />
-                  <stop offset="1" stop-color="#4b5563" />
-                </linearGradient>
-              </defs>
-              <rect width="100" height="100" rx="50" fill="#e6eef6" />
-              <g transform="translate(10,12) scale(0.78)">
-                <circle cx="40" cy="28" r="18" fill="#c7d2fe" />
-                <rect x="10" y="56" width="60" height="26" rx="10" fill="#c7d2fe" />
-              </g>
-            </svg>
+            <div class="mb-4 size-20 overflow-hidden rounded-full border-4 border-gray-200">
+              <svg
+                class="size-full"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="Profile avatar"
+              >
+                <rect width="100" height="100" fill="#e6eef6" />
+                <g transform="translate(10,12) scale(0.78)">
+                  <circle cx="40" cy="28" r="18" fill="#c7d2fe" />
+                  <rect x="10" y="56" width="60" height="26" rx="10" fill="#c7d2fe" />
+                </g>
+              </svg>
+            </div>
 
             <h3 class="text-lg font-semibold">Muhammad Ahmed Shehzad</h3>
             <p class="text-sm text-gray-500">Software Engineer</p>
           </div>
 
           <div class="mt-6 text-sm text-gray-700">
-            <h4 class="section-title">Details</h4>
-            <div class="mt-3 space-y-2 text-[13px]">
+            <h4 class="mt-6 font-semibold text-green-500">Details</h4>
+            <div class="mt-3 space-y-3 text-xs">
               <div>
-                <strong class="text-gray-800">Address</strong>
-                <div class="muted">Kärntner Straße 2<br />Wiesbaden, 65187<br />Germany</div>
+                <div class="font-medium text-gray-800">Address</div>
+                <div class="text-gray-600">
+                  Kärntner Straße 2<br />
+                  Wiesbaden, 65187<br />
+                  Germany
+                </div>
               </div>
               <div>
-                <strong class="text-gray-800">Phone</strong>
-                <div class="muted">+49 176 233 78 452</div>
+                <div class="font-medium text-gray-800">Phone</div>
+                <div class="text-gray-600">+49 176 233 78 452</div>
               </div>
               <div>
-                <strong class="text-gray-800">Email</strong>
-                <div class="muted">ahmedshehzad786@gmail.com</div>
+                <div class="font-medium text-gray-800">Email</div>
+                <div class="text-gray-600">ahmedshehzad786@gmail.com</div>
               </div>
               <div>
-                <strong class="text-gray-800">Date / Place of birth</strong>
-                <div class="muted">20.07.1993 — Lahore</div>
+                <div class="font-medium text-gray-800">Date / Place of birth</div>
+                <div class="text-gray-600">20.07.1993 — Lahore</div>
               </div>
               <div>
-                <strong class="text-gray-800">Nationality</strong>
-                <div class="muted">Pakistan</div>
+                <div class="font-medium text-gray-800">Nationality</div>
+                <div class="text-gray-600">Pakistan</div>
               </div>
             </div>
 
-            <h4 class="section-title mt-6">Links</h4>
+            <h4 class="mt-6 font-semibold text-green-500">Links</h4>
             <div class="mt-2">
-              <a href="#" class="text-accent text-sm hover:underline">Portfolio</a>
+              <a href="#" class="text-sm text-green-500 hover:underline">Portfolio</a>
             </div>
 
-            <h4 class="section-title mt-6">Skills</h4>
-            <ul class="mt-2 space-y-2 text-sm">
+            <h4 class="mt-6 font-semibold text-green-500">Skills</h4>
+            <ul class="mt-3 space-y-2 text-sm">
               <li class="flex items-center justify-between">
-                <span>C#</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span class="filled"></span><span></span
-                ></span>
+                <span>C#</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>.NET</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span
-                ></span>
+                <span>.NET</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>Python</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span></span><span></span
-                ></span>
+                <span>Python</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>TypeScript</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span
-                ></span>
+                <span>TypeScript</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>Node.js</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span></span><span></span
-                ></span>
+                <span>Node.js</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>Docker</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span></span><span></span
-                ></span>
+                <span>Docker</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>Tailwind</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span
-                ></span>
+                <span>Tailwind</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                </div>
               </li>
               <li class="flex items-center justify-between">
-                <span>ReactJS</span
-                ><span class="skill-dots"
-                  ><span class="filled"></span><span class="filled"></span
-                  ><span class="filled"></span><span></span><span></span
-                ></span>
+                <span>ReactJS</span>
+                <div class="flex gap-1">
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-green-500"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                  <div class="size-2 rounded-full bg-gray-300"></div>
+                </div>
               </li>
             </ul>
 
-            <h4 class="section-title mt-6">Languages</h4>
-            <ul class="mt-2 space-y-1 text-sm">
-              <li>English — <span class="muted">Fluent</span></li>
-              <li>German — <span class="muted">Intermediate</span></li>
-              <li>Urdu — <span class="muted">Native</span></li>
+            <h4 class="mt-6 font-semibold text-green-500">Languages</h4>
+            <ul class="mt-3 space-y-1 text-sm">
+              <li>English — <span class="text-gray-600">Fluent</span></li>
+              <li>German — <span class="text-gray-600">Intermediate</span></li>
+              <li>Urdu — <span class="text-gray-600">Native</span></li>
             </ul>
           </div>
         </aside>
 
         <!-- MAIN -->
-        <main class="main p-6 md:p-10">
-          <header class="mb-4 border-b pb-4">
-            <h1 class="text-2xl font-extrabold md:text-3xl">Muhammad Ahmed Shehzad</h1>
-            <p class="mt-1 text-sm text-gray-500">Software Engineer</p>
+        <main class="p-6 md:p-8 lg:p-10">
+          <header class="mb-6 border-b border-gray-200 pb-4">
+            <h1 class="text-2xl font-bold text-gray-900 md:text-3xl">Muhammad Ahmed Shehzad</h1>
+            <p class="mt-1 text-sm text-gray-600">Software Engineer</p>
           </header>
 
-          <section class="mb-6">
-            <h3 class="text-accent text-lg font-semibold">Profile</h3>
-            <p class="mt-2 text-sm leading-relaxed text-gray-700">
+          <section class="mb-8">
+            <h3 class="mb-3 text-lg font-semibold text-green-500">Profile</h3>
+            <p class="text-sm leading-relaxed text-gray-700">
               I'm a Full Stack Developer specializing in building scalable, performance-driven
               applications with modern web technologies. My expertise spans front-end and back-end,
               with a strong focus on clean architecture, maintainability, and delivering measurable
@@ -278,16 +210,18 @@
             </p>
           </section>
 
-          <section class="mb-6">
-            <h3 class="text-accent text-lg font-semibold">Employment History</h3>
+          <section class="mb-8">
+            <h3 class="mb-4 text-lg font-semibold text-green-500">Employment History</h3>
 
-            <div class="mt-4 space-y-6 text-sm text-gray-800">
+            <div class="space-y-6 text-sm text-gray-800">
               <article>
-                <h4 class="font-semibold">
-                  Software Engineer — Verbund Pflegehilfe
-                  <span class="text-xs text-gray-500">Jul 2023 – Present · Mainz</span>
-                </h4>
-                <ul class="mt-2 list-inside list-disc space-y-1">
+                <div class="mb-2">
+                  <h4 class="font-semibold text-gray-900">
+                    Software Engineer — Verbund Pflegehilfe
+                  </h4>
+                  <p class="text-xs text-gray-500">Jul 2023 – Present · Mainz</p>
+                </div>
+                <ul class="ml-4 list-disc space-y-1 text-gray-700">
                   <li>Implemented features for matching users with local care providers.</li>
                   <li>CRM Feature development for consultants based on requirements.</li>
                   <li>
@@ -298,11 +232,11 @@
               </article>
 
               <article>
-                <h4 class="font-semibold">
-                  Software Developer — Sustayn GmbH
-                  <span class="text-xs text-gray-500">Feb 2022 – Jul 2023 · Essen</span>
-                </h4>
-                <ul class="mt-2 list-inside list-disc space-y-1">
+                <div class="mb-2">
+                  <h4 class="font-semibold text-gray-900">Software Developer — Sustayn GmbH</h4>
+                  <p class="text-xs text-gray-500">Feb 2022 – Jul 2023 · Essen</p>
+                </div>
+                <ul class="ml-4 list-disc space-y-1 text-gray-700">
                   <li>Engineered an employee engagement platform focused on sustainability.</li>
                   <li>
                     Implemented gamified sustainability engagement features, including microlearning
@@ -313,22 +247,24 @@
               </article>
 
               <article>
-                <h4 class="font-semibold">
-                  Software Developer — FPT Software
-                  <span class="text-xs text-gray-500">Sep 2021 – Nov 2021 · Essen</span>
-                </h4>
-                <p class="mt-2">
+                <div class="mb-2">
+                  <h4 class="font-semibold text-gray-900">Software Developer — FPT Software</h4>
+                  <p class="text-xs text-gray-500">Sep 2021 – Nov 2021 · Essen</p>
+                </div>
+                <p class="ml-4 text-gray-700">
                   Provided services for Lidar Management System for client RWE (Renewable Wind
                   Energy).
                 </p>
               </article>
 
               <article>
-                <h4 class="font-semibold">
-                  Software Developer — SODEFA GmbH Co. & KG
-                  <span class="text-xs text-gray-500">Aug 2019 – Sep 2021 · Hürth</span>
-                </h4>
-                <ul class="mt-2 list-inside list-disc space-y-1">
+                <div class="mb-2">
+                  <h4 class="font-semibold text-gray-900">
+                    Software Developer — SODEFA GmbH Co. & KG
+                  </h4>
+                  <p class="text-xs text-gray-500">Aug 2019 – Sep 2021 · Hürth</p>
+                </div>
+                <ul class="ml-4 list-disc space-y-1 text-gray-700">
                   <li>
                     Developed a heating oil price calculator to assist users in estimating costs.
                   </li>
@@ -338,11 +274,11 @@
               </article>
 
               <article>
-                <h4 class="font-semibold">
-                  Software Engineer — Six Logics
-                  <span class="text-xs text-gray-500">Nov 2016 – Apr 2018 · Lahore</span>
-                </h4>
-                <ul class="mt-2 list-inside list-disc space-y-1">
+                <div class="mb-2">
+                  <h4 class="font-semibold text-gray-900">Software Engineer — Six Logics</h4>
+                  <p class="text-xs text-gray-500">Nov 2016 – Apr 2018 · Lahore</p>
+                </div>
+                <ul class="ml-4 list-disc space-y-1 text-gray-700">
                   <li>
                     Developed features for live scores and real-time sports updates for client:
                     365Scores.
@@ -355,20 +291,15 @@
           </section>
 
           <section>
-            <h3 class="text-accent text-lg font-semibold">Education</h3>
-            <p class="mt-2 text-sm">
-              <strong>University of South Asia</strong>, Bachelor of Science in Computer Science —
-              <span class="text-gray-500">Sep 2012 – Sep 2017 · Lahore</span>
-            </p>
+            <h3 class="mb-3 text-lg font-semibold text-green-500">Education</h3>
+            <div class="text-sm">
+              <h4 class="font-semibold text-gray-900">University of South Asia</h4>
+              <p class="text-gray-700">Bachelor of Science in Computer Science</p>
+              <p class="text-xs text-gray-500">Sep 2012 – Sep 2017 · Lahore</p>
+            </div>
           </section>
         </main>
       </div>
-    </div>
-
-    <!-- Helpful note visible on the page -->
-    <div class="mx-auto mt-4 max-w-5xl px-4 text-xs text-gray-300">
-      Tip: This file uses the Tailwind CDN (https://cdn.tailwindcss.com). If you open it offline the
-      CDN won't load — the file contains a minimal fallback so the layout remains readable.
     </div>
   </body>
 </html>

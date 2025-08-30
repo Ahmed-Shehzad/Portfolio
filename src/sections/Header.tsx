@@ -31,7 +31,7 @@ const headerOptions: HeaderOption[] = [
   { title: "Projects", href: "#projects", id: "projects" },
   { title: "About", href: "#about", id: "about" },
   { title: "Contact", href: "#contact", id: "contact" },
-  { title: "Resume", href: "/resume.html", id: "resume" },
+  { title: "Resume", href: "/resume", id: "resume" },
 ];
 
 // Default header option for fallback scenarios
