@@ -26,6 +26,14 @@ const VALIDATION_RULES = {
   email: { pattern: SAFE_EMAIL_REGEX, required: true },
 } as const;
 
+// Form input styling utilities
+const getInputClassName = (hasError: boolean) =>
+  `mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors placeholder:text-gray-500 focus:ring-1 focus:outline-none ${
+    hasError
+      ? "border-red-300 focus:border-red-400 focus:ring-red-400"
+      : "border-gray-300 focus:border-sky-400 focus:ring-sky-400"
+  }`;
+
 type ValidationRule = {
   minLength?: number;
   pattern?: RegExp;
@@ -265,11 +273,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
                   value={formData.name}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
-                  className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors placeholder:text-gray-500 focus:ring-1 focus:outline-none ${
-                    errors.name
-                      ? "border-red-300 focus:border-red-400 focus:ring-red-400"
-                      : "border-gray-300 focus:border-sky-400 focus:ring-sky-400"
-                  }`}
+                  className={getInputClassName(!!errors.name)}
                   placeholder="Your full name"
                 />
                 {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
@@ -286,11 +290,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
                   value={formData.email}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
-                  className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors placeholder:text-gray-500 focus:ring-1 focus:outline-none ${
-                    errors.email
-                      ? "border-red-300 focus:border-red-400 focus:ring-red-400"
-                      : "border-gray-300 focus:border-sky-400 focus:ring-sky-400"
-                  }`}
+                  className={getInputClassName(!!errors.email)}
                   placeholder="your.email@example.com"
                 />
                 {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
@@ -309,11 +309,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
                 value={formData.subject}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors placeholder:text-gray-500 focus:ring-1 focus:outline-none ${
-                  errors.subject
-                    ? "border-red-300 focus:border-red-400 focus:ring-red-400"
-                    : "border-gray-300 focus:border-sky-400 focus:ring-sky-400"
-                }`}
+                className={getInputClassName(!!errors.subject)}
                 placeholder="What's this about?"
               />
               {errors.subject && <p className="mt-1 text-xs text-red-600">{errors.subject}</p>}
@@ -331,11 +327,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
                 value={formData.message}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors placeholder:text-gray-500 focus:ring-1 focus:outline-none ${
-                  errors.message
-                    ? "border-red-300 focus:border-red-400 focus:ring-red-400"
-                    : "border-gray-300 focus:border-sky-400 focus:ring-sky-400"
-                }`}
+                className={getInputClassName(!!errors.message)}
                 placeholder="Tell me about your project or inquiry..."
               />
               {errors.message && <p className="mt-1 text-xs text-red-600">{errors.message}</p>}

@@ -228,7 +228,10 @@ export const Header = () => {
           });
         }
       } catch (error) {
-        console.warn(`Failed to scroll to section ${option.id}:`, error);
+        // Handle scrolling errors gracefully
+        if (process.env.NODE_ENV === "development") {
+          console.warn(`Failed to scroll to section ${option.id}:`, error);
+        }
       }
     },
     [updateURL]

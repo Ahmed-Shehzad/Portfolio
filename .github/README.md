@@ -88,10 +88,9 @@ This directory contains comprehensive CI/CD workflows for the Muhammad Ahmed She
 Add these secrets in your GitHub repository settings:
 
 ```bash
-# Optional: For enhanced features
-CODECOV_TOKEN=your_codecov_token
+# Required for code quality analysis
 SONAR_TOKEN=your_sonar_token
-SONAR_HOST_URL=https://sonarcloud.io
+# SONAR_HOST_URL is set to https://sonarcloud.io in the workflow
 ```
 
 ### Repository Settings

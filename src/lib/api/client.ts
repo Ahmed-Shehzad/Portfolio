@@ -10,6 +10,9 @@ import { ENV_CONFIG } from "@/config";
 import type { ApiResponse } from "@/shared/types";
 import { secureLog } from "@/shared/utils/logging";
 
+// Constants to avoid duplication
+const REQUEST_SUCCESSFUL_MESSAGE = "Request successful";
+
 // Enhanced API Error class
 export class ApiError extends Error {
   constructor(
@@ -92,12 +95,10 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
     },
     (error: AxiosError) => {
       // Handle common error scenarios
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 && typeof window !== "undefined") {
         // Handle unauthorized - redirect to login or refresh token
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("authToken");
-          // You might want to redirect to login page here
-        }
+        localStorage.removeItem("authToken");
+        // You might want to redirect to login page here
       }
 
       if (error.response && error.response.status >= 500) {
@@ -136,7 +137,7 @@ export const api = {
       return {
         success: true,
         data: response.data,
-        message: "Request successful",
+        message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
       const apiError =
@@ -162,7 +163,7 @@ export const api = {
       return {
         success: true,
         data: response.data,
-        message: "Request successful",
+        message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
       const apiError =
@@ -188,7 +189,7 @@ export const api = {
       return {
         success: true,
         data: response.data,
-        message: "Request successful",
+        message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
       const apiError =
@@ -214,7 +215,7 @@ export const api = {
       return {
         success: true,
         data: response.data,
-        message: "Request successful",
+        message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
       const apiError =
@@ -239,7 +240,7 @@ export const api = {
       return {
         success: true,
         data: response.data,
-        message: "Request successful",
+        message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
       const apiError =

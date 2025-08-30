@@ -11,6 +11,12 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
+// Constants to avoid duplication
+const AUTHOR_NAME = "Muhammad Ahmed Shehzad";
+const BACKEND_DEV_DESCRIPTION =
+  "Backend Developer specializing in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.";
+const PORTFOLIO_URL = "https://ahmed-shehzad.github.io/Portfolio";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -44,17 +50,16 @@ export const metadata: Metadata = {
     "Software Engineer",
     "Database Architecture",
   ],
-  authors: [{ name: "Muhammad Ahmed Shehzad" }],
-  creator: "Muhammad Ahmed Shehzad",
+  authors: [{ name: AUTHOR_NAME }],
+  creator: AUTHOR_NAME,
   metadataBase: new URL("https://ahmed-shehzad.github.io"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
-    description:
-      "Backend Developer specializing in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.",
-    url: "https://ahmed-shehzad.github.io/Portfolio",
+    description: BACKEND_DEV_DESCRIPTION,
+    url: PORTFOLIO_URL,
     siteName: "Muhammad Ahmed Shehzad - Portfolio",
     images: [
       {
@@ -114,13 +119,13 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              "@id": "https://ahmed-shehzad.github.io/Portfolio/#person",
-              name: "Muhammad Ahmed Shehzad",
+              "@id": `${PORTFOLIO_URL}/#person`,
+              name: AUTHOR_NAME,
               alternateName: "Ahmed Shehzad",
               description:
                 "Full Stack Developer specializing in TypeScript, React, Next.js, C#, .NET, and modern web technologies",
-              url: "https://ahmed-shehzad.github.io/Portfolio",
-              image: "https://ahmed-shehzad.github.io/Portfolio/me.jpg",
+              url: PORTFOLIO_URL,
+              image: `${PORTFOLIO_URL}/me.jpg`,
               sameAs: [
                 "https://github.com/Ahmed-Shehzad",
                 "https://linkedin.com/in/muhammad-ahmed-shehzad",
@@ -156,14 +161,13 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "@id": "https://ahmed-shehzad.github.io/Portfolio/#website",
-              url: "https://ahmed-shehzad.github.io/Portfolio",
-              name: "Muhammad Ahmed Shehzad - Portfolio",
-              description:
-                "Portfolio of Muhammad Ahmed Shehzad, a Full Stack Developer specializing in modern web technologies",
+              "@id": `${PORTFOLIO_URL}/#website`,
+              url: PORTFOLIO_URL,
+              name: `${AUTHOR_NAME} - Portfolio`,
+              description: `Portfolio of ${AUTHOR_NAME}, a Full Stack Developer specializing in modern web technologies`,
               publisher: {
                 "@type": "Person",
-                "@id": "https://ahmed-shehzad.github.io/Portfolio/#person",
+                "@id": `${PORTFOLIO_URL}/#person`,
               },
               inLanguage: "en-US",
             }),

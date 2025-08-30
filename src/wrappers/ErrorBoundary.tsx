@@ -3,6 +3,14 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import type { BaseComponentProps } from "@/shared/types";
 
+// ASCII character codes for log sanitization
+const ASCII_CARRIAGE_RETURN = 13;
+const ASCII_LINE_FEED = 10;
+const ASCII_TAB = 9;
+const ASCII_CONTROL_CHAR_MAX = 31;
+const ASCII_DELETE_CHAR_MIN = 127;
+const ASCII_DELETE_CHAR_MAX = 159;
+
 interface ErrorBoundaryProps extends BaseComponentProps {
   children: ReactNode;
   fallback?: ReactNode;
@@ -36,16 +44,19 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   private readonly sanitizeLog = (input: string): string => {
     const safeInput = typeof input === "string" ? input : String(input ?? "");
     return safeInput
-      .split(String.fromCharCode(13))
+      .split(String.fromCharCode(ASCII_CARRIAGE_RETURN))
       .join(" ") // \r
-      .split(String.fromCharCode(10))
+      .split(String.fromCharCode(ASCII_LINE_FEED))
       .join(" ") // \n
-      .split(String.fromCharCode(9))
+      .split(String.fromCharCode(ASCII_TAB))
       .join(" ") // \t
       .split("")
       .filter((char) => {
         const code = char.charCodeAt(0);
-        return !(code <= 31 || (code >= 127 && code <= 159));
+        return !(
+          code <= ASCII_CONTROL_CHAR_MAX ||
+          (code >= ASCII_DELETE_CHAR_MIN && code <= ASCII_DELETE_CHAR_MAX)
+        );
       })
       .join("");
   };
@@ -55,12 +66,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     const safeErrorStack = this.sanitizeLog(error.stack ?? "");
     const safeComponentStack = this.sanitizeLog(errorInfo.componentStack ?? "");
 
-    // Log the sanitized error to console or error reporting service
-    console.error("ErrorBoundary caught an error:", {
-      message: safeErrorMessage,
-      stack: safeErrorStack,
-      componentStack: safeComponentStack,
-    });
+    // Log the sanitized error to console in development or error reporting service in production
+    if (process.env.NODE_ENV === "development") {
+      console.error("ErrorBoundary caught an error:", {
+        message: safeErrorMessage,
+        stack: safeErrorStack,
+        componentStack: safeComponentStack,
+      });
+    }
 
     this.setState({ error, errorInfo });
 

@@ -1,0 +1,37 @@
+# AsciiDoctor Configuration for Portfolio Documentation
+# This file contains default attributes and settings for rendering documentation
+
+# Document attributes
+:doctype: article
+:encoding: utf-8
+:lang: en
+:toc: left
+:toclevels: 3
+:sectanchors:
+:sectlinks:
+:sectnums:
+:icons: font
+:source-highlighter: highlight.js
+:highlightjs-theme: github
+
+# Safety and compatibility
+:safe-mode: unsafe
+:allow-uri-read:
+
+# Styling
+:stylesdir: .asciidoctor/themes
+:stylesheet: portfolio.css
+
+# Custom attributes for portfolio
+:author: Muhammad Ahmed Shehzad
+:email: ahmed@example.com
+:version: 1.0.0
+:revdate: { localdate }
+:project-name: Portfolio
+:project-url: https://ahmed-shehzad.github.io/Portfolio
+
+# Technical stack attributes
+:react-version: 19
+:nextjs-version: 15
+:typescript-version: 5
+:node-version: 20

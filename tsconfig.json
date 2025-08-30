@@ -25,6 +25,7 @@
       "@/config/*": ["./src/config/*"]
     },
     "allowArbitraryExtensions": true,
+    "types": ["vitest/globals"],
     // Additional strict type checking (bulletproof configuration)
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,

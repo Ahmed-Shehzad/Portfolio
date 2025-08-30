@@ -14,9 +14,26 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.config({
     extends: ["eslint:recommended", "next", "next/core-web-vitals", "next/typescript", "prettier"],
+    plugins: ["sonarjs"],
     ignorePatterns: ["public/worker.js"], // Exclude worker from strict linting
     rules: {
       // Bulletproof React ESLint rules (without TypeScript project-requiring rules)
+
+      // SonarJS quality rules
+      "sonarjs/cognitive-complexity": ["error", 15],
+      "sonarjs/max-switch-cases": ["error", 30],
+      "sonarjs/no-all-duplicated-branches": "error",
+      "sonarjs/no-collapsible-if": "error",
+      "sonarjs/no-collection-size-mischeck": "error",
+      "sonarjs/no-duplicate-string": ["error", { threshold: 3 }],
+      "sonarjs/no-duplicated-branches": "error",
+      "sonarjs/no-identical-conditions": "error",
+      "sonarjs/no-identical-expressions": "error",
+      "sonarjs/no-redundant-boolean": "error",
+      "sonarjs/no-same-line-conditional": "error",
+      "sonarjs/no-small-switch": "error",
+      "sonarjs/prefer-immediate-return": "error",
+      "sonarjs/prefer-single-boolean-return": "error",
 
       // TypeScript specific rules
       "@typescript-eslint/no-explicit-any": "error", // Enforcing no any types

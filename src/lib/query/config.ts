@@ -7,31 +7,46 @@
 import { QueryClient } from "@tanstack/react-query";
 import { ENV_CONFIG } from "@/config";
 
+// Time constants in milliseconds
+const FIVE_MINUTES_MS = 5 * 60 * 1000;
+const TEN_MINUTES_MS = 10 * 60 * 1000;
+const ONE_SECOND_MS = 1000;
+const THIRTY_SECONDS_MS = 30 * 1000;
+
+// HTTP status code ranges
+const CLIENT_ERROR_MIN = 400;
+const CLIENT_ERROR_MAX = 500;
+
+// Retry configuration
+const MAX_RETRY_ATTEMPTS = 3;
+const EXPONENTIAL_BASE = 2;
+
 // Default query options following bulletproof patterns
 export const defaultQueryOptions = {
   queries: {
     // Stale time - how long data stays fresh
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: FIVE_MINUTES_MS, // 5 minutes
 
     // Cache time - how long data stays in cache after becoming unused
-    gcTime: 10 * 60 * 1000, // 10 minutes (was cacheTime in v4)
+    gcTime: TEN_MINUTES_MS, // 10 minutes (was cacheTime in v4)
 
     // Retry configuration
     retry: (failureCount: number, error: unknown) => {
       // Don't retry on 4xx errors (client errors)
       if (error && typeof error === "object" && "status" in error) {
         const status = error.status as number;
-        if (status >= 400 && status < 500) {
+        if (status >= CLIENT_ERROR_MIN && status < CLIENT_ERROR_MAX) {
           return false;
         }
       }
 
       // Retry up to 3 times for other errors
-      return failureCount < 3;
+      return failureCount < MAX_RETRY_ATTEMPTS;
     },
 
     // Retry delay with exponential backoff
-    retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retryDelay: (attemptIndex: number) =>
+      Math.min(ONE_SECOND_MS * EXPONENTIAL_BASE ** attemptIndex, THIRTY_SECONDS_MS),
 
     // Refetch on window focus (disable in development for better DX)
     refetchOnWindowFocus: ENV_CONFIG.isProduction,
@@ -47,7 +62,7 @@ export const defaultQueryOptions = {
     retry: 1,
 
     // Retry delay for mutations
-    retryDelay: 1000,
+    retryDelay: ONE_SECOND_MS,
   },
 } as const;
 

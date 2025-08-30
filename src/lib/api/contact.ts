@@ -7,6 +7,9 @@
 import type { ContactFormData, ContactSubmissionResult } from "@/features/contact";
 import { secureLog } from "@/shared/utils/logging";
 
+// Mock delay constant
+const MOCK_API_DELAY_MS = 1000;
+
 /**
  * Submits contact form data
  */
@@ -16,7 +19,7 @@ export const submitContactForm = async (
   try {
     // For now, this is a mock implementation
     // Replace with actual API endpoint when backend is available
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY_MS));
 
     // Mock success response
     return {

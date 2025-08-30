@@ -30,6 +30,29 @@ import { secureLog } from "@/shared/utils/logging";
 
 // Web Worker configuration constants
 const WORKER_TASK_TIMEOUT_MS = 30000; // 30 seconds timeout for tasks
+const UNKNOWN_ERROR_MESSAGE = "Unknown error";
+
+// Helper function to extract error message from unknown data
+const extractErrorMessage = (data: unknown): string => {
+  if (typeof data === "string") {
+    return data;
+  }
+  if (data && typeof data === "object" && "toString" in data) {
+    return data.toString();
+  }
+  return "[object]";
+};
+
+// Helper function to extract worker error message
+const extractWorkerErrorMessage = (data: unknown): string => {
+  if (data && typeof data === "object" && "message" in data) {
+    return (data as { message: unknown }).message?.toString() || "Unknown message";
+  }
+  if (data && typeof data === "object" && "toString" in data) {
+    return data.toString();
+  }
+  return "[object]";
+};
 
 import type { Project } from "@/features/projects/types";
 import type { Testimonial } from "@/features/testimonials/types";
@@ -94,12 +117,7 @@ export const useWebWorker = () => {
           }
           tasksRef.current.delete(id);
           if (type === "ERROR") {
-            const errorMessage =
-              typeof data === "string"
-                ? data
-                : data && typeof data === "object" && "toString" in data
-                  ? data.toString()
-                  : "[object]";
+            const errorMessage = extractErrorMessage(data);
             task.reject(new Error(errorMessage));
           } else {
             task.resolve({
@@ -139,12 +157,7 @@ export const useWebWorker = () => {
                 "Worker error:",
                 typeof data === "string" ? data : "Unknown worker error"
               );
-              const errorMessage =
-                data && typeof data === "object" && "message" in data
-                  ? (data as { message: unknown }).message?.toString() || "Unknown message"
-                  : data && typeof data === "object" && "toString" in data
-                    ? data.toString()
-                    : "[object]";
+              const errorMessage = extractWorkerErrorMessage(data);
               setError(errorMessage);
               break;
             }
@@ -154,14 +167,14 @@ export const useWebWorker = () => {
         workerRef.current.onerror = (error) => {
           secureLog.error(
             "Worker initialization error:",
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
           );
           setError("Failed to initialize web worker");
         };
       } catch (error) {
         secureLog.warn(
           "Web Worker not available:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         setError("Web Worker not supported in this environment");
       }
@@ -273,7 +286,7 @@ export const useAnimationWorker = () => {
       } catch (error) {
         secureLog.error(
           "Animation processing failed:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         return elements; // Fallback to original data
       }
@@ -299,7 +312,7 @@ export const useScrollWorker = () => {
       } catch (error) {
         secureLog.error(
           "Scroll optimization failed:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         return elements;
       }
@@ -321,7 +334,7 @@ export const useTestimonialsWorker = () => {
       } catch (error) {
         secureLog.error(
           "Testimonials processing failed:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         return testimonials;
       }
@@ -343,7 +356,7 @@ export const useProjectsWorker = () => {
       } catch (error) {
         secureLog.error(
           "Projects optimization failed:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         return projects;
       }
@@ -365,7 +378,7 @@ export const useStarRatingsWorker = () => {
       } catch (error) {
         secureLog.error(
           "Star ratings calculation failed:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         return ratings.map(({ rating, id }) => ({
           id,
@@ -395,7 +408,7 @@ export const useContactValidationWorker = () => {
       } catch (error) {
         secureLog.error(
           "Form validation failed:",
-          error instanceof Error ? error.message : "Unknown error"
+          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
         );
         // Fallback validation
         return {
@@ -435,7 +448,7 @@ export const usePerformanceWorker = () => {
     } catch (error) {
       secureLog.error(
         "Performance metrics calculation failed:",
-        error instanceof Error ? error.message : "Unknown error"
+        error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
       );
       return null;
     }

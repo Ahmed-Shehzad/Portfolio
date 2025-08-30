@@ -97,6 +97,7 @@ pnpm-lock.yaml
 # Generated files
 *.min.js
 *.min.css
+public/worker.js
 
 # Binary files
 *.png
