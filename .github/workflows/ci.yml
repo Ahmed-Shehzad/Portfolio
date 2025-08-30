@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, develop]
 
+# Restrict default permissions for enhanced security
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -174,7 +178,7 @@ jobs:
           CRITICAL_VULNS=$(echo "$AUDIT_RESULT" | jq -r '.metadata.vulnerabilities.critical // 0')
 
           if [ "$HIGH_VULNS" -gt 0 ] || [ "$CRITICAL_VULNS" -gt 0 ]; then
-            echo "❌ Found $HIGH_VULNS high and $CRITICAL_VULNS critical vulnerabilities"
+            echo "❌ Found ${HIGH_VULNS} high and ${CRITICAL_VULNS} critical vulnerabilities"
             npm audit --audit-level=high
             exit 1
           else
@@ -191,7 +195,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Ruby (for AsciiDoctor)
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v1.180.1
         with:
           ruby-version: "3.2"
           bundler-cache: false
@@ -219,15 +223,15 @@ jobs:
           # Validate each file
           validation_failed=false
           while IFS= read -r file; do
-            echo "Validating: $file"
+            echo "Validating: \"$file\""
 
             # Check syntax by attempting to convert to HTML
             if ! asciidoctor --safe-mode unsafe --no-header-footer -o /dev/null "$file" 2>/dev/null; then
-              echo "❌ Syntax error in: $file"
+              echo "❌ Syntax error in: \"$file\""
               asciidoctor --safe-mode unsafe --no-header-footer -o /dev/null "$file"
               validation_failed=true
             else
-              echo "✅ Valid: $file"
+              echo "✅ Valid: \"$file\""
             fi
           done < adoc_files.txt
 
@@ -271,7 +275,7 @@ jobs:
 
           # List documentation categories
           echo "- **Documentation structure**:" >> $GITHUB_STEP_SUMMARY
-          find src/docs -name "*.adoc" -type f | head -10 | while read file; do
+          find src/docs -name "*.adoc" -type f | head -10 | while read -r file; do
             echo "  - \`$file\`" >> $GITHUB_STEP_SUMMARY
           done
 
@@ -311,13 +315,13 @@ jobs:
           path: ./
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: sonarsource/sonarqube-scan-action@v2.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
 
       - name: SonarQube Quality Gate Check
-        uses: sonarsource/sonarqube-quality-gate-action@master
+        uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
