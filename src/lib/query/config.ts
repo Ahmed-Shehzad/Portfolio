@@ -14,13 +14,7 @@ const ONE_SECOND_MS = 1000;
 const THIRTY_SECONDS_MS = 30 * 1000;
 
 // HTTP status code ranges
-const CLIENT_ERROR_MIN = 400;
 const CLIENT_ERROR_MAX = 499;
-
-// Retry configuration
-const MAX_RETRY_ATTEMPTS = 3;
-const EXPONENTIAL_BASE = 2;
-
 // Default query options following bulletproof patterns
 export const defaultQueryOptions = {
   queries: {
