@@ -3,7 +3,7 @@
  */
 
 // Axios-based API client (bulletproof implementation)
-export { api, ApiError } from "./axios-client";
+export { api, ApiError } from "./client";
 
 // Feature APIs
 export { submitContactForm } from "./contact";

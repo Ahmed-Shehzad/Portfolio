@@ -1,0 +1,264 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., v1.2.3)"
+        required: true
+        type: string
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  validate:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is-prerelease: ${{ steps.version.outputs.is-prerelease }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${{ github.ref_name }}"
+          fi
+
+          # Remove 'v' prefix if present
+          VERSION=${VERSION#v}
+
+          # Check if it's a prerelease (contains alpha, beta, rc)
+          if [[ $VERSION =~ (alpha|beta|rc) ]]; then
+            IS_PRERELEASE=true
+          else
+            IS_PRERELEASE=false
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "is-prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
+          echo "📦 Release version: $VERSION"
+          echo "🏷️ Is prerelease: $IS_PRERELEASE"
+
+      - name: Validate version format
+        run: |
+          if [[ ! "${{ steps.version.outputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
+            echo "❌ Invalid version format: ${{ steps.version.outputs.version }}"
+            echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
+            exit 1
+          fi
+          echo "✅ Version format is valid"
+
+  build-release:
+    name: Build Release
+    runs-on: ubuntu-latest
+    needs: [validate]
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Update version in package.json
+        run: |
+          npm version ${{ needs.validate.outputs.version }} --no-git-tag-version
+          echo "📝 Updated package.json version to ${{ needs.validate.outputs.version }}"
+
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Create release archive
+        run: |
+          # Create a clean build archive
+          tar -czf portfolio-${{ needs.validate.outputs.version }}.tar.gz out/
+
+          # Create a source archive
+          git archive --format=tar.gz --prefix=portfolio-${{ needs.validate.outputs.version }}/ HEAD > portfolio-${{ needs.validate.outputs.version }}-src.tar.gz
+
+          # Generate checksums
+          sha256sum portfolio-${{ needs.validate.outputs.version }}.tar.gz > checksums.txt
+          sha256sum portfolio-${{ needs.validate.outputs.version }}-src.tar.gz >> checksums.txt
+
+          echo "📦 Created release archives:"
+          ls -la *.tar.gz *.txt
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            portfolio-${{ needs.validate.outputs.version }}.tar.gz
+            portfolio-${{ needs.validate.outputs.version }}-src.tar.gz
+            checksums.txt
+          retention-days: 30
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [validate, build-release]
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for changelog
+
+      - name: Download release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^v${{ needs.validate.outputs.version }}$" | head -1)
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "No previous tag found, generating full changelog"
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            echo "Generating changelog since $PREVIOUS_TAG"
+            CHANGELOG=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+
+          # Save to file for the release
+          cat > CHANGELOG.md << EOF
+          ## 🚀 What's Changed
+
+          $CHANGELOG
+
+          ## 📦 Assets
+
+          - **portfolio-${{ needs.validate.outputs.version }}.tar.gz**: Production build
+          - **portfolio-${{ needs.validate.outputs.version }}-src.tar.gz**: Source code
+          - **checksums.txt**: SHA256 checksums for verification
+
+          ## 🔗 Links
+
+          - [Live Demo](https://ahmed-shehzad.github.io/Portfolio)
+          - [Documentation](https://github.com/Ahmed-Shehzad/Portfolio#readme)
+
+          ---
+          **Full Changelog**: https://github.com/Ahmed-Shehzad/Portfolio/compare/$PREVIOUS_TAG...v${{ needs.validate.outputs.version }}
+          EOF
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.validate.outputs.version }}
+          name: Release v${{ needs.validate.outputs.version }}
+          body_path: CHANGELOG.md
+          prerelease: ${{ needs.validate.outputs.is-prerelease == 'true' }}
+          draft: false
+          files: |
+            portfolio-${{ needs.validate.outputs.version }}.tar.gz
+            portfolio-${{ needs.validate.outputs.version }}-src.tar.gz
+            checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [validate, create-release]
+    if: needs.validate.outputs.is-prerelease == 'false'
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: https://ahmed-shehzad.github.io/Portfolio
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build production
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify deployment
+        run: |
+          echo "🚀 Production deployment successful!"
+          echo "📱 Live site: ${{ steps.deployment.outputs.page_url }}"
+
+          # Wait a moment for deployment to be ready
+          sleep 10
+
+          # Verify the site is accessible
+          curl -f ${{ steps.deployment.outputs.page_url }} > /dev/null
+          echo "✅ Site is accessible and responding"
+
+  notify:
+    name: Post-Release Notification
+    runs-on: ubuntu-latest
+    needs: [validate, create-release, deploy-production]
+    if: always()
+
+    steps:
+      - name: Release Summary
+        run: |
+          echo "## 📋 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: v${{ needs.validate.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Type**: ${{ needs.validate.outputs.is-prerelease == 'true' && 'Pre-release' || 'Stable Release' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Created**: ${{ needs.create-release.result == 'success' && '✅ Success' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Production Deploy**: ${{ needs.deploy-production.result == 'success' && '✅ Deployed' || needs.deploy-production.result == 'skipped' && '⏭️ Skipped (Pre-release)' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **[View Release](https://github.com/Ahmed-Shehzad/Portfolio/releases/tag/v${{ needs.validate.outputs.version }})**" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **[Live Site](https://ahmed-shehzad.github.io/Portfolio)**" >> $GITHUB_STEP_SUMMARY

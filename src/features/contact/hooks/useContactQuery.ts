@@ -5,7 +5,7 @@
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib/api/axios-client";
+import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/config";
 import { secureLog } from "@/shared/utils/logging";
 import type { ContactFormData, ContactSubmissionResult } from "../types";

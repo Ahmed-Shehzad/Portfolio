@@ -5,7 +5,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib/api/axios-client";
+import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/config";
 import type { PortfolioProject } from "../types";
 import { PORTFOLIO_PROJECTS } from "../constants";
