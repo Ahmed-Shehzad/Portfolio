@@ -13,9 +13,13 @@ const TEN_MINUTES_MS = 10 * 60 * 1000;
 const ONE_SECOND_MS = 1000;
 const THIRTY_SECONDS_MS = 30 * 1000;
 
-// HTTP status code ranges
+// HTTP status code ranges for client errors (4xx)
+const CLIENT_ERROR_MIN = 400;
 const CLIENT_ERROR_MAX = 499;
-// Default query options following bulletproof patterns
+
+// Retry configuration
+const MAX_RETRY_ATTEMPTS = 3;
+const EXPONENTIAL_BASE = 2;
 export const defaultQueryOptions = {
   queries: {
     // Stale time - how long data stays fresh
