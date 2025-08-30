@@ -233,4 +233,84 @@
   .leaflet-control-zoom a:last-child {
     @apply rounded-t-none rounded-b-md;
   }
+
+  /* Print styles for resume page */
+  @media print {
+    /* Reset page margins and ensure single page layout */
+    @page {
+      size: A4;
+      margin: 0.4in;
+    }
+
+    /* Ensure the resume container fits on one page */
+    body {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+    }
+
+    /* Optimize the main resume container */
+    .resume-container {
+      height: auto !important;
+      max-height: none !important;
+      page-break-inside: avoid !important;
+      transform: scale(0.8) !important;
+      transform-origin: top left !important;
+      width: 100% !important;
+      box-shadow: none !important;
+      margin-left: -10% !important;
+      margin-top: -5% !important;
+    }
+
+    /* Prevent page breaks inside important sections */
+    .employment-section article,
+    .skills-section,
+    .education-section {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Reduce spacing for print */
+    .print-compact {
+      margin-bottom: 1rem !important;
+    }
+
+    .print-compact-small {
+      margin-bottom: 0.5rem !important;
+    }
+
+    /* Ensure sidebar and main content stay together */
+    .resume-grid {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Compact spacing for print */
+    .skills-section > li {
+      margin-top: 0.25rem !important;
+      margin-bottom: 0.25rem !important;
+    }
+
+    .employment-section > div > article {
+      margin-top: 1rem !important;
+      margin-bottom: 1rem !important;
+    }
+
+    /* Reduce header margins */
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin-top: 0.5rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+
+    /* Ensure single page */
+    html,
+    body {
+      height: auto !important;
+      overflow: visible !important;
+    }
+  }
 }

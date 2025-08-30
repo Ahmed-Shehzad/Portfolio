@@ -14,7 +14,22 @@ export const sanitizeLogInput = (input: unknown): string => {
     return "null";
   }
 
-  const stringInput = typeof input === "string" ? input : String(input);
+  let stringInput: string;
+
+  if (typeof input === "string") {
+    stringInput = input;
+  } else if (typeof input === "object") {
+    try {
+      // Try to serialize the object to JSON for meaningful output
+      stringInput = JSON.stringify(input);
+    } catch {
+      // If JSON.stringify fails (circular references, etc.), fall back to a descriptive message
+      stringInput = "[object (non-serializable)]";
+    }
+  } else {
+    // For primitives like numbers, booleans, etc.
+    stringInput = String(input);
+  }
 
   return (
     stringInput

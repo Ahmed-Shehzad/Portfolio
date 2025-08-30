@@ -1,12 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Metadata } from "next";
 import meImage from "@/assets/images/me.jpg";
 import { PrintButton } from "./components/PrintButton";
-
-export const metadata: Metadata = {
-  viewport: "width=1024, initial-scale=0.5, user-scalable=yes",
-};
 
 export default function ResumePage() {
   return (
@@ -19,8 +14,8 @@ export default function ResumePage() {
         <PrintButton />
       </div>
 
-      <div className="mx-auto w-[1000px] overflow-hidden rounded-xl bg-white shadow-2xl">
-        <div className="grid grid-cols-[380px_620px]">
+      <div className="resume-container mx-auto w-[1000px] overflow-hidden rounded-xl bg-white shadow-2xl">
+        <div className="resume-grid grid grid-cols-[380px_620px]">
           {/* SIDEBAR */}
           <aside className="bg-gray-50 p-8">
             <div className="flex flex-col items-center text-center">
@@ -136,7 +131,7 @@ export default function ResumePage() {
               <h4 className="mt-6 flex items-center gap-2 font-semibold text-green-500">
                 <span>🛠️</span> Skills
               </h4>
-              <ul className="mt-3 space-y-2 text-sm">
+              <ul className="skills-section mt-3 space-y-2 text-sm print:space-y-1">
                 <div className="mb-2">
                   <h5 className="text-xs font-medium text-green-600">Backend (5+ years)</h5>
                 </div>
@@ -185,10 +180,9 @@ export default function ResumePage() {
               <h4 className="mt-6 flex items-center gap-2 font-semibold text-green-500">
                 <span>🌐</span> Languages
               </h4>
-              <ul className="mt-3 space-y-2 text-sm">
+              <ul className="mt-3 space-y-2 text-sm print:space-y-1">
                 <SkillItem skill="English" level={4} />
                 <SkillItem skill="German" level={3} />
-                <SkillItem skill="Urdu" level={5} />
               </ul>
             </div>
           </aside>
@@ -200,20 +194,20 @@ export default function ResumePage() {
               <p className="mt-1 text-sm text-gray-600">Software Engineer</p>
             </header>
 
-            <section className="mb-8">
+            <section className="print-compact mb-8">
               <h3 className="mb-3 text-lg font-semibold text-green-500">Profile</h3>
               <p className="text-sm leading-relaxed text-gray-700">
-                I&apos;m a Full Stack Developer specializing in building scalable,
-                performance-driven applications with modern web technologies. My expertise spans
-                front-end and back-end, with a strong focus on clean architecture, maintainability,
-                and delivering measurable business impact.
+                I&apos;m a software developer with over 5 years of experience building web
+                applications. I enjoy working on both frontend and backend development, and I&apos;m
+                passionate about writing clean, maintainable code. I&apos;ve worked with various
+                technologies and love learning new ones to solve interesting problems.
               </p>
             </section>
 
-            <section className="mb-8">
+            <section className="print-compact employment-section mb-8">
               <h3 className="mb-4 text-lg font-semibold text-green-500">Employment History</h3>
 
-              <div className="space-y-6 text-sm text-gray-800">
+              <div className="space-y-6 text-sm text-gray-800 print:space-y-4">
                 <article>
                   <div className="mb-2">
                     <h4 className="font-semibold text-gray-900">
@@ -223,16 +217,16 @@ export default function ResumePage() {
                   </div>
                   <ul className="ml-4 list-disc space-y-1 text-gray-700">
                     <li>
-                      Implemented 15+ features for matching 5,000+ users with local care providers,
-                      achieving 85% match accuracy
+                      Develop and maintain a platform that connects people needing care with local
+                      healthcare providers
                     </li>
                     <li>
-                      Developed CRM system serving 50+ consultants with real-time data processing
-                      capabilities
+                      Built a CRM system used daily by our consultant team to manage client
+                      relationships and track progress
                     </li>
                     <li>
-                      Designed automated calling process using Twilio, increasing client
-                      reachability by 60% and reducing response time to 2 hours
+                      Created an automated calling system using Twilio API that helps our team reach
+                      clients more efficiently
                     </li>
                   </ul>
                 </article>
@@ -246,16 +240,16 @@ export default function ResumePage() {
                   </div>
                   <ul className="ml-4 list-disc space-y-1 text-gray-700">
                     <li>
-                      Engineered employee engagement platform serving 2,000+ users across 50+
-                      companies
+                      Built an employee engagement platform focused on learning and development for
+                      corporate clients
                     </li>
                     <li>
-                      Implemented gamified features increasing user engagement by 75% through
-                      microlearning and knowledge sharing
+                      Added gamification features like challenges and knowledge-sharing to make
+                      learning more engaging
                     </li>
                     <li>
-                      Integrated challenges and rewards system, driving 40% increase in user
-                      participation rates
+                      Worked on reward systems that encouraged employees to participate more
+                      actively in company programs
                     </li>
                   </ul>
                 </article>
@@ -269,17 +263,18 @@ export default function ResumePage() {
                   </div>
                   <ul className="ml-4 list-disc space-y-1 text-gray-700">
                     <li>
-                      Delivered Lidar Management System for RWE (Renewable Wind Energy), processing
-                      10,000+ data points daily
-                    </li>
-                    <li>Developed 8 API solutions using .NET and C#, achieving 99.9% uptime</li>
-                    <li>
-                      Built 3 React-based frontend applications with 95+ Google Lighthouse
-                      performance scores
+                      Worked on a Lidar Management System for RWE, handling large amounts of wind
+                      energy sensor data
                     </li>
                     <li>
-                      Reduced system response time by 45% through efficient API design and
-                      optimization
+                      Built several REST APIs using .NET and C# for data processing and management
+                    </li>
+                    <li>
+                      Developed React frontend applications with focus on performance and user
+                      experience
+                    </li>
+                    <li>
+                      Optimized system performance by improving API design and database queries
                     </li>
                   </ul>
                 </article>
@@ -293,16 +288,15 @@ export default function ResumePage() {
                   </div>
                   <ul className="ml-4 list-disc space-y-1 text-gray-700">
                     <li>
-                      Developed heating oil price calculator processing 1,000+ daily calculations
-                      with 99% accuracy
+                      Created a heating oil price calculator that customers use to get accurate
+                      pricing quotes
                     </li>
                     <li>
-                      Implemented online ordering system handling 500+ monthly orders with 98%
-                      success rate
+                      Built an online ordering system that streamlined the customer purchase process
                     </li>
                     <li>
-                      Delivered logistics and fleet management solutions reducing operational costs
-                      by 25%
+                      Developed logistics tools to help the company manage their delivery fleet and
+                      reduce costs
                     </li>
                   </ul>
                 </article>
@@ -314,17 +308,22 @@ export default function ResumePage() {
                   </div>
                   <ul className="ml-4 list-disc space-y-1 text-gray-700">
                     <li>
-                      Developed features for live scores and real-time sports updates for client:
-                      365Scores.
+                      Worked on live sports score features for 365Scores, a popular sports app
                     </li>
-                    <li>Implemented personalised feeds for teams, leagues and players.</li>
-                    <li>Developed publisher tools for integration and monetisation.</li>
+                    <li>
+                      Built personalized content feeds showing users their favorite teams and
+                      players
+                    </li>
+                    <li>
+                      Created tools for content publishers to integrate our sports data into their
+                      platforms
+                    </li>
                   </ul>
                 </article>
               </div>
             </section>
 
-            <section>
+            <section className="education-section">
               <h3 className="mb-3 text-lg font-semibold text-green-500">Education</h3>
               <div className="text-sm">
                 <h4 className="font-semibold text-gray-900">University of South Asia</h4>
