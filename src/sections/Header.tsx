@@ -27,31 +27,11 @@ const HEADER_OFFSET = 100;
 const BOTTOM_THRESHOLD = 10;
 
 const headerOptions: HeaderOption[] = [
-  {
-    title: "Home",
-    href: "#home",
-    id: "home",
-  },
-  {
-    title: "Projects",
-    href: "#projects",
-    id: "projects",
-  },
-  {
-    title: "About",
-    href: "#about",
-    id: "about",
-  },
-  {
-    title: "Contact",
-    href: "#contact",
-    id: "contact",
-  },
-  {
-    title: "Resume",
-    href: "/resume.pdf",
-    id: "resume",
-  },
+  { title: "Home", href: "/", id: "home" },
+  { title: "Projects", href: "#projects", id: "projects" },
+  { title: "About", href: "#about", id: "about" },
+  { title: "Contact", href: "#contact", id: "contact" },
+  { title: "Resume", href: "/resume.html", id: "resume" },
 ];
 
 // Default header option for fallback scenarios
@@ -74,14 +54,7 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
 
   if (isResume) {
     return (
-      <a
-        className={className}
-        href={option.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Download Resume as PDF"
-        download
-      >
+      <a className={className} href={option.href} aria-label="View Resume Page">
         {option.title}
       </a>
     );
@@ -131,6 +104,7 @@ export const Header = () => {
   useEffect(() => {
     const updateElements = () => {
       const elements = headerOptions
+        .filter((option) => option.href.startsWith("#")) // Only process hash-based sections
         .map((option) => {
           const element = document.getElementById(option.id);
           return element
@@ -157,13 +131,18 @@ export const Header = () => {
   // Create lookup map for O(1) section id to HeaderOption mapping
   const optionsMap = useMemo(() => {
     const map = new Map<string, HeaderOption>();
-    headerOptions.forEach((option) => map.set(option.id, option));
+    headerOptions
+      .filter((option) => option.href.startsWith("#")) // Only hash-based sections
+      .forEach((option) => map.set(option.id, option));
     return map;
   }, []);
 
   // Optimized URL update function
   const updateURL = useCallback((section: HeaderOption) => {
     if (typeof window === "undefined") return; // SSR check
+
+    // Only update URL for hash-based navigation, skip external URLs
+    if (!section.href.startsWith("#")) return;
 
     const currentHash = window.location.hash;
     if (currentHash !== section.href) {

@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Resume — Muhammad Ahmed Shehzad (Tailwind v4)</title>
+
+    <!--
+    Tailwind CDN (official): loads Tailwind JIT and generates the CSS at runtime.
+    This uses the canonical CDN endpoint. If you open the file *offline* the CDN won't load,
+    so a small fallback CSS is included below to keep the layout readable.
+  -->
+
+    <script>
+      /* Tailwind config (optional) — define before loading the CDN script */
+      tailwind = {
+        config: {
+          theme: {
+            extend: {
+              colors: {
+                primary: "#1f9a8b",
+                accent: "#16a34a",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Minimal fallback CSS in case CDN is blocked/offline. This is intentionally small. -->
+    <style>
+      /* Basic fallback so the file is usable without Tailwind */
+      :root {
+        --bg: #0f1724;
+        --panel: #ffffff;
+        --muted: #6b7280;
+        --accent: #16a34a;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial;
+      }
+      body {
+        background: linear-gradient(180deg, #0b1220 0%, #0b0f14 100%);
+        padding: 24px;
+      }
+      .resume-shell {
+        max-width: 980px;
+        margin: 0 auto;
+        background: var(--panel);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.6);
+        border: 8px solid rgba(255, 255, 255, 0.02);
+      }
+      .resume-grid {
+        display: flex;
+        flex-direction: column;
+      }
+      .sidebar {
+        background: #fbfbfb;
+        padding: 28px;
+        border-right: 0;
+      }
+      .main {
+        padding: 28px;
+      }
+      @media (min-width: 768px) {
+        .resume-grid {
+          flex-direction: row;
+        }
+        .sidebar {
+          width: 300px;
+          border-right: 1px solid #eef2f6;
+        }
+        .main {
+          flex: 1;
+        }
+      }
+      .avatar {
+        width: 88px;
+        height: 88px;
+        border-radius: 9999px;
+        display: block;
+        margin: 0 auto;
+        border: 4px solid #f3f4f6;
+      }
+      .h1 {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .section-title {
+        color: var(--accent);
+        font-weight: 600;
+        margin-top: 18px;
+      }
+      .skill-dots span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 9999px;
+        margin-right: 6px;
+        background: #e6eef6;
+      }
+      .skill-dots span.filled {
+        background: var(--accent);
+      }
+      .small {
+        font-size: 13px;
+        color: #111827;
+      }
+      .list {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="resume-shell">
+      <div class="resume-grid md:grid md:grid-cols-[300px_1fr]">
+        <!-- SIDEBAR -->
+        <aside class="sidebar p-6 md:p-8">
+          <div class="flex flex-col items-center text-center">
+            <!-- inline SVG avatar to avoid external image -->
+            <svg
+              class="avatar mb-4"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="avatar"
+            >
+              <defs>
+                <linearGradient id="g" x1="0" x2="1">
+                  <stop offset="0" stop-color="#1f2937" />
+                  <stop offset="1" stop-color="#4b5563" />
+                </linearGradient>
+              </defs>
+              <rect width="100" height="100" rx="50" fill="#e6eef6" />
+              <g transform="translate(10,12) scale(0.78)">
+                <circle cx="40" cy="28" r="18" fill="#c7d2fe" />
+                <rect x="10" y="56" width="60" height="26" rx="10" fill="#c7d2fe" />
+              </g>
+            </svg>
+
+            <h3 class="text-lg font-semibold">Muhammad Ahmed Shehzad</h3>
+            <p class="text-sm text-gray-500">Software Engineer</p>
+          </div>
+
+          <div class="mt-6 text-sm text-gray-700">
+            <h4 class="section-title">Details</h4>
+            <div class="mt-3 space-y-2 text-[13px]">
+              <div>
+                <strong class="text-gray-800">Address</strong>
+                <div class="muted">Kärntner Straße 2<br />Wiesbaden, 65187<br />Germany</div>
+              </div>
+              <div>
+                <strong class="text-gray-800">Phone</strong>
+                <div class="muted">+49 176 233 78 452</div>
+              </div>
+              <div>
+                <strong class="text-gray-800">Email</strong>
+                <div class="muted">ahmedshehzad786@gmail.com</div>
+              </div>
+              <div>
+                <strong class="text-gray-800">Date / Place of birth</strong>
+                <div class="muted">20.07.1993 — Lahore</div>
+              </div>
+              <div>
+                <strong class="text-gray-800">Nationality</strong>
+                <div class="muted">Pakistan</div>
+              </div>
+            </div>
+
+            <h4 class="section-title mt-6">Links</h4>
+            <div class="mt-2">
+              <a href="#" class="text-accent text-sm hover:underline">Portfolio</a>
+            </div>
+
+            <h4 class="section-title mt-6">Skills</h4>
+            <ul class="mt-2 space-y-2 text-sm">
+              <li class="flex items-center justify-between">
+                <span>C#</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span class="filled"></span><span></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>.NET</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>Python</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span></span><span></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>TypeScript</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>Node.js</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span></span><span></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>Docker</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span></span><span></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>Tailwind</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span
+                ></span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span>ReactJS</span
+                ><span class="skill-dots"
+                  ><span class="filled"></span><span class="filled"></span
+                  ><span class="filled"></span><span></span><span></span
+                ></span>
+              </li>
+            </ul>
+
+            <h4 class="section-title mt-6">Languages</h4>
+            <ul class="mt-2 space-y-1 text-sm">
+              <li>English — <span class="muted">Fluent</span></li>
+              <li>German — <span class="muted">Intermediate</span></li>
+              <li>Urdu — <span class="muted">Native</span></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main p-6 md:p-10">
+          <header class="mb-4 border-b pb-4">
+            <h1 class="text-2xl font-extrabold md:text-3xl">Muhammad Ahmed Shehzad</h1>
+            <p class="mt-1 text-sm text-gray-500">Software Engineer</p>
+          </header>
+
+          <section class="mb-6">
+            <h3 class="text-accent text-lg font-semibold">Profile</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-700">
+              I'm a Full Stack Developer specializing in building scalable, performance-driven
+              applications with modern web technologies. My expertise spans front-end and back-end,
+              with a strong focus on clean architecture, maintainability, and delivering measurable
+              business impact.
+            </p>
+          </section>
+
+          <section class="mb-6">
+            <h3 class="text-accent text-lg font-semibold">Employment History</h3>
+
+            <div class="mt-4 space-y-6 text-sm text-gray-800">
+              <article>
+                <h4 class="font-semibold">
+                  Software Engineer — Verbund Pflegehilfe
+                  <span class="text-xs text-gray-500">Jul 2023 – Present · Mainz</span>
+                </h4>
+                <ul class="mt-2 list-inside list-disc space-y-1">
+                  <li>Implemented features for matching users with local care providers.</li>
+                  <li>CRM Feature development for consultants based on requirements.</li>
+                  <li>
+                    Designed and implemented a process to increase client reachability using Twilio
+                    with automated calling process.
+                  </li>
+                </ul>
+              </article>
+
+              <article>
+                <h4 class="font-semibold">
+                  Software Developer — Sustayn GmbH
+                  <span class="text-xs text-gray-500">Feb 2022 – Jul 2023 · Essen</span>
+                </h4>
+                <ul class="mt-2 list-inside list-disc space-y-1">
+                  <li>Engineered an employee engagement platform focused on sustainability.</li>
+                  <li>
+                    Implemented gamified sustainability engagement features, including microlearning
+                    and knowledge sharing.
+                  </li>
+                  <li>Integrated challenges, events, and rewards to promote user participation.</li>
+                </ul>
+              </article>
+
+              <article>
+                <h4 class="font-semibold">
+                  Software Developer — FPT Software
+                  <span class="text-xs text-gray-500">Sep 2021 – Nov 2021 · Essen</span>
+                </h4>
+                <p class="mt-2">
+                  Provided services for Lidar Management System for client RWE (Renewable Wind
+                  Energy).
+                </p>
+              </article>
+
+              <article>
+                <h4 class="font-semibold">
+                  Software Developer — SODEFA GmbH Co. & KG
+                  <span class="text-xs text-gray-500">Aug 2019 – Sep 2021 · Hürth</span>
+                </h4>
+                <ul class="mt-2 list-inside list-disc space-y-1">
+                  <li>
+                    Developed a heating oil price calculator to assist users in estimating costs.
+                  </li>
+                  <li>Implemented online ordering and integration with car service solutions.</li>
+                  <li>Provided logistics, fleet management and disposition solutions.</li>
+                </ul>
+              </article>
+
+              <article>
+                <h4 class="font-semibold">
+                  Software Engineer — Six Logics
+                  <span class="text-xs text-gray-500">Nov 2016 – Apr 2018 · Lahore</span>
+                </h4>
+                <ul class="mt-2 list-inside list-disc space-y-1">
+                  <li>
+                    Developed features for live scores and real-time sports updates for client:
+                    365Scores.
+                  </li>
+                  <li>Implemented personalised feeds for teams, leagues and players.</li>
+                  <li>Developed publisher tools for integration and monetisation.</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section>
+            <h3 class="text-accent text-lg font-semibold">Education</h3>
+            <p class="mt-2 text-sm">
+              <strong>University of South Asia</strong>, Bachelor of Science in Computer Science —
+              <span class="text-gray-500">Sep 2012 – Sep 2017 · Lahore</span>
+            </p>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Helpful note visible on the page -->
+    <div class="mx-auto mt-4 max-w-5xl px-4 text-xs text-gray-300">
+      Tip: This file uses the Tailwind CDN (https://cdn.tailwindcss.com). If you open it offline the
+      CDN won't load — the file contains a minimal fallback so the layout remains readable.
+    </div>
+  </body>
+</html>
