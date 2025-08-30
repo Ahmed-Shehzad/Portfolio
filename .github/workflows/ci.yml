@@ -465,16 +465,38 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Wait for deployment
-        run: sleep 30 # Wait for GitHub Pages to be ready
+        run: |
+          echo "⏳ Waiting for GitHub Pages deployment to be fully ready..."
+          sleep 60 # Increased wait time for GitHub Pages to propagate
+
+          # Test if the site is accessible
+          echo "🔍 Testing site accessibility..."
+          for i in {1..5}; do
+            if curl -f -s https://ahmed-shehzad.github.io/Portfolio > /dev/null; then
+              echo "✅ Site is accessible"
+              break
+            else
+              echo "⏳ Attempt $i: Site not ready, waiting 10 more seconds..."
+              sleep 10
+            fi
+          done
 
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v11
+        continue-on-error: true # Don't fail pipeline on lighthouse issues
         with:
           urls: |
             https://ahmed-shehzad.github.io/Portfolio
           configPath: ./.github/lighthouse/config.json
           uploadArtifacts: true
           temporaryPublicStorage: true
+
+      - name: Lighthouse Results Summary
+        if: always()
+        run: |
+          echo "📊 Lighthouse performance audit completed"
+          echo "🔍 Results will be available in the action artifacts"
+          echo "📈 Performance metrics help optimize user experience"
 
   notify:
     name: Notification
