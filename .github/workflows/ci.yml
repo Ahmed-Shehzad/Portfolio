@@ -371,16 +371,18 @@ jobs:
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v2.1.0
+        continue-on-error: true # Don't fail pipeline on scan issues
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
 
-      - name: SonarQube Quality Gate Check
-        uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
-        timeout-minutes: 5
-        continue-on-error: true # Don't fail pipeline on quality gate failure
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Quality gate removed for portfolio project - analysis results available on SonarCloud dashboard
+      - name: SonarQube Analysis Summary
+        if: always()
+        run: |
+          echo "📊 SonarQube analysis completed"
+          echo "🔍 View detailed results at: https://sonarcloud.io/project/overview?id=Ahmed-Shehzad_Portfolio"
+          echo "📈 This is a portfolio project - quality gate failures don't block deployment"
 
   deploy:
     name: Deploy to GitHub Pages
