@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import meImage from "@/assets/images/me.jpg";
-import { PrintButton } from "./components/PrintButton";
+import { DownloadButton } from "./components/DownloadButton";
 
 export default function ResumePage() {
   return (
@@ -9,11 +9,9 @@ export default function ResumePage() {
       className="min-h-screen overflow-x-auto bg-gradient-to-b from-slate-900 to-slate-950 p-6 print:min-h-0 print:overflow-visible print:bg-white print:p-0"
       style={{ minWidth: "1024px" }}
     >
-      {/* Print Button - Hidden when printing */}
       <div className="mb-4 flex justify-center print:hidden">
-        <PrintButton />
+        <DownloadButton />
       </div>
-
       <div className="resume-container mx-auto w-[1000px] overflow-hidden rounded-xl bg-white shadow-2xl">
         <div className="resume-grid grid grid-cols-[380px_620px]">
           {/* SIDEBAR */}

@@ -7,3 +7,9 @@ declare module "@/assets/images/*.{png,jpg,jpeg,webp,avif}" {
   const content: StaticImageData;
   export default content;
 }
+
+// PDF file declarations for documents
+declare module "@/assets/documents/*.pdf" {
+  const content: string;
+  export default content;
+}

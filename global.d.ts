@@ -42,3 +42,14 @@ declare module "@/assets/images/*.avif" {
   const v: StaticImageData;
   export default v;
 }
+
+// PDF file declarations
+declare module "*.pdf" {
+  const v: string;
+  export default v;
+}
+
+declare module "@/assets/documents/*.pdf" {
+  const v: string;
+  export default v;
+}

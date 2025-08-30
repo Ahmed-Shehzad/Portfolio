@@ -47,6 +47,16 @@ const nextConfig: NextConfig = {
         },
       ],
     });
+
+    // Add file loader for PDF files
+    config.module.rules.push({
+      test: /\.pdf$/,
+      type: "asset/resource",
+      generator: {
+        filename: "static/documents/[name].[hash][ext]",
+      },
+    });
+
     return config;
   },
   ...(includeHeaders && {
