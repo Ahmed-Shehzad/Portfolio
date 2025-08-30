@@ -371,18 +371,44 @@ jobs:
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v2.1.0
-        continue-on-error: true # Don't fail pipeline on scan issues
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
 
-      # Quality gate removed for portfolio project - analysis results available on SonarCloud dashboard
-      - name: SonarQube Analysis Summary
+      - name: SonarQube Quality Gate Check (Optional)
+        id: sonar-quality-gate
+        uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
+        timeout-minutes: 5
+        continue-on-error: true # Never block deployment on quality gate failure
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: SonarQube Quality Gate Notification
         if: always()
         run: |
-          echo "📊 SonarQube analysis completed"
-          echo "🔍 View detailed results at: https://sonarcloud.io/project/overview?id=Ahmed-Shehzad_Portfolio"
-          echo "📈 This is a portfolio project - quality gate failures don't block deployment"
+          if [[ "${{ steps.sonar-quality-gate.outcome }}" == "success" ]]; then
+            echo "✅ SonarQube Quality Gate: PASSED"
+            echo "🎉 All quality conditions met successfully!"
+            echo "## ✅ SonarQube Quality Gate: PASSED" >> $GITHUB_STEP_SUMMARY
+            echo "All quality conditions met successfully! 🎉" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ steps.sonar-quality-gate.outcome }}" == "failure" ]]; then
+            echo "⚠️ SonarQube Quality Gate: FAILED"
+            echo "📋 Some quality conditions were not met, but deployment will continue"
+            echo "🔍 Review details at: https://sonarcloud.io/project/overview?id=Ahmed-Shehzad_Portfolio"
+            echo "## ⚠️ SonarQube Quality Gate: FAILED" >> $GITHUB_STEP_SUMMARY
+            echo "Some quality conditions were not met, but **deployment will continue**. 📋" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🔍 [View detailed analysis results →](https://sonarcloud.io/project/overview?id=Ahmed-Shehzad_Portfolio)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ SonarQube Quality Gate: SKIPPED or TIMEOUT"
+            echo "⏱️ Quality gate check did not complete within timeout"
+            echo "## ℹ️ SonarQube Quality Gate: INCOMPLETE" >> $GITHUB_STEP_SUMMARY
+            echo "Quality gate check did not complete within timeout. ⏱️" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo ""
+          echo "📌 Note: Quality gate status is informational only and does not affect deployment"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**📌 Note**: Quality gate status is informational only and does not affect deployment." >> $GITHUB_STEP_SUMMARY
 
   deploy:
     name: Deploy to GitHub Pages
