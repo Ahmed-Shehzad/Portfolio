@@ -45,3 +45,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# act (GitHub Actions local testing)
+act-artifacts/
+.actrc
+branch-protection.json
