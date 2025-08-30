@@ -37,7 +37,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.local.example
+!.env.*.example
 .env.sonar.example
+
+# Local secrets for act testing
+.secrets
 
 # vercel
 .vercel
