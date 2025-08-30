@@ -593,7 +593,6 @@ function optimizeProjectData(data: ProjectsPayload) {
       links: secureLinks,
       technologyChips,
       imageData,
-      secureLinks,
     };
   });
 }

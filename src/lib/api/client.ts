@@ -96,9 +96,14 @@ const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
     (error: AxiosError) => {
       // Handle common error scenarios
       if (error.response?.status === 401 && typeof window !== "undefined") {
-        // Handle unauthorized - redirect to login or refresh token
+        // Handle unauthorized - clear auth and prevent further requests with stale tokens
         localStorage.removeItem("authToken");
-        // You might want to redirect to login page here
+        // Cancel all pending requests to prevent concurrent requests with invalid tokens
+        const controller = new AbortController();
+        controller.abort();
+        // Redirect to login immediately to prevent further API calls
+        window.location.href = "/login";
+        return Promise.reject(new Error("Unauthorized - redirecting to login"));
       }
 
       if (error.response && error.response.status >= 500) {

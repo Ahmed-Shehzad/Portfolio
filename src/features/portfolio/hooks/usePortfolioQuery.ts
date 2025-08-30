@@ -57,7 +57,7 @@ export const usePortfolioProject = (projectId: string, options?: { enabled?: boo
     queryFn: async (): Promise<PortfolioProject | null> => {
       // Validate and sanitize projectId
       if (!projectId || typeof projectId !== "string" || projectId.trim().length === 0) {
-        return null;
+        throw new Error("Invalid projectId: projectId must be a non-empty string.");
       }
 
       const sanitizedId = projectId.toLowerCase().trim();

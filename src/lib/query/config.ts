@@ -15,7 +15,7 @@ const THIRTY_SECONDS_MS = 30 * 1000;
 
 // HTTP status code ranges
 const CLIENT_ERROR_MIN = 400;
-const CLIENT_ERROR_MAX = 500;
+const CLIENT_ERROR_MAX = 499;
 
 // Retry configuration
 const MAX_RETRY_ATTEMPTS = 3;
@@ -35,7 +35,7 @@ export const defaultQueryOptions = {
       // Don't retry on 4xx errors (client errors)
       if (error && typeof error === "object" && "status" in error) {
         const status = error.status as number;
-        if (status >= CLIENT_ERROR_MIN && status < CLIENT_ERROR_MAX) {
+        if (status >= CLIENT_ERROR_MIN && status <= CLIENT_ERROR_MAX) {
           return false;
         }
       }

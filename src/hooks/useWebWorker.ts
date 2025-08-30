@@ -54,6 +54,23 @@ const extractWorkerErrorMessage = (data: unknown): string => {
   return "[object]";
 };
 
+// Reusable helper function for worker task execution with error handling and fallback
+const executeWithFallback = async <T, F>(
+  task: () => Promise<T>,
+  fallback: F,
+  taskName: string
+): Promise<T | F> => {
+  try {
+    return await task();
+  } catch (error) {
+    secureLog.error(
+      `${taskName} failed:`,
+      error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
+    );
+    return fallback; // Fallback to original data
+  }
+};
+
 import type { Project } from "@/features/projects/types";
 import type { Testimonial } from "@/features/testimonials/types";
 import type { SectionElement } from "@/features/navigation/types";
@@ -276,20 +293,18 @@ export const useAnimationWorker = () => {
 
   const processAnimations = useCallback(
     async (elements: SectionElement[], scrollProgress: number) => {
-      try {
-        const result = await executeTask("PROCESS_ANIMATIONS", {
-          elements,
-          scrollProgress,
-          viewport: { width: window.innerWidth, height: window.innerHeight },
-        });
-        return result.data;
-      } catch (error) {
-        secureLog.error(
-          "Animation processing failed:",
-          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
-        );
-        return elements; // Fallback to original data
-      }
+      return await executeWithFallback(
+        async () => {
+          const result = await executeTask("PROCESS_ANIMATIONS", {
+            elements,
+            scrollProgress,
+            viewport: { width: window.innerWidth, height: window.innerHeight },
+          });
+          return result.data;
+        },
+        elements,
+        "Animation processing"
+      );
     },
     [executeTask]
   );
@@ -302,20 +317,18 @@ export const useScrollWorker = () => {
 
   const optimizeScrollCalculations = useCallback(
     async (scrollY: number, elements: SectionElement[]) => {
-      try {
-        const result = await executeTask("OPTIMIZE_SCROLL_CALCULATIONS", {
-          scrollY,
-          windowHeight: window.innerHeight,
-          elements,
-        });
-        return result.data;
-      } catch (error) {
-        secureLog.error(
-          "Scroll optimization failed:",
-          error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE
-        );
-        return elements;
-      }
+      return await executeWithFallback(
+        async () => {
+          const result = await executeTask("OPTIMIZE_SCROLL_CALCULATIONS", {
+            scrollY,
+            windowHeight: window.innerHeight,
+            elements,
+          });
+          return result.data;
+        },
+        elements,
+        "Scroll optimization"
+      );
     },
     [executeTask]
   );

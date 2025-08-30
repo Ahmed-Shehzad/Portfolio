@@ -54,6 +54,13 @@ const headerOptions: HeaderOption[] = [
   },
 ];
 
+// Default header option for fallback scenarios
+const DEFAULT_HEADER_OPTION: HeaderOption = {
+  title: "Home",
+  href: "#home",
+  id: "home",
+};
+
 /**
  * NavigationItem – individual nav pill. Applies active styling and
  * smooth-scroll behavior via parent click handler.
@@ -116,7 +123,7 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
  */
 export const Header = () => {
   const [activeOption, setActiveOption] = useState<HeaderOption>(
-    headerOptions[0] || { title: "Home", href: "#home", id: "home" }
+    headerOptions[0] || DEFAULT_HEADER_OPTION
   );
   const [sectionElements, setSectionElements] = useState<SectionElement[]>([]);
 

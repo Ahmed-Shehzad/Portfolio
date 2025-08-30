@@ -14,7 +14,7 @@ export const sanitizeLogInput = (input: unknown): string => {
     return "null";
   }
 
-  const stringInput = typeof input === "string" ? input : String(input as string);
+  const stringInput = typeof input === "string" ? input : String(input);
 
   return (
     stringInput
