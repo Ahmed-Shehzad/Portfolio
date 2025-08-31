@@ -165,7 +165,21 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
+      - name: Verify Vercel Build Output
+        if: always() && (github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && github.event_name == 'push'))
+        run: |
+          echo "Checking for .vercel directory..."
+          ls -la .vercel/ || echo "⚠️ .vercel directory not found"
+          if [ -d ".vercel" ]; then
+            echo "✅ .vercel directory exists, contents:"
+            find .vercel -type f | head -10
+          else
+            echo "❌ .vercel directory missing - this will cause artifact upload issues"
+            exit 1
+          fi
+
       - name: Upload Vercel Build Output
+        if: always() && (github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && github.event_name == 'push'))
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: vercel-build-output
