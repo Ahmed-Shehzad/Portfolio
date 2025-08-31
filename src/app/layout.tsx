@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Calistoga, Inter } from "next/font/google";
 import { FC, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 interface RootLayoutProps {
@@ -184,6 +185,7 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
         <ErrorBoundaryWrapper>
           <QueryProvider>{children}</QueryProvider>
         </ErrorBoundaryWrapper>
+        <SpeedInsights />
       </body>
     </html>
   );
