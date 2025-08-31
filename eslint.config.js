@@ -12,10 +12,20 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    ignores: [
+      ".next/**",
+      "out/**",
+      "coverage/**",
+      "public/worker.js",
+      "*.tsbuildinfo",
+      "node_modules/**",
+      "*.d.ts",
+    ],
+  },
   ...compat.config({
     extends: ["eslint:recommended", "next", "next/core-web-vitals", "next/typescript", "prettier"],
     plugins: ["sonarjs"],
-    ignorePatterns: ["public/worker.js"], // Exclude worker from strict linting
     rules: {
       // Bulletproof React ESLint rules (without TypeScript project-requiring rules)
 

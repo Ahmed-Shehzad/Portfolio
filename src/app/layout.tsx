@@ -15,7 +15,7 @@ interface RootLayoutProps {
 const AUTHOR_NAME = "Muhammad Ahmed Shehzad";
 const BACKEND_DEV_DESCRIPTION =
   "Backend Developer specializing in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.";
-const PORTFOLIO_URL = "https://ahmed-shehzad.github.io/Portfolio";
+const PORTFOLIO_URL = "https://portfolio-azure-five-75.vercel.app";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: AUTHOR_NAME }],
   creator: AUTHOR_NAME,
-  metadataBase: new URL("https://ahmed-shehzad.github.io"),
+  metadataBase: new URL("https://portfolio-azure-five-75.vercel.app"),
   alternates: {
     canonical: "/",
   },

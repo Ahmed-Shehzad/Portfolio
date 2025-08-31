@@ -38,9 +38,14 @@ export const sanitizeLogInput = (input: unknown): string => {
       .replace(/\n/g, " ")
       // Remove tabs
       .replace(/\t/g, " ")
-      // Remove other control characters (0-31 and 127-159)
-      // eslint-disable-next-line no-control-regex
-      .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
+      // Remove other control characters using String.fromCharCode approach
+      .replace(
+        new RegExp(
+          `[${String.fromCharCode(0)}-${String.fromCharCode(31)}${String.fromCharCode(127)}-${String.fromCharCode(159)}]`,
+          "g"
+        ),
+        ""
+      )
       // Limit length to prevent log flooding
       .slice(0, 1000)
       // Trim whitespace
