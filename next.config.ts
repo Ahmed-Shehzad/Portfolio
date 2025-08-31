@@ -6,9 +6,21 @@ const nextConfig: NextConfig = {
 
   images: {
     // Enable image optimization for Vercel
-    unoptimized: false,
-    domains: [], // Add external image domains if needed
+    unoptimized: true,
+    domains: [
+      "https://www.365scores.com",
+      "https://extraleicht.com/",
+      "https://app.sustayn.de",
+      "https://www.pflegehilfe.org/",
+    ], // Add external image domains if needed
     formats: ["image/webp", "image/avif"],
+    // Additional image optimization settings
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   // Remove GitHub Pages specific paths for Vercel
