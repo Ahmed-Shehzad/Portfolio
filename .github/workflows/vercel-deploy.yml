@@ -128,6 +128,7 @@ jobs:
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v5.2.0
 
       - name: Deploy to Vercel Preview
+        id: preview-deploy
         uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -136,53 +137,76 @@ jobs:
           working-directory: ./
           scope: ${{ secrets.VERCEL_ORG_ID }}
 
+      - name: Verify preview deployment
+        env:
+          # For preview deployments, use the preview URL
+          PREVIEW_URL: ${{ steps.preview-deploy.outputs.preview-url }}
+        run: |
+          echo "🔍 Preview deployment completed!"
+          echo "📊 Preview URL: $PREVIEW_URL"
+
+          echo "Performing preview deployment health check..."
+
+          # Check if the preview URL responds
+          response_code=$(curl -s -o /dev/null -w "%{http_code}" "$PREVIEW_URL" || echo "000")
+          echo "Preview response code: $response_code"
+
+          if [ "$response_code" = "200" ]; then
+            echo "✅ Preview site is publicly accessible"
+          elif [ "$response_code" = "401" ]; then
+            echo "⚠️ Preview site is protected (401) - this is expected for some preview deployments"
+            echo "✅ Preview deployment successful, but site requires authentication"
+          elif [ "$response_code" -ge "400" ] && [ "$response_code" -lt "500" ]; then
+            echo "❌ Preview deployment client error: $response_code"
+            exit 1
+          elif [ "$response_code" -ge "500" ]; then
+            echo "❌ Preview deployment server error: $response_code"
+            exit 1
+          elif [ "$response_code" = "000" ]; then
+            echo "❌ Could not connect to preview deployment"
+            exit 1
+          else
+            echo "✅ Preview deployment accessible with status: $response_code"
+          fi
+
       - name: Comment PR with Preview URL
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         if: success()
+        env:
+          PREVIEW_URL: ${{ steps.preview-deploy.outputs.preview-url }}
         with:
           script: |
-            const { data: deployments } = await github.rest.repos.listDeployments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: context.payload.pull_request.head.sha,
-              per_page: 1
-            });
+            const previewUrl = process.env.PREVIEW_URL;
 
-            if (deployments.length > 0) {
-              const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
+            if (previewUrl) {
+              const commentBody = [
+                '🚀 **Preview Deployment Ready!**',
+                '',
+                '**Build Summary:**',
+                '- ✅ Quality gates passed',
+                '- ✅ Build successful',
+                '- ✅ Preview deployed',
+                '- ✅ Health check completed',
+                '',
+                `🔗 **Preview URL:** ${previewUrl}`,
+                '',
+                '📊 **Key Features to Test:**',
+                '- Resume page and PDF generation',
+                '- All sections load correctly',
+                '- Responsive design',
+                '- Performance metrics',
+                '',
+                '*This preview will be automatically updated with new commits.*'
+              ].join('\n');
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                deployment_id: deployments[0].id
+                body: commentBody
               });
-
-              const successStatus = statuses.find(status => status.state === 'success');
-              if (successStatus && successStatus.target_url) {
-                const commentBody = [
-                  '🚀 **Preview Deployment Ready!**',
-                  '',
-                  ' **Build Summary:**',
-                  '- ✅ Quality gates passed',
-                  '- ✅ Build successful',
-                  '- ✅ Preview deployed',
-                  '',
-                  `🔗 **Preview URL:** ${successStatus.target_url}`,
-                  '',
-                  '📊 **Key Features to Test:**',
-                  '- Resume page and PDF generation',
-                  '- All sections load correctly',
-                  '- Responsive design',
-                  '- Performance metrics',
-                  '',
-                  '*This preview will be automatically updated with new commits.*'
-                ].join('\n');
-
-                github.rest.issues.createComment({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  body: commentBody
-                });
-              }
+            } else {
+              console.log('No preview URL available for comment');
             }
 
   # Production Deployment to Vercel
@@ -193,7 +217,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     timeout-minutes: 15
     outputs:
-      preview-url: ${{ steps.deploy.outputs.preview-url }}
+      production-url: ${{ steps.deploy.outputs.preview-url }}
     environment:
       name: production
       url: ${{ steps.deploy.outputs.preview-url }}
@@ -215,44 +239,57 @@ jobs:
 
       - name: Verify deployment
         env:
-          # Use production URL instead of preview URL for production deployments
+          # For production deployments, use the production URL
           DEPLOYMENT_URL: ${{ steps.deploy.outputs.preview-url }}
         run: |
           echo "🚀 Production deployment completed!"
-          echo "📊 Deployment URL: $DEPLOYMENT_URL"
+          echo "📊 Production URL: $DEPLOYMENT_URL"
 
-          # For production deployments, the preview-url might be protected
+          # Extract the production domain from the preview URL for production deployments
+          # Production deployments should use the main domain, not the preview URL
+          if [[ "$DEPLOYMENT_URL" == *"vercel.app"* ]]; then
+            # For now, use the preview URL but note it's a production deployment
+            echo "ℹ️ Using Vercel preview URL for production deployment validation"
+            PRODUCTION_URL="$DEPLOYMENT_URL"
+          else
+            PRODUCTION_URL="$DEPLOYMENT_URL"
+          fi
+
+          echo "Testing production deployment at: $PRODUCTION_URL"
+
+          # For production deployments, the URL might be protected by Vercel's auth
           # Let's try with a more lenient health check
-          echo "Performing deployment health check..."
+          echo "Performing production deployment health check..."
 
           # Check if the URL responds (even with auth)
-          response_code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOYMENT_URL" || echo "000")
+          response_code=$(curl -s -o /dev/null -w "%{http_code}" "$PRODUCTION_URL" || echo "000")
           echo "Response code: $response_code"
 
           if [ "$response_code" = "200" ]; then
-            echo "✅ Health check passed - site is publicly accessible"
+            echo "✅ Production site is publicly accessible"
           elif [ "$response_code" = "401" ]; then
-            echo "⚠️ Site deployed but protected (401) - this may be expected for preview deployments"
-            echo "✅ Deployment successful, but site requires authentication"
+            echo "⚠️ Production site is protected (401) - this may be expected for Vercel deployments"
+            echo "✅ Production deployment successful, but site requires authentication"
           elif [ "$response_code" -ge "400" ] && [ "$response_code" -lt "500" ]; then
-            echo "❌ Client error: $response_code"
+            echo "❌ Production deployment client error: $response_code"
             exit 1
           elif [ "$response_code" -ge "500" ]; then
-            echo "❌ Server error: $response_code"
+            echo "❌ Production deployment server error: $response_code"
             exit 1
           elif [ "$response_code" = "000" ]; then
-            echo "❌ Could not connect to deployment"
+            echo "❌ Could not connect to production deployment"
             exit 1
           else
-            echo "✅ Deployment accessible with status: $response_code"
+            echo "✅ Production deployment accessible with status: $response_code"
           fi
 
       - name: Post-deployment validation
         env:
+          # For production deployments, use the same URL as deployment verification
           SITE_URL: ${{ steps.deploy.outputs.preview-url }}
         run: |
-          # Test critical endpoints with improved error handling
-          echo "Testing critical endpoints..."
+          # Test critical endpoints with improved error handling for production
+          echo "Testing critical production endpoints..."
 
           # Function to test endpoint with better error handling
           test_endpoint() {
@@ -260,13 +297,13 @@ jobs:
             local name=$2
             local response_code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || echo "000")
 
-            echo "Testing $name ($url): $response_code"
+            echo "Testing production $name ($url): $response_code"
 
             if [ "$response_code" = "200" ]; then
-              echo "✅ $name is publicly accessible"
+              echo "✅ Production $name is publicly accessible"
               return 0
             elif [ "$response_code" = "401" ]; then
-              echo "⚠️ $name is protected (401) - deployment successful but requires auth"
+              echo "⚠️ Production $name is protected (401) - deployment successful but requires auth"
               return 0
             elif [ "$response_code" -ge "400" ] && [ "$response_code" -lt "500" ]; then
               echo "❌ $name client error: $response_code"
@@ -325,8 +362,8 @@ jobs:
         uses: treosh/lighthouse-ci-action@2f8dda6cf4de7d73b29853c3f29e73a01e297bd8 # v12.1.0
         with:
           urls: |
-            ${{ needs.production.outputs.preview-url }}
-            ${{ needs.production.outputs.preview-url }}/resume
+            ${{ needs.production.outputs.production-url }}
+            ${{ needs.production.outputs.production-url }}/resume
           configPath: "./.github/lighthouse/lighthouse-config.js"
           uploadArtifacts: true
           temporaryPublicStorage: true
