@@ -365,7 +365,7 @@ jobs:
           urls: |
             https://portfolio-azure-five-75.vercel.app/
             https://portfolio-azure-five-75.vercel.app/resume
-          configPath: "./.github/lighthouse/lighthouse-config.js"
+          configPath: "./.github/lighthouse/lighthouse-config.cjs"
           uploadArtifacts: true
           temporaryPublicStorage: true
           runs: 3
