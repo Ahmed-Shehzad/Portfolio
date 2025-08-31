@@ -90,17 +90,26 @@ function LoadingSkeleton() {
 
 export default function Home() {
   return (
-    <ScrollWrapper>
-      <Suspense fallback={<LoadingSkeleton />}>
-        <HeaderSection />
-        <HeroSection />
-        <ProjectsSection />
-        <TapeSection />
-        <TestimonialsSection />
-        <AboutSection />
-        <ContactSection />
-        <FooterSection />
-      </Suspense>
-    </ScrollWrapper>
+    <div className="min-h-screen bg-gray-900 p-8 text-white">
+      {/* Test content to verify the page is working */}
+      <div className="py-20 text-center">
+        <h1 className="mb-4 text-4xl font-bold text-white">Muhammad Ahmed Shehzad</h1>
+        <p className="mb-8 text-xl text-gray-300">Backend Developer & Full Stack Engineer</p>
+        <div className="animate-pulse text-yellow-500">Loading portfolio content...</div>
+      </div>
+
+      <ScrollWrapper>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <HeaderSection />
+          <HeroSection />
+          <ProjectsSection />
+          <TapeSection />
+          <TestimonialsSection />
+          <AboutSection />
+          <ContactSection />
+          <FooterSection />
+        </Suspense>
+      </ScrollWrapper>
+    </div>
   );
 }
