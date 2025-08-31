@@ -105,11 +105,12 @@ jobs:
         run: npm run test
         continue-on-error: false
 
-  # Build Phase - Generate Build Artifacts
-  build:
-    name: Build Application
+  # Preview Deployment for Pull Requests
+  preview:
+    name: Preview Deployment
     runs-on: ubuntu-latest
     needs: quality
+    if: github.event_name == 'pull_request'
     timeout-minutes: 15
 
     steps:
@@ -131,8 +132,7 @@ jobs:
       - name: Setup Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Pull Vercel Environment Information (Preview)
-        if: github.event_name == 'pull_request'
+      - name: Pull Vercel Environment Information
         run: |
           echo "VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}" >> $GITHUB_ENV
           echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
@@ -140,87 +140,10 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-      - name: Pull Vercel Environment Information (Production)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          echo "VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}" >> $GITHUB_ENV
-          echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
-          vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts (Preview)
-        if: github.event_name == 'pull_request'
-        run: vercel build
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Build Project Artifacts (Production)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: vercel build --prod
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Verify Vercel Build Output
-        if: always() && (github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && github.event_name == 'push'))
-        run: |
-          echo "Checking for .vercel directory..."
-          ls -la .vercel/ || echo "⚠️ .vercel directory not found"
-          if [ -d ".vercel" ]; then
-            echo "✅ .vercel directory exists, contents:"
-            find .vercel -type f | head -10
-          else
-            echo "❌ .vercel directory missing - this will cause artifact upload issues"
-            exit 1
-          fi
-
-      - name: Upload Vercel Build Output
-        if: always() && (github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && github.event_name == 'push'))
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
-        with:
-          name: vercel-build-output
-          path: |
-            .vercel/
-          retention-days: 1
-
-      - name: Upload Next.js Build Output
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
-        with:
-          name: nextjs-build-output-${{ github.sha }}
-          path: |
-            .next/
-            out/
-            !.next/cache/
-          retention-days: 1
-
-  # Preview Deployment for Pull Requests
-  preview:
-    name: Preview Deployment
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'pull_request'
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v5.2.0
-
-      - name: Download Vercel Build Output
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-        with:
-          name: vercel-build-output
-          path: .
-
-      - name: Setup Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Deploy to Vercel Preview (Prebuilt)
+      - name: Build and Deploy to Vercel Preview
         id: preview-deploy
         run: |
+          vercel build
           deployment_url=$(vercel deploy --prebuilt --token="${{ secrets.VERCEL_TOKEN }}" --scope="${{ secrets.VERCEL_ORG_ID }}")
           echo "preview-url=$deployment_url" >> $GITHUB_OUTPUT
           echo "🚀 Preview deployment completed: $deployment_url"
@@ -305,7 +228,7 @@ jobs:
   production:
     name: Production Deployment
     runs-on: ubuntu-latest
-    needs: build
+    needs: quality
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     timeout-minutes: 15
     outputs:
@@ -318,18 +241,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v5.2.0
 
-      - name: Download Vercel Build Output
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      - name: Setup Node.js
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
-          name: vercel-build-output
-          path: .
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          # Install Puppeteer dependencies for PDF generation
+          npx puppeteer browsers install chrome
 
       - name: Setup Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Deploy to Vercel Production (Prebuilt)
+      - name: Pull Vercel Environment Information
+        run: |
+          echo "VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}" >> $GITHUB_ENV
+          echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
+          vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build and Deploy to Vercel Production
         id: deploy
         run: |
+          vercel build --prod
           production_url=$(vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}" --scope="${{ secrets.VERCEL_ORG_ID }}")
           echo "production-url=$production_url" >> $GITHUB_OUTPUT
           echo "🚀 Production deployment completed: $production_url"
@@ -474,7 +412,7 @@ jobs:
   cleanup:
     name: Cleanup Artifacts
     runs-on: ubuntu-latest
-    needs: [build, preview, production, audit]
+    needs: [preview, production, audit]
     if: always() && github.event_name != 'pull_request' # Don't run cleanup on PRs
     timeout-minutes: 5
     continue-on-error: true # Don't fail the workflow if cleanup fails
