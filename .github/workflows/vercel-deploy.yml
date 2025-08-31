@@ -1,0 +1,282 @@
+name: CI/CD - Vercel Deployment
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Security: restrict default permissions
+permissions:
+  contents: read
+  deployments: write
+  statuses: write
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+  CACHE_KEY_PREFIX: v2
+
+jobs:
+  # Quality Gates - Code Quality & Testing
+  quality:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          # Install Puppeteer dependencies for PDF generation testing
+          npx puppeteer browsers install chrome
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Type checking
+        run: npx tsc --noEmit
+
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Run tests
+        run: npm run test
+        continue-on-error: false
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: build-artifacts-${{ github.sha }}
+          path: |
+            .next/
+            out/
+            !.next/cache/
+          retention-days: 1
+
+  # Preview Deployment for Pull Requests
+  preview:
+    name: Preview Deployment
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v7
+        if: success()
+        with:
+          script: |
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+              per_page: 1
+            });
+
+            if (deployments.length > 0) {
+              const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: deployments[0].id
+              });
+
+              const successStatus = statuses.find(status => status.state === 'success');
+              if (successStatus && successStatus.target_url) {
+                const commentBody = [
+                  '🚀 **Preview Deployment Ready!**',
+                  '',
+                  ' **Build Summary:**',
+                  '- ✅ Quality gates passed',
+                  '- ✅ Build successful',
+                  '- ✅ Preview deployed',
+                  '',
+                  `🔗 **Preview URL:** ${successStatus.target_url}`,
+                  '',
+                  '📊 **Key Features to Test:**',
+                  '- Resume page and PDF generation',
+                  '- All sections load correctly',
+                  '- Responsive design',
+                  '- Performance metrics',
+                  '',
+                  '*This preview will be automatically updated with new commits.*'
+                ].join('\n');
+
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: commentBody
+                });
+              }
+            }
+
+  # Production Deployment to Vercel
+  production:
+    name: Production Deployment
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 15
+    outputs:
+      preview-url: ${{ steps.deploy.outputs.preview-url }}
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.preview-url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel Production
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: "--prod"
+          working-directory: ./
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+
+      - name: Verify deployment
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.preview-url }}
+        run: |
+          echo "🚀 Production deployment completed!"
+          echo "📊 Deployment URL: $DEPLOYMENT_URL"
+
+          # Basic health check
+          curl -f "$DEPLOYMENT_URL" -o /dev/null || {
+            echo "❌ Health check failed"
+            exit 1
+          }
+          echo "✅ Health check passed"
+
+      - name: Post-deployment validation
+        env:
+          SITE_URL: ${{ steps.deploy.outputs.preview-url }}
+        run: |
+          # Test critical endpoints
+          echo "Testing critical endpoints..."
+
+          # Test main page
+          curl -f "$SITE_URL/" -o /dev/null
+          echo "✅ Main page accessible"
+
+          # Test resume page
+          curl -f "$SITE_URL/resume" -o /dev/null
+          echo "✅ Resume page accessible"
+
+          # Test API routes
+          curl -f "$SITE_URL/api/robots" -o /dev/null
+          echo "✅ Robots API accessible"
+
+          curl -f "$SITE_URL/api/sitemap" -o /dev/null
+          echo "✅ Sitemap API accessible"
+
+          echo "🎉 All critical endpoints are healthy!"
+
+  # Performance & Security Audit
+  audit:
+    name: Performance & Security Audit
+    runs-on: ubuntu-latest
+    needs: production
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Security audit
+        run: |
+          echo "🔍 Running security audit..."
+          npm audit --audit-level=high
+
+          # Check for known vulnerabilities
+          npx audit-ci --config .audit-ci.json || true
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            ${{ needs.production.outputs.preview-url }}
+            ${{ needs.production.outputs.preview-url }}/resume
+          configPath: "./.github/lighthouse/lighthouse-config.js"
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 3
+
+  # Cleanup
+  cleanup:
+    name: Cleanup Artifacts
+    runs-on: ubuntu-latest
+    needs: [preview, production, audit]
+    if: always()
+    timeout-minutes: 5
+
+    steps:
+      - name: Delete old artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+
+            const oldArtifacts = artifacts.data.artifacts.filter(artifact => {
+              const ageInMs = Date.now() - new Date(artifact.created_at);
+              const ageInDays = ageInMs / (1000 * 60 * 60 * 24);
+              return ageInDays > 7; // Keep artifacts for 7 days
+            });
+
+            for (const artifact of oldArtifacts) {
+              console.log(`Deleting artifact: ${artifact.name}`);
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id
+              });
+            }

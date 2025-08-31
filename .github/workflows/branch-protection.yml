@@ -1,0 +1,364 @@
+name: Branch Protection & Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, develop]
+
+  # Allow manual validation of specific branches
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to validate"
+        required: true
+        default: "main"
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  statuses: write
+
+# Cancel in-progress runs for the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Validate PR requirements and branch policies
+  validation:
+    name: Branch & PR Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate PR title
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            const validPrefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'perf:', 'test:', 'chore:', 'ci:'];
+
+            const hasValidPrefix = validPrefixes.some(prefix =>
+              title.toLowerCase().startsWith(prefix.toLowerCase())
+            );
+
+            if (!hasValidPrefix) {
+              const commentBody = [
+                '❌ **Invalid PR Title Format**',
+                '',
+                'Please use one of the following prefixes:',
+                '- `feat:` for new features',
+                '- `fix:` for bug fixes',
+                '- `docs:` for documentation changes',
+                '- `style:` for formatting changes',
+                '- `refactor:` for code refactoring',
+                '- `perf:` for performance improvements',
+                '- `test:` for adding tests',
+                '- `chore:` for maintenance tasks',
+                '- `ci:` for CI/CD changes',
+                '',
+                '**Example:** `feat: add PDF resume download functionality`',
+                '',
+                `Current title: \`${title}\``
+              ].join('\n');
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+
+              core.setFailed('PR title does not follow conventional commit format');
+            } else {
+              console.log('✅ PR title format is valid');
+            }
+
+      - name: Check branch naming convention
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+        run: |
+          echo "🌿 Validating branch name: $BRANCH_NAME"
+
+          # Define valid patterns
+          if [[ "$BRANCH_NAME" =~ ^(feature|fix|hotfix|release|docs|chore)/.+ ]] ||
+             [[ "$BRANCH_NAME" =~ ^(main|develop|staging)$ ]] ||
+             [[ "$BRANCH_NAME" =~ ^(dependabot|deps)/.+ ]]; then
+            echo "✅ Branch name follows convention"
+          else
+            echo "❌ Invalid branch name: $BRANCH_NAME"
+            echo ""
+            echo "Valid patterns:"
+            echo "  - feature/description"
+            echo "  - fix/description"
+            echo "  - hotfix/description"
+            echo "  - docs/description"
+            echo "  - chore/description"
+            echo "  - release/version"
+            echo "  - main, develop, staging (protected branches)"
+            exit 1
+          fi
+
+      - name: Validate commit messages
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          echo "📝 Validating commit messages..."
+
+          # Get commits in this PR
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            COMMITS=$(git log --pretty=format:"%s" "origin/$BASE_REF..$HEAD_REF")
+          else
+            COMMITS=$(git log --pretty=format:"%s" -n 5)  # Last 5 commits for manual runs
+          fi
+
+          echo "$COMMITS" | while read -r commit_msg; do
+            if [[ "$commit_msg" =~ ^(feat|fix|docs|style|refactor|perf|test|chore|ci)(\(.+\))?: .+ ]]; then
+              echo "✅ Valid: $commit_msg"
+            else
+              echo "⚠️ Non-conventional: $commit_msg"
+            fi
+          done
+
+  # Code quality checks specific to portfolio project
+  portfolio-quality:
+    name: Portfolio Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check portfolio-specific requirements
+        run: |
+          echo "🎨 Checking portfolio-specific requirements..."
+
+          # Check if critical files exist
+          CRITICAL_FILES=(
+            "src/app/page.tsx"
+            "src/app/resume/page.tsx"
+            "src/app/api/resume-pdf/route.ts"
+            "vercel.json"
+            "next.config.ts"
+          )
+
+          for file in "${CRITICAL_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ Found: $file"
+            else
+              echo "❌ Missing: $file"
+              exit 1
+            fi
+          done
+
+      - name: Validate resume PDF endpoint
+        run: |
+          echo "📄 Validating PDF generation setup..."
+
+          # Check if Puppeteer is properly configured
+          if grep -q "puppeteer" package.json; then
+            echo "✅ Puppeteer dependency found"
+          else
+            echo "❌ Puppeteer dependency missing"
+            exit 1
+          fi
+
+          # Check PDF route implementation
+          if grep -q "generatePDF\|puppeteer" src/app/api/resume-pdf/route.ts; then
+            echo "✅ PDF generation route properly implemented"
+          else
+            echo "❌ PDF generation route incomplete"
+            exit 1
+          fi
+
+      - name: Check image optimization
+        run: |
+          echo "🖼️ Checking image optimization..."
+
+          # Find large images that should be optimized
+          find src/assets/images -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" | while read img; do
+            size=$(wc -c < "$img")
+            if [ $size -gt 500000 ]; then  # 500KB
+              echo "⚠️ Large image found: $img ($(($size / 1024))KB)"
+            fi
+          done
+
+      - name: Check responsive design implementation
+        run: |
+          echo "📱 Checking responsive design..."
+
+          # Check for Tailwind responsive classes
+          if grep -r "sm:\|md:\|lg:\|xl:\|2xl:" src/components src/sections; then
+            echo "✅ Responsive classes found"
+          else
+            echo "⚠️ Consider adding responsive design classes"
+          fi
+
+      - name: Performance checks
+        run: |
+          echo "⚡ Running performance checks..."
+
+          # Check for potential performance issues
+          if grep -r "useEffect.*\[\]" src/; then
+            echo "⚠️ Found useEffect hooks - ensure they don't cause performance issues"
+          fi
+
+          # Check for heavy imports
+          if grep -r "import.*\*.*from" src/; then
+            echo "⚠️ Found wildcard imports - consider specific imports for better tree shaking"
+          fi
+
+      - name: SEO and accessibility checks
+        run: |
+          echo "♿ Checking SEO and accessibility..."
+
+          # Check for meta tags in layout
+          if grep -q "metadata\|title\|description" src/app/layout.tsx; then
+            echo "✅ Metadata configuration found"
+          else
+            echo "❌ Missing metadata configuration"
+          fi
+
+          # Check for alt attributes in images
+          if grep -r "alt=" src/ | grep -v 'alt=""'; then
+            echo "✅ Image alt attributes found"
+          else
+            echo "⚠️ Consider adding alt attributes to images"
+          fi
+
+  # Integration testing with key features
+  integration-tests:
+    name: Portfolio Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          # Install browser for PDF testing
+          npx puppeteer browsers install chrome
+
+      - name: Build application
+        run: npm run build
+
+      - name: Start application for testing
+        run: |
+          npm run start &
+          echo $! > .pid
+
+          # Wait for server to be ready
+          timeout 30 bash -c 'until curl -s http://localhost:3000 > /dev/null; do sleep 1; done'
+        continue-on-error: false
+
+      - name: Test critical endpoints
+        run: |
+          echo "🧪 Testing critical endpoints..."
+
+          # Test main page
+          curl -f http://localhost:3000/ -o /dev/null
+          echo "✅ Main page loads"
+
+          # Test resume page
+          curl -f http://localhost:3000/resume -o /dev/null
+          echo "✅ Resume page loads"
+
+          # Test robots.txt
+          curl -f http://localhost:3000/api/robots -o /dev/null
+          echo "✅ Robots API responds"
+
+          # Test sitemap
+          curl -f http://localhost:3000/api/sitemap -o /dev/null
+          echo "✅ Sitemap API responds"
+
+      - name: Test PDF generation
+        run: |
+          echo "📄 Testing PDF generation..."
+
+          # Test PDF endpoint
+          response=$(curl -s -w "%{http_code}" http://localhost:3000/api/resume-pdf -o test.pdf)
+
+          if [ "$response" = "200" ] && [ -f test.pdf ] && [ -s test.pdf ]; then
+            echo "✅ PDF generation successful"
+            echo "📊 PDF size: $(wc -c < test.pdf) bytes"
+          else
+            echo "❌ PDF generation failed (HTTP: $response)"
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f .pid ]; then
+            kill $(cat .pid) || true
+            rm .pid
+          fi
+          rm -f test.pdf
+
+  # Security and vulnerability scanning
+  security-scan:
+    name: Security & Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: |
+          echo "🔍 Running security audit..."
+          npm audit --audit-level=moderate
+
+      - name: Check for sensitive data
+        run: |
+          echo "🕵️ Checking for sensitive data..."
+
+          # Check for potential secrets
+          if grep -r -i "password\|secret\|key\|token" src/ --exclude-dir=node_modules --exclude="*.test.*" | grep -v "// " | grep -v "placeholder\|example"; then
+            echo "⚠️ Potential sensitive data found - please review"
+          else
+            echo "✅ No obvious sensitive data found"
+          fi
+
+      - name: Dependency vulnerability check
+        run: |
+          echo "📦 Checking dependency vulnerabilities..."
+          npx audit-ci --config .audit-ci.json

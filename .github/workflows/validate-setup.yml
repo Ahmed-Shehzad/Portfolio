@@ -1,0 +1,180 @@
+name: Validate CI/CD Setup
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run validation daily at 2 AM UTC
+    - cron: "0 2 * * *"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate-setup:
+    name: Validate CI/CD Configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate workflow files
+        run: |
+          echo "🔍 Validating GitHub Actions workflows..."
+
+          WORKFLOWS_DIR=".github/workflows"
+          REQUIRED_WORKFLOWS=(
+            "vercel-deploy.yml"
+            "branch-protection.yml"
+            "dependency-updates.yml"
+          )
+
+          for workflow in "${REQUIRED_WORKFLOWS[@]}"; do
+            if [ -f "$WORKFLOWS_DIR/$workflow" ]; then
+              echo "✅ Found: $workflow"
+
+              # Basic YAML validation
+              if python3 -c "import yaml; yaml.safe_load(open('$WORKFLOWS_DIR/$workflow'))" 2>/dev/null; then
+                echo "✅ Valid YAML: $workflow"
+              else
+                echo "❌ Invalid YAML: $workflow"
+                exit 1
+              fi
+            else
+              echo "❌ Missing: $workflow"
+              exit 1
+            fi
+          done
+
+      - name: Check required configuration files
+        run: |
+          echo "📋 Checking configuration files..."
+
+          REQUIRED_FILES=(
+            "vercel.json"
+            "next.config.ts"
+            ".audit-ci.json"
+            ".github/lighthouse/lighthouse-config.js"
+            ".github/CICD_SETUP.md"
+          )
+
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ Found: $file"
+            else
+              echo "❌ Missing: $file"
+              exit 1
+            fi
+          done
+
+      - name: Validate Vercel configuration
+        run: |
+          echo "🚀 Validating Vercel configuration..."
+
+          # Check vercel.json structure
+          if jq -e '.functions."src/app/api/resume-pdf/route.ts".memory' vercel.json > /dev/null; then
+            echo "✅ Vercel function memory configuration found"
+          else
+            echo "❌ Missing Vercel function configuration"
+            exit 1
+          fi
+
+          # Check for build configuration
+          if jq -e '.build' vercel.json > /dev/null; then
+            echo "✅ Build configuration present"
+          else
+            echo "ℹ️ No specific build configuration (using defaults)"
+          fi
+
+      - name: Check GitHub repository settings recommendations
+        run: |
+          echo "⚙️ Repository settings validation..."
+
+          # Check if this is running in a repository context
+          if [ -n "${{ github.repository }}" ]; then
+            echo "📊 Repository: ${{ github.repository }}"
+            echo "🌿 Default branch: ${{ github.event.repository.default_branch }}"
+
+            # Recommendations for repository settings
+            echo ""
+            echo "📋 Recommended GitHub Settings:"
+            echo "  1. Branch protection rules for 'main' branch"
+            echo "  2. Required status checks: Quality Gates, Portfolio Quality Checks"
+            echo "  3. Required secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID"
+            echo "  4. Actions permissions: Read repository contents and metadata"
+          fi
+
+      - name: Validate documentation
+        run: |
+          echo "📚 Validating documentation..."
+
+          # Check CI/CD setup guide
+          if grep -q "Required Secrets" .github/CICD_SETUP.md; then
+            echo "✅ CI/CD setup documentation is comprehensive"
+          else
+            echo "❌ CI/CD setup documentation is incomplete"
+            exit 1
+          fi
+
+          # Check README CI/CD section
+          if grep -q "CI/CD.*Deployment" README.md; then
+            echo "✅ README contains CI/CD information"
+          else
+            echo "⚠️ README missing CI/CD section"
+          fi
+
+      - name: Test workflow syntax
+        run: |
+          echo "🔧 Testing workflow syntax with act (simulation)..."
+
+          # Download act for workflow validation
+          curl -q https://raw.githubusercontent.com/nektos/act/master/install.sh | bash
+
+          # Dry run validation of main workflow
+          if ./bin/act --dry-run --workflows .github/workflows/vercel-deploy.yml; then
+            echo "✅ Vercel deploy workflow syntax is valid"
+          else
+            echo "❌ Vercel deploy workflow has syntax issues"
+            exit 1
+          fi
+
+      - name: Summary report
+        run: |
+          echo ""
+          echo "🎉 CI/CD Setup Validation Summary"
+          echo "================================="
+          echo ""
+          echo "✅ All required workflow files present"
+          echo "✅ Configuration files validated"
+          echo "✅ Vercel deployment config verified"
+          echo "✅ Documentation comprehensive"
+          echo "✅ Workflow syntax validated"
+          echo ""
+          echo "🚀 Your CI/CD pipeline is ready for:"
+          echo "  • Automated quality gates"
+          echo "  • Preview deployments on PRs"
+          echo "  • Production deployments on main"
+          echo "  • Security and performance monitoring"
+          echo "  • Automated dependency management"
+          echo ""
+          echo "📋 Next Steps:"
+          echo "  1. Configure GitHub secrets (VERCEL_*)"
+          echo "  2. Set up branch protection rules"
+          echo "  3. Merge changes to main for first deployment"
+          echo "  4. Monitor deployment in Vercel dashboard"
+
+      - name: Generate validation badge
+        run: |
+          # Create a simple validation status
+          echo "CI/CD-Setup-Validated" > /tmp/validation-status.txt
+          echo "✅ Generated validation status"
+
+      - name: Upload validation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cicd-validation-report-${{ github.run_number }}
+          path: |
+            /tmp/validation-status.txt
+          retention-days: 30

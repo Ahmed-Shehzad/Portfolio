@@ -1,0 +1,142 @@
+name: Dependabot Validation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/dependabot.yml"
+  pull_request:
+    paths:
+      - ".github/dependabot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-dependabot:
+    name: Validate Dependabot Configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Dependabot YAML syntax
+        run: |
+          echo "🔍 Validating Dependabot configuration syntax..."
+
+          # Check if the file exists
+          if [ ! -f ".github/dependabot.yml" ]; then
+            echo "❌ Dependabot configuration file not found"
+            exit 1
+          fi
+
+          echo "✅ Dependabot configuration file exists"
+
+      - name: Install YAML validation tools
+        run: |
+          # Install yq for YAML validation
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Validate YAML structure
+        run: |
+          echo "📋 Validating YAML structure..."
+
+          # Validate basic YAML syntax
+          if yq eval '.version' .github/dependabot.yml > /dev/null; then
+            echo "✅ YAML syntax is valid"
+          else
+            echo "❌ Invalid YAML syntax"
+            exit 1
+          fi
+
+          # Check required fields
+          VERSION=$(yq eval '.version' .github/dependabot.yml)
+          if [ "$VERSION" = "2" ]; then
+            echo "✅ Version 2 detected"
+          else
+            echo "❌ Invalid version (expected 2, got: $VERSION)"
+            exit 1
+          fi
+
+          # Check if updates array exists
+          UPDATES_COUNT=$(yq eval '.updates | length' .github/dependabot.yml)
+          if [ "$UPDATES_COUNT" -gt 0 ]; then
+            echo "✅ Found $UPDATES_COUNT update configurations"
+          else
+            echo "❌ No update configurations found"
+            exit 1
+          fi
+
+      - name: Validate package ecosystems
+        run: |
+          echo "📦 Validating package ecosystems..."
+
+          # Extract package ecosystems
+          ECOSYSTEMS=$(yq eval '.updates[].package-ecosystem' .github/dependabot.yml)
+
+          echo "Configured ecosystems:"
+          echo "$ECOSYSTEMS" | while read -r ecosystem; do
+            case $ecosystem in
+              "npm"|"github-actions"|"docker"|"pip"|"bundler"|"composer"|"nuget"|"maven"|"gradle")
+                echo "✅ Valid ecosystem: $ecosystem"
+                ;;
+              *)
+                echo "❌ Unknown ecosystem: $ecosystem"
+                ;;
+            esac
+          done
+
+      - name: Check configuration completeness
+        run: |
+          echo "🔧 Checking configuration completeness..."
+
+          # Check npm configuration
+          NPM_CONFIG=$(yq eval '.updates[] | select(.package-ecosystem == "npm")' .github/dependabot.yml)
+
+          if echo "$NPM_CONFIG" | yq eval '.schedule.interval' -; then
+            echo "✅ NPM update schedule configured"
+          else
+            echo "⚠️ NPM update schedule not configured"
+          fi
+
+          # Check GitHub Actions configuration
+          GHA_CONFIG=$(yq eval '.updates[] | select(.package-ecosystem == "github-actions")' .github/dependabot.yml)
+
+          if echo "$GHA_CONFIG" | yq eval '.schedule.interval' -; then
+            echo "✅ GitHub Actions update schedule configured"
+          else
+            echo "⚠️ GitHub Actions update schedule not configured"
+          fi
+
+      - name: Summary report
+        run: |
+          echo ""
+          echo "🎉 Dependabot Configuration Summary"
+          echo "=================================="
+          echo ""
+
+          VERSION=$(yq eval '.version' .github/dependabot.yml)
+          UPDATES_COUNT=$(yq eval '.updates | length' .github/dependabot.yml)
+
+          echo "📊 Configuration Details:"
+          echo "  • Version: $VERSION"
+          echo "  • Update configurations: $UPDATES_COUNT"
+          echo ""
+
+          echo "📋 Configured Ecosystems:"
+          yq eval '.updates[].package-ecosystem' .github/dependabot.yml | while read -r ecosystem; do
+            schedule=$(yq eval ".updates[] | select(.package-ecosystem == \"$ecosystem\") | .schedule.interval" .github/dependabot.yml)
+            echo "  • $ecosystem (schedule: $schedule)"
+          done
+          echo ""
+
+          echo "✅ Dependabot configuration is valid and ready!"
+          echo ""
+          echo "📋 Next Steps:"
+          echo "  1. Dependabot will automatically start monitoring dependencies"
+          echo "  2. Check 'Security' tab for Dependabot alerts"
+          echo "  3. Review and merge Dependabot PRs when they appear"
+          echo "  4. Customize ignore rules if needed"

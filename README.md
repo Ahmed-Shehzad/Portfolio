@@ -2,10 +2,21 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Ahmed-Shehzad_Portfolio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Ahmed-Shehzad_Portfolio)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Ahmed-Shehzad_Portfolio&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Ahmed-Shehzad_Portfolio)
+[![CI/CD Pipeline](https://github.com/Ahmed-Shehzad/Portfolio/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/Ahmed-Shehzad/Portfolio/actions)
+[![Vercel Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-000000?style=flat&logo=vercel)](https://vercel.com)
 
-Modern, production-ready portfolio showcasing **Backend Development expertise** with **C#, .NET, TypeScript**, and **full-stack capabilities**. Built with **Next.js 15 (App Router)**, **React 19**, **TypeScript (strict)**, and **Tailwind CSS v4** – optimized for static export on GitHub Pages with clean architecture, smooth animations, AI-assisted development approach, and comprehensive CI/CD.
+Modern, production-ready portfolio showcasing **Backend Development expertise** with **C#, .NET, TypeScript**, and **full-stack capabilities**. Built with **Next.js 15 (App Router)**, **React 19**, **TypeScript (strict)**, and **Tailwind CSS v4** – deployed on **Vercel with Server-Side Rendering** for optimal performance, SEO, and user experience.
 
 ## ✨ Features
+
+### 🚀 CI/CD & Deployment Excellence
+
+- **Automated Vercel Deployment**: Enterprise-grade CI/CD with GitHub Actions integration
+- **Preview Deployments**: Automatic preview URLs for every pull request
+- **Quality Gates**: Comprehensive testing, linting, and security scanning before deployment
+- **Performance Monitoring**: Lighthouse CI integration with automated performance audits
+- **Branch Protection**: Enforced code quality standards and conventional commit messages
+- **Security Scanning**: Automated vulnerability detection and dependency auditing
 
 ### 🛠️ Developer Experience & Technical Approach
 
@@ -13,7 +24,7 @@ Modern, production-ready portfolio showcasing **Backend Development expertise** 
 - **AI-Assisted Development**: Strategic pair programming with AI for enhanced productivity and code quality
 - **Quality Gates**: Flat ESLint config (eslint v9), Prettier, Husky + lint-staged automation
 - **Professional Workspace**: `.vscode` tasks, launch configurations + multi-root workspace setup
-- **CI/CD Pipeline**: GitHub Actions for build validation, quality assurance, performance monitoring, and security audits
+- **Vercel Deployment**: Server-side rendering with edge computing and instant deployments
 
 ### Design & User Experience
 
@@ -26,11 +37,12 @@ Modern, production-ready portfolio showcasing **Backend Development expertise** 
 ### ⚡ Performance & Technical Excellence
 
 - **Next.js 15 + React 19**: Cutting-edge frontend architecture with App Router
+- **Server-Side Rendering**: Pre-rendered content for improved SEO and performance
 - **Web Workers**: Background processing for optimal main-thread performance
-- **Static Export Strategy**: Pre-rendered pages for lightning-fast loading
-- **Bundle Optimization**: Efficient JavaScript delivery (28.8kB main route)
-- **SEO & Discoverability**: Comprehensive metadata, structured data, Open Graph integration
-- **Image Optimization**: Responsive asset delivery with modern loading strategies
+- **Vercel Edge Functions**: Global CDN with serverless computing
+- **Bundle Optimization**: Efficient JavaScript delivery with code splitting
+- **SEO & Discoverability**: Dynamic meta tags, structured data, Open Graph integration
+- **Image Optimization**: Automatic WebP/AVIF conversion with responsive delivery
 
 ### 🛡️ Reliability & Professional Standards
 
@@ -39,12 +51,14 @@ Modern, production-ready portfolio showcasing **Backend Development expertise** 
 - **Graceful Degradation**: Robust fallback UI with retry mechanisms
 - **Development Excellence**: Comprehensive error reporting and debugging tools
 
-### 🌟 Advanced Web Worker Implementation
+### 🌟 Advanced Features & Capabilities
 
+- **PDF Resume Generation**: Puppeteer-powered dynamic PDF creation from live resume page
 - **Background Processing**: Animation calculations and data preparation off main thread
 - **Custom Hook System**: `useWebWorker` core with specialized task helpers
 - **Extensible Architecture**: Modular task system in `public/worker.js`
 - **Performance Monitoring**: Continuous metrics collection and cache optimization
+- **Server-Side Rendering**: Dynamic content generation with edge computing
 
 > **Backend Developer Mindset**: Performance-first architecture with background processing, optimized resource loading, minimal layout shifts, and seamless user experiences – reflecting server-side optimization principles applied to frontend development.
 
@@ -79,10 +93,10 @@ Modern, production-ready portfolio showcasing **Backend Development expertise** 
 
 ### Deployment & Infrastructure
 
-- **Hosting**: GitHub Pages (Static deployment)
-- **CI/CD**: GitHub Actions (Automated testing & quality checks)
-- **Version Control**: Git with conventional commit messages
-- **Environment**: Node.js 18+ with modern ES features
+- **Hosting**: Vercel (Server-side rendering with edge computing)
+- **Domain**: Automatic HTTPS with global CDN
+- **Performance**: Edge functions and automatic optimization
+- **Environment**: Node.js 20+ with serverless architecture
 
 ## 🚀 Getting Started
 
@@ -154,6 +168,57 @@ npm run sonar:up
 npm run sonar:down
 ```
 
+## 🚀 CI/CD & Deployment
+
+### Automated Deployment Pipeline
+
+This portfolio features enterprise-grade CI/CD automation with GitHub Actions and Vercel integration:
+
+#### 🔄 Continuous Integration
+
+- **Quality Gates**: Automated linting, type checking, testing, and security scanning
+- **Branch Protection**: Enforced conventional commit messages and PR title validation
+- **Multi-Environment Testing**: Comprehensive integration tests and performance audits
+- **Security Monitoring**: Dependency vulnerability scanning and sensitive data detection
+
+#### 🌐 Deployment Strategy
+
+- **Preview Deployments**: Automatic preview URLs for every pull request with health checks
+- **Production Deployment**: Automated deployment to Vercel on main branch pushes
+- **Performance Monitoring**: Lighthouse CI integration with Core Web Vitals tracking
+- **Post-Deployment Validation**: Automated endpoint testing and health verification
+
+#### ⚙️ Setup Instructions
+
+**Prerequisites:**
+
+1. Vercel account and project setup
+2. GitHub repository with Actions enabled
+
+**Configuration Steps:**
+
+```bash
+# 1. Install and configure Vercel CLI
+npm install -g vercel
+vercel login
+vercel link  # Links project and generates .vercel/project.json
+
+# 2. Add GitHub Secrets (Repository Settings → Secrets and variables → Actions):
+# - VERCEL_TOKEN: Get from https://vercel.com/account/tokens
+# - VERCEL_ORG_ID: Found in .vercel/project.json
+# - VERCEL_PROJECT_ID: Found in .vercel/project.json
+```
+
+**Workflow Features:**
+
+- 📊 **Quality Gates**: Code quality validation before deployment
+- 🔍 **Security Scanning**: Automated vulnerability detection
+- ⚡ **Performance Auditing**: Lighthouse CI with configurable thresholds
+- 📱 **Cross-Browser Testing**: Puppeteer-based integration testing
+- 🔧 **Maintenance Automation**: Weekly dependency updates and security patches
+
+For detailed setup instructions, see [`.github/CICD_SETUP.md`](.github/CICD_SETUP.md).
+
 #### TypeScript Debug (mirrors CI diagnostics)
 
 ```bash
@@ -169,14 +234,12 @@ Artifacts generated locally match those uploaded by the workflow (ts-debug artif
 
 ```
 portfolio/
-├── .github/
-│   └── workflows/
-│       ├── code-quality.yml   # Code quality and linting pipeline
-│       ├── nextjs.yml         # Next.js build and deployment to GitHub Pages
-│       └── performance.yml    # Performance monitoring and optimization
+├── .github-archived/          # Archived GitHub Actions workflows
+│   └── workflows/             # (Legacy CI/CD pipelines)
 ├── .husky/
 │   └── pre-commit             # Git pre-commit hooks for code quality
 ├── public/                    # Static assets
+├── vercel.json                # Vercel deployment configuration
 │   ├── worker.js              # Web Worker for performance optimization
 │   ├── robots.txt             # SEO robots configuration
 │   ├── sitemap.xml            # SEO sitemap
@@ -521,14 +584,15 @@ This project implements enterprise-grade code quality standards and automated wo
 4. Only staged files     # Performance optimization
 ```
 
-#### CI/CD (GitHub Actions)
+#### Vercel Deployment
 
-Workflows:
+Configuration:
 
-- `nextjs.yml` – Build + export + deploy to Pages (with cache + telemetry disabled)
-- `code-quality.yml` – Lint, format:check, type check, build (ESLint artifacts uploaded)
-- `performance.yml` – Worker validation, bundle/statics/SEO checks, artifact upload
-- `security.yml` – npm audit, dependency review, license summary (scheduled weekly)
+- `vercel.json` – Deployment settings, headers, redirects, and functions
+- **Automatic Deployments** – Every push triggers build and deployment
+- **Preview Deployments** – Pull requests get preview URLs
+- **Analytics** – Built-in performance monitoring and user insights
+- **Edge Functions** – Global CDN with serverless computing
 
 #### **VS Code Integration**
 
@@ -726,24 +790,39 @@ const footerLinks = [
 
 ### 🚀 **Deployment Configuration**
 
-#### **GitHub Pages Setup** (`next.config.ts`)
+#### **Vercel Setup** (`vercel.json`)
+
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "functions": {
+    "app/**": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
+```
+
+#### **Next.js Configuration** (`next.config.ts`)
 
 ```typescript
 const nextConfig: NextConfig = {
-  output: "export",
-  images: { unoptimized: true },
-  ...(isProd && {
-    basePath: "/your-repo-name",
-    assetPrefix: "/your-repo-name",
-  }),
+  // SSR enabled by default (no static export)
+  images: {
+    unoptimized: false, // Enable Vercel image optimization
+    formats: ["image/webp", "image/avif"],
+  },
+  // No basePath needed for Vercel
 };
 ```
 
 #### **Custom Domain** (Optional)
 
-1. Add `CNAME` file to `public/` directory
-2. Configure your domain DNS settings
-3. Enable HTTPS in GitHub Pages settings
+1. Add domain in Vercel dashboard
+2. Configure DNS records as instructed
+3. HTTPS automatically enabled
 
 ### 🔧 **Advanced Customization**
 
@@ -836,36 +915,49 @@ npm run format:check # Verify formatting
 
 ## 🚀 Deployment
 
-### GitHub Pages (Default)
+### Vercel (Recommended)
 
-This project is optimized for GitHub Pages deployment:
+This project is optimized for Vercel deployment with Server-Side Rendering:
+
+**Automatic Deployment:**
 
 ```bash
-# Automatic deployment via GitHub Actions
-1. Push to main branch
-2. GitHub Actions triggers build
-3. Site deploys to https://yourusername.github.io/Portfolio
+# Connect your GitHub repository to Vercel
+1. Visit vercel.com and import your GitHub repository
+2. Vercel auto-detects Next.js configuration
+3. Every push to main branch triggers automatic deployment
+4. Preview deployments for pull requests
+```
+
+**CLI Deployment:**
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy to Vercel
+vercel --prod
 ```
 
 **Setup Steps:**
 
 1. Fork/clone this repository
-2. Update `next.config.ts` with your repository name
-3. Enable GitHub Pages in repository settings
-4. Configure source to "GitHub Actions"
-5. Push changes to trigger deployment
+2. Sign up at [vercel.com](https://vercel.com)
+3. Import your GitHub repository
+4. Configure custom domain (optional)
+5. Environment variables (if needed)
 
-### Manual Export
+**Benefits:**
 
-```bash
-# Manual deployment process
-npm run build           # Generate static files
-git add out/           # Add build output
-git commit -m "Deploy"
-git subtree push --prefix out origin gh-pages
-```
+- Server-Side Rendering for better SEO
+- Automatic HTTPS and global CDN
+- Edge functions and optimization
+- Real-time performance analytics
+- Zero-config deployment
 
-### Vercel (Alt)
+### Alternative: GitHub Pages (Legacy)
+
+For static export compatibility, see [MIGRATION_TO_VERCEL.md](./MIGRATION_TO_VERCEL.md) for rollback instructions.
 
 ```bash
 # One-click deployment

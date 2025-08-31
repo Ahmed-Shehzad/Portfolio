@@ -1,65 +1,62 @@
 module.exports = {
-  extends: "lighthouse:default",
-  settings: {
-    // Emulate mobile device
-    formFactor: "desktop",
-    throttling: {
-      rttMs: 40,
-      throughputKbps: 10240,
-      cpuSlowdownMultiplier: 1,
-      requestLatencyMs: 0,
-      downloadThroughputKbps: 0,
-      uploadThroughputKbps: 0,
+  ci: {
+    collect: {
+      numberOfRuns: 3,
+      settings: {
+        chromeFlags: "--no-sandbox --disable-dev-shm-usage",
+        preset: "desktop",
+        throttling: {
+          rttMs: 40,
+          throughputKbps: 10 * 1024,
+          cpuSlowdownMultiplier: 1,
+          requestLatencyMs: 0,
+          downloadThroughputKbps: 0,
+          uploadThroughputKbps: 0,
+        },
+        screenEmulation: {
+          mobile: false,
+          width: 1350,
+          height: 940,
+          deviceScaleFactor: 1,
+          disabled: false,
+        },
+        formFactor: "desktop",
+      },
     },
-    screenEmulation: {
-      mobile: false,
-      width: 1350,
-      height: 940,
-      deviceScaleFactor: 1,
-      disabled: false,
+    assert: {
+      assertions: {
+        "categories:performance": ["warn", { minScore: 0.8 }],
+        "categories:accessibility": ["error", { minScore: 0.9 }],
+        "categories:best-practices": ["warn", { minScore: 0.85 }],
+        "categories:seo": ["warn", { minScore: 0.9 }],
+        "categories:pwa": "off",
+
+        // Core Web Vitals
+        "first-contentful-paint": ["warn", { maxNumericValue: 2000 }],
+        "largest-contentful-paint": ["warn", { maxNumericValue: 2500 }],
+        "cumulative-layout-shift": ["warn", { maxNumericValue: 0.1 }],
+        "total-blocking-time": ["warn", { maxNumericValue: 300 }],
+
+        // Performance metrics
+        "speed-index": ["warn", { maxNumericValue: 3000 }],
+        interactive: ["warn", { maxNumericValue: 3000 }],
+
+        // Best practices
+        "uses-https": "error",
+        "uses-http2": "warn",
+        "uses-responsive-images": "warn",
+        "efficient-animated-content": "warn",
+        "unused-css-rules": "warn",
+
+        // Accessibility
+        "color-contrast": "error",
+        "image-alt": "error",
+        label: "error",
+        "valid-lang": "error",
+      },
     },
-    emulatedUserAgent:
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-  },
-  audits: [
-    "first-contentful-paint",
-    "largest-contentful-paint",
-    "first-meaningful-paint",
-    "speed-index",
-    "total-blocking-time",
-    "max-potential-fid",
-    "cumulative-layout-shift",
-    "server-response-time",
-    "interactive",
-    "user-timings",
-    "critical-request-chains",
-    "redirects",
-    "installable-manifest",
-    "splash-screen",
-    "themed-omnibox",
-    "content-width",
-    "image-aspect-ratio",
-    "image-size-responsive",
-    "preload-fonts",
-    "robots-txt",
-    "hreflang",
-    "plugins",
-    "canonical",
-    "structured-data",
-  ],
-  categories: {
-    performance: {
-      title: "Performance",
-      auditRefs: [
-        { id: "first-contentful-paint", weight: 10, group: "metrics" },
-        { id: "largest-contentful-paint", weight: 25, group: "metrics" },
-        { id: "first-meaningful-paint", weight: 10, group: "metrics" },
-        { id: "speed-index", weight: 10, group: "metrics" },
-        { id: "interactive", weight: 10, group: "metrics" },
-        { id: "max-potential-fid", weight: 10, group: "metrics" },
-        { id: "total-blocking-time", weight: 30, group: "metrics" },
-        { id: "cumulative-layout-shift", weight: 25, group: "metrics" },
-      ],
+    upload: {
+      target: "temporary-public-storage",
     },
   },
 };

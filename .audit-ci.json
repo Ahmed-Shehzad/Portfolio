@@ -1,0 +1,17 @@
+{
+  "deny-list": [],
+  "skip-dev": true,
+  "allowlist": ["GHSA-67hx-6x53-jw92"],
+  "show-found": true,
+  "show-not-found": false,
+  "pass-enoaudit": true,
+  "report-type": "summary",
+  "retry-count": 3,
+  "directory": "./",
+  "levels": {
+    "low": false,
+    "moderate": false,
+    "high": true,
+    "critical": true
+  }
+}

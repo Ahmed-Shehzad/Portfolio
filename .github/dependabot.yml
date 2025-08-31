@@ -1,56 +1,97 @@
 version: 2
 updates:
-  # Enable version updates for npm dependencies
+  # Enable version updates for npm (JavaScript/TypeScript dependencies)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
+      time: "06:00"
     open-pull-requests-limit: 5
     assignees:
       - "Ahmed-Shehzad"
     commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
+      prefix: "chore(deps)"
       include: "scope"
     labels:
       - "dependencies"
       - "automated"
-    # Group minor and patch updates
+    # Group related updates together to reduce PR noise
     groups:
-      development-dependencies:
+      # Group Next.js and React ecosystem updates
+      nextjs-react:
         patterns:
-          - "@types/*"
-          - "@typescript-eslint/*"
-          - "@testing-library/*"
-          - "@vitejs/*"
-          - "@vitest/*"
-          - "eslint*"
-          - "prettier*"
-          - "vitest*"
-          - "typescript*"
+          - "next*"
+          - "react*"
+          - "@types/react*"
         update-types:
           - "minor"
           - "patch"
-      production-dependencies:
+
+      # Group TypeScript and related tools
+      typescript-tools:
         patterns:
-          - "react*"
-          - "next*"
-          - "@tanstack/*"
-          - "tailwindcss*"
+          - "typescript"
+          - "@types/*"
+          - "ts-*"
         update-types:
+          - "minor"
           - "patch"
-    # Ignore major version updates for critical dependencies
-    ignore:
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "next"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "typescript"
-        update-types: ["version-update:semver-major"]
+
+      # Group ESLint and Prettier tools
+      linting-tools:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+          - "prettier*"
+          - "@typescript-eslint/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Group Tailwind CSS ecosystem
+      tailwind-ecosystem:
+        patterns:
+          - "tailwindcss*"
+          - "@tailwindcss/*"
+          - "postcss*"
+          - "autoprefixer"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Group testing tools
+      testing-tools:
+        patterns:
+          - "vitest*"
+          - "@vitest/*"
+          - "jsdom"
+          - "@testing-library/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Group build and development tools
+      dev-tools:
+        patterns:
+          - "webpack*"
+          - "vite*"
+          - "@vitejs/*"
+          - "esbuild"
+          - "rollup*"
+        update-types:
+          - "minor"
+          - "patch"
+
+    # Ignore specific packages or versions if needed (uncomment as needed)
+    # ignore:
+    #   # Example: Ignore major version updates for critical dependencies
+    #   - dependency-name: "react"
+    #     update-types: ["version-update:semver-major"]
+    #
+    #   # Ignore specific versions that might have known issues
+    #   - dependency-name: "next"
+    #     versions: ["14.0.0", "14.0.1"]
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -58,14 +99,45 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "10:00"
+      time: "07:00"
     open-pull-requests-limit: 3
     assignees:
       - "Ahmed-Shehzad"
     commit-message:
-      prefix: "ci"
+      prefix: "ci(deps)"
       include: "scope"
     labels:
       - "github-actions"
-      - "ci/cd"
+      - "ci-cd"
       - "automated"
+    # Group GitHub Actions updates
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Enable version updates for Docker (if you add Docker files later)
+  # - package-ecosystem: "docker"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+  #     day: "sunday"
+  #     time: "08:00"
+  #     timezone: "UTC"
+  #   open-pull-requests-limit: 2
+  #   reviewers:
+  #     - "Ahmed-Shehzad"
+  #   commit-message:
+  #     prefix: "chore(docker)"
+  #   labels:
+  #     - "docker"
+  #     - "infrastructure"
+# Note: Dependabot will automatically:
+# 1. Check for updates according to the schedule
+# 2. Create pull requests with dependency updates
+# 3. Include changelogs and compatibility information
+# 4. Respect semantic versioning when grouping updates
+# 5. Automatically rebase PRs when new commits are pushed to the target branch

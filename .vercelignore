@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+*.coverage
+.nyc_output
+
+# Build artifacts
+.next/
+out/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# GitHub Actions (not needed for Vercel)
+.github/
+
+# Docker files (not needed for Vercel)
+docker-compose*.yml
+Dockerfile*
+
+# Scripts (build-time only)
+scripts/
+*.sh
+
+# Documentation (not needed for runtime)
+docs/
+*.md
+!README.md
+
+# SonarQube
+sonar-project.properties
+
+# Test artifacts
+act-artifacts/
+
+# Linting configs
+.eslintrc*
+.prettierrc*
+eslint.config.*
+postcss.config.*
+
+# Workspace files
+*.code-workspace
