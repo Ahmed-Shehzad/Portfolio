@@ -5,7 +5,11 @@ import chromium from "@sparticuz/chromium";
 export async function GET(request: NextRequest) {
   try {
     // Get the base URL from the request
-    const protocol = request.headers.get("x-forwarded-proto") || "http";
+    const protocol =
+      request.headers.get("x-forwarded-proto") ||
+      request.headers.get("x-forwarded-protocol") ||
+      (request.url.startsWith("https") ? "https" : "http") ||
+      "https";
     const host = request.headers.get("host");
     const baseUrl = `${protocol}://${host}`;
 
