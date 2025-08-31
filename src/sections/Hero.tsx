@@ -32,6 +32,8 @@ import { memo, useCallback } from "react";
  */
 export const HeroSection = memo(() => {
   const handleConnectClick = useCallback(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
     const contactSection = document.getElementById("contact");
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +41,8 @@ export const HeroSection = memo(() => {
   }, []);
 
   const handleExploreClick = useCallback(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
     const projectsSection = document.getElementById("projects");
     if (projectsSection) {
       projectsSection.scrollIntoView({ behavior: "smooth" });

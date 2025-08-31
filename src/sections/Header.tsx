@@ -103,7 +103,11 @@ export const Header = () => {
 
   // Initialize section elements after component mounts (client-side only)
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const updateElements = () => {
+      if (typeof window === "undefined") return;
+
       const elements = headerOptions
         .filter((option) => option.href.startsWith("#")) // Only process hash-based sections
         .map((option) => {

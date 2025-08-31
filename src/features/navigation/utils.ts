@@ -11,6 +11,8 @@ import { SCROLL_OFFSET, HEADER_OFFSET, BOTTOM_THRESHOLD } from "./constants";
  * Gets all section elements for navigation
  */
 export const getSectionElements = (): SectionElement[] => {
+  if (typeof window === "undefined" || typeof document === "undefined") return [];
+
   const sections = document.querySelectorAll("section[id]");
   const scrollTop = window.pageYOffset ?? document.documentElement.scrollTop;
 
@@ -30,6 +32,8 @@ export const getSectionElements = (): SectionElement[] => {
  * Determines the currently active section based on scroll position
  */
 export const getActiveSectionId = (sections: SectionElement[]): string => {
+  if (typeof window === "undefined" || typeof document === "undefined") return "";
+
   const scrollPosition = window.scrollY + HEADER_OFFSET;
   const windowHeight = window.innerHeight;
   const documentHeight = document.documentElement.scrollHeight;
@@ -54,6 +58,8 @@ export const getActiveSectionId = (sections: SectionElement[]): string => {
  * Smoothly scrolls to a section
  */
 export const scrollToSection = (href: string): void => {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
   const targetId = href.replace("#", "");
   const targetElement = document.getElementById(targetId);
 

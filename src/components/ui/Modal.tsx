@@ -21,6 +21,8 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
   );
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+
     if (isOpen) {
       document.body.style.overflow = "hidden";
     }
@@ -30,6 +32,8 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
   }, [isOpen]);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
     }
@@ -55,6 +59,7 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
   );
 
   try {
+    if (typeof document === "undefined") return null;
     return createPortal(modalContent, document.body);
   } catch (error) {
     secureLog.error(

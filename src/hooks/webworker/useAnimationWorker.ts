@@ -17,6 +17,8 @@ export const useAnimationWorker = () => {
 
   const processAnimations = useCallback(
     async (elements: SectionElement[], scrollProgress: number) => {
+      if (typeof window === "undefined") return elements;
+
       return await executeWithFallback(
         async () => {
           const result = await executeTask("PROCESS_ANIMATIONS", {
@@ -41,6 +43,8 @@ export const useScrollWorker = () => {
 
   const optimizeScrollCalculations = useCallback(
     async (scrollY: number, elements: SectionElement[]) => {
+      if (typeof window === "undefined") return elements;
+
       return await executeWithFallback(
         async () => {
           const result = await executeTask("OPTIMIZE_SCROLL_CALCULATIONS", {
