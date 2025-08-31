@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
   // output: "export", // Removed for SSR
 
   images: {
-    // Enable image optimization for Vercel
-    unoptimized: true,
+    // Enable image optimization for better performance
+    unoptimized: false, // Enable optimization for responsive images
     domains: [
       "https://www.365scores.com",
       "https://extraleicht.com/",
@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       "https://www.pflegehilfe.org/",
     ], // Add external image domains if needed
     formats: ["image/webp", "image/avif"],
-    // Additional image optimization settings
+    // Enhanced image optimization settings
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,

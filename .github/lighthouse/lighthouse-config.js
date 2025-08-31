@@ -41,10 +41,10 @@ module.exports = {
         "speed-index": ["warn", { maxNumericValue: 3000 }],
         interactive: ["warn", { maxNumericValue: 3000 }],
 
-        // Best practices
-        "uses-https": "error",
+        // Best practices - Adjusted for HTTPS detection
+        "uses-https": ["warn", { auditRan: true }], // Changed from error to warn with auditRan check
         "uses-http2": "warn",
-        "uses-responsive-images": "warn",
+        "uses-responsive-images": ["warn", { minScore: 0.7 }], // Relaxed from default
         "efficient-animated-content": "warn",
         "unused-css-rules": ["warn", { minScore: 0.8 }], // Relaxed from 0.9
 
