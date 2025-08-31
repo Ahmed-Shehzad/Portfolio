@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Removed conflicting CSP - using main headers CSP instead
   },
 
   // Remove GitHub Pages specific paths for Vercel
@@ -79,7 +79,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-              "font-src 'self' fonts.gstatic.com",
+              "font-src 'self' fonts.gstatic.com data:",
               "img-src 'self' data: https:",
               "connect-src 'self' https:",
               "object-src 'none'",
