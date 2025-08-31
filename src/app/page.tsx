@@ -1,108 +1,83 @@
 "use client";
 
-import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { FC } from "react";
 
-// Import components that don't use browser APIs directly
+// Header uses scroll listeners and window - disable SSR
 const HeaderSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.HeaderSection })),
   {
     ssr: false,
-    loading: () => <div className="h-16 animate-pulse bg-gray-800" />,
   }
 );
 
+// Hero uses document.getElementById - disable SSR
 const HeroSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.HeroSection })),
   {
     ssr: false,
-    loading: () => <div className="mx-4 h-96 animate-pulse bg-gray-800" />,
   }
 );
 
-const FooterSection = dynamic(
-  () => import("@/sections").then((mod) => ({ default: mod.FooterSection })),
-  {
-    ssr: false,
-    loading: () => <div className="h-32 animate-pulse bg-gray-800" />,
-  }
-);
-
-// Dynamic import components that use browser APIs
+// All sections client-side only to prevent SSR window access issues
 const ProjectsSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.ProjectsSection })),
   {
+    loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
     ssr: false,
-    loading: () => <div className="mx-4 h-64 animate-pulse bg-gray-800" />,
   }
 );
 
 const TapeSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.TapeSection })),
   {
+    loading: () => <div className="h-32 animate-pulse rounded-lg bg-gray-800/20" />,
     ssr: false,
-    loading: () => <div className="mx-4 h-48 animate-pulse bg-gray-800" />,
   }
 );
 
 const TestimonialsSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.TestimonialsSection })),
   {
+    loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
     ssr: false,
-    loading: () => <div className="mx-4 h-64 animate-pulse bg-gray-800" />,
   }
 );
 
 const AboutSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.AboutSection })),
   {
+    loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
     ssr: false,
-    loading: () => <div className="mx-4 h-64 animate-pulse bg-gray-800" />,
   }
 );
 
 const ContactSection = dynamic(
   () => import("@/sections").then((mod) => ({ default: mod.ContactSection })),
   {
-    ssr: false,
-    loading: () => <div className="mx-4 h-64 animate-pulse bg-gray-800" />,
-  }
-);
-
-// Wrapper component that uses scroll animations
-const ScrollWrapper = dynamic(
-  () => import("@/wrappers").then((mod) => ({ default: mod.ScrollAnimationWrapper })),
-  {
+    loading: () => <div className="h-96 animate-pulse rounded-lg bg-gray-800/20" />,
     ssr: false,
   }
 );
 
-function LoadingSkeleton() {
-  return (
-    <div className="min-h-screen animate-pulse bg-gray-900 text-white">
-      <div className="mb-4 h-16 bg-gray-800" />
-      <div className="mx-4 mb-4 h-96 bg-gray-800" />
-      <div className="mx-4 mb-4 h-64 bg-gray-800" />
-      <div className="mx-4 mb-4 h-48 bg-gray-800" />
-    </div>
-  );
-}
+const Footer = dynamic(() => import("@/sections").then((mod) => ({ default: mod.FooterSection })), {
+  loading: () => <div className="h-32 animate-pulse rounded-lg bg-gray-800/20" />,
+  ssr: false,
+});
 
-export default function Home() {
+const Home: FC = () => {
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <Suspense fallback={<LoadingSkeleton />}>
-        <HeaderSection />
-        <ScrollWrapper>
-          <HeroSection />
-          <ProjectsSection />
-          <TapeSection />
-          <TestimonialsSection />
-          <AboutSection />
-          <ContactSection />
-        </ScrollWrapper>
-        <FooterSection />
-      </Suspense>
-    </div>
+    <>
+      <HeaderSection />
+      <HeroSection />
+      <ProjectsSection />
+      <TapeSection />
+      <TestimonialsSection />
+      <AboutSection />
+      <ContactSection />
+      <Footer />
+    </>
   );
-}
+};
+
+export default Home;
