@@ -6,13 +6,7 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "functions": {
-    "app/**": {
-      "runtime": "nodejs20.x",
-      "memory": 1024
-    },
-    "app/api/resume-pdf/route.js": {
-      "runtime": "nodejs20.x",
-      "memory": 1024,
+    "app/api/resume-pdf/route.ts": {
       "maxDuration": 30
     }
   },
