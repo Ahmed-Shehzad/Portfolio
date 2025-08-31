@@ -6,6 +6,8 @@ import { Calistoga, Inter } from "next/font/google";
 import { FC, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
+
 import "./globals.css";
 
 interface RootLayoutProps {
@@ -16,7 +18,7 @@ interface RootLayoutProps {
 const AUTHOR_NAME = "Muhammad Ahmed Shehzad";
 const BACKEND_DEV_DESCRIPTION =
   "Backend Developer specializing in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.";
-const PORTFOLIO_URL = "https://portfolio-azure-five-75.vercel.app";
+const PORTFOLIO_URL = "https://portfolio-llhdbt4kx-muhammad-ahmed-shehzads-projects.vercel.app";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: AUTHOR_NAME }],
   creator: AUTHOR_NAME,
-  metadataBase: new URL("https://portfolio-azure-five-75.vercel.app"),
+  metadataBase: new URL("https://portfolio-llhdbt4kx-muhammad-ahmed-shehzads-projects.vercel.app"),
   alternates: {
     canonical: "/",
   },
@@ -108,10 +110,7 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* Font preconnect links are handled by Next.js font optimization */}
 
         {/* Structured Data - JSON-LD for SEO */}
         <script
@@ -186,6 +185,7 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
           <QueryProvider>{children}</QueryProvider>
         </ErrorBoundaryWrapper>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

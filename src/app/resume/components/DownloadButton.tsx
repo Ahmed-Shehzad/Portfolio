@@ -11,9 +11,14 @@ export function DownloadButton() {
       setIsGenerating(true);
       setError(null);
 
-      // Call the API to generate PDF
+      // Call the API to generate PDF with proper headers
       const response = await fetch("/api/resume-pdf", {
         method: "GET",
+        headers: {
+          Accept: "application/pdf",
+          "Cache-Control": "no-cache",
+          "User-Agent": "Mozilla/5.0 (compatible; PDF-Generator)",
+        },
       });
 
       if (!response.ok) {

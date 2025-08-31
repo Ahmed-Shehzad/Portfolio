@@ -94,9 +94,36 @@ Modern, production-ready portfolio showcasing **Backend Development expertise** 
 ### Deployment & Infrastructure
 
 - **Hosting**: Vercel (Server-side rendering with edge computing)
+- **CI/CD**: GitHub Actions with prebuilt deployment approach
 - **Domain**: Automatic HTTPS with global CDN
 - **Performance**: Edge functions and automatic optimization
 - **Environment**: Node.js 20+ with serverless architecture
+- **Deployment Strategy**: Separate build and deploy phases for reliability
+
+#### 🚀 Deployment Options
+
+**Automated (Recommended)**:
+
+- **Preview**: Automatic deployment on pull requests
+- **Production**: Automatic deployment on main branch push
+
+**Manual Deployment**:
+
+```bash
+# Quick deployment
+npm run deploy:preview     # Preview deployment
+npm run deploy:production  # Production deployment
+
+# Using deployment script
+./scripts/deploy.sh preview     # Preview with environment checks
+./scripts/deploy.sh production  # Production with environment checks
+
+# Manual steps
+vercel build --prod             # Generate build artifacts
+vercel deploy --prebuilt --prod # Deploy using prebuilt artifacts
+```
+
+📋 **See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed instructions**
 
 ## 🚀 Getting Started
 

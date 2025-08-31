@@ -105,11 +105,76 @@ jobs:
         run: npm run test
         continue-on-error: false
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
-        if: success()
+  # Build Phase - Generate Build Artifacts
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: quality
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v5.2.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
-          name: build-artifacts-${{ github.sha }}
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          # Install Puppeteer dependencies for PDF generation
+          npx puppeteer browsers install chrome
+
+      - name: Setup Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel Environment Information (Preview)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}" >> $GITHUB_ENV
+          echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Pull Vercel Environment Information (Production)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}" >> $GITHUB_ENV
+          echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts (Preview)
+        if: github.event_name == 'pull_request'
+        run: vercel build
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build Project Artifacts (Production)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: vercel build --prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Upload Vercel Build Output
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: vercel-build-output-${{ github.sha }}
+          path: |
+            .vercel/
+          retention-days: 1
+
+      - name: Upload Next.js Build Output
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: nextjs-build-output-${{ github.sha }}
           path: |
             .next/
             out/
@@ -120,7 +185,7 @@ jobs:
   preview:
     name: Preview Deployment
     runs-on: ubuntu-latest
-    needs: quality
+    needs: build
     if: github.event_name == 'pull_request'
     timeout-minutes: 10
 
@@ -128,15 +193,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v5.2.0
 
-      - name: Deploy to Vercel Preview
-        id: preview-deploy
-        uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
+      - name: Download Vercel Build Output
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./
-          scope: ${{ secrets.VERCEL_ORG_ID }}
+          name: vercel-build-output-${{ github.sha }}
+          path: .
+
+      - name: Setup Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel Preview (Prebuilt)
+        id: preview-deploy
+        run: |
+          deployment_url=$(vercel deploy --prebuilt --token="${{ secrets.VERCEL_TOKEN }}" --scope="${{ secrets.VERCEL_ORG_ID }}")
+          echo "preview-url=$deployment_url" >> $GITHUB_OUTPUT
+          echo "🚀 Preview deployment completed: $deployment_url"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Verify preview deployment
         env:
@@ -214,34 +289,43 @@ jobs:
   production:
     name: Production Deployment
     runs-on: ubuntu-latest
-    needs: quality
+    needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     timeout-minutes: 15
     outputs:
-      production-url: ${{ steps.deploy.outputs.preview-url }}
+      production-url: ${{ steps.deploy.outputs.production-url }}
     environment:
       name: production
-      url: ${{ steps.deploy.outputs.preview-url }}
+      url: ${{ steps.deploy.outputs.production-url }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v5.2.0
 
-      - name: Deploy to Vercel Production
-        id: deploy
-        uses: amondnet/vercel-action@16e87c0a08142b0d0d33b76aeaf20823c381b9b9 # v25
+      - name: Download Vercel Build Output
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
-          working-directory: ./
-          scope: ${{ secrets.VERCEL_ORG_ID }}
+          name: vercel-build-output-${{ github.sha }}
+          path: .
+
+      - name: Setup Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel Production (Prebuilt)
+        id: deploy
+        run: |
+          production_url=$(vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}" --scope="${{ secrets.VERCEL_ORG_ID }}")
+          echo "production-url=$production_url" >> $GITHUB_OUTPUT
+          echo "🚀 Production deployment completed: $production_url"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Verify deployment
         env:
           # For production deployments, use the production URL
-          DEPLOYMENT_URL: ${{ steps.deploy.outputs.preview-url }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.production-url }}
         run: |
           echo "🚀 Production deployment completed!"
           echo "📊 Production URL: $DEPLOYMENT_URL"
@@ -287,7 +371,7 @@ jobs:
       - name: Post-deployment validation
         env:
           # For production deployments, use the same URL as deployment verification
-          SITE_URL: ${{ steps.deploy.outputs.preview-url }}
+          SITE_URL: ${{ steps.deploy.outputs.production-url }}
         run: |
           # Test critical endpoints with improved error handling for production
           echo "Testing critical production endpoints..."
@@ -374,7 +458,7 @@ jobs:
   cleanup:
     name: Cleanup Artifacts
     runs-on: ubuntu-latest
-    needs: [preview, production, audit]
+    needs: [build, preview, production, audit]
     if: always() && github.event_name != 'pull_request' # Don't run cleanup on PRs
     timeout-minutes: 5
     continue-on-error: true # Don't fail the workflow if cleanup fails
