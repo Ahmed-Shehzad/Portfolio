@@ -121,7 +121,7 @@ export default function ResumePage() {
                 <div className="flex items-center gap-2">
                   <LinkedInIcon className="size-8 flex-shrink-0 text-gray-600" />
                   <Link
-                    href="https://www.linkedin.com/in/muhammad-ahmed-shehzad-a2697b150/"
+                    href="https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-md text-blue-500 hover:underline"

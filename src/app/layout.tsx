@@ -128,7 +128,7 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
               image: `${PORTFOLIO_URL}/me.jpg`,
               sameAs: [
                 "https://github.com/Ahmed-Shehzad",
-                "https://linkedin.com/in/muhammad-ahmed-shehzad",
+                "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/",
               ],
               jobTitle: "Backend Developer & Full Stack Engineer",
               worksFor: {

@@ -14,9 +14,9 @@ export const APP_CONFIG = {
 
   // URLs and links
   urls: {
-    portfolio: "https://muhammad-ahmed-shehzad.vercel.app",
+    portfolio: "https://portfolio-azure-five-75.vercel.app/",
     github: "https://github.com/Ahmed-Shehzad",
-    linkedin: "https://linkedin.com/in/ahmed-shehzad",
+    linkedin: "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/",
     email: "mailto:shehzad@example.com",
   },
 
