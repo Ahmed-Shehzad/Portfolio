@@ -186,6 +186,23 @@ jobs:
             echo "✅ Preview deployment accessible with status: $response_code"
           fi
 
+          # Test PDF generation API
+          echo "🔍 Testing PDF generation API..."
+          pdf_response=$(curl -s -o /dev/null -w "%{http_code}" "$PREVIEW_URL/api/resume-pdf" || echo "000")
+          echo "PDF API response code: $pdf_response"
+
+          if [ "$pdf_response" = "200" ]; then
+            echo "✅ PDF generation API is working"
+          elif [ "$pdf_response" = "500" ]; then
+            echo "⚠️ PDF API returned 500 - checking error details..."
+            # Get error details without failing the deployment
+            pdf_error=$(curl -s "$PREVIEW_URL/api/resume-pdf" | head -c 200 || echo "Could not get error details")
+            echo "PDF Error: $pdf_error"
+            echo "⚠️ PDF generation may need attention, but deployment continues"
+          else
+            echo "⚠️ PDF API returned status $pdf_response - may need investigation"
+          fi
+
       - name: Comment PR with Preview URL
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         if: success()
@@ -324,6 +341,23 @@ jobs:
             exit 1
           else
             echo "✅ Production deployment accessible with status: $response_code"
+          fi
+
+          # Test PDF generation API in production
+          echo "🔍 Testing PDF generation API in production..."
+          pdf_response=$(curl -s -o /dev/null -w "%{http_code}" "$PRODUCTION_URL/api/resume-pdf" || echo "000")
+          echo "PDF API response code: $pdf_response"
+
+          if [ "$pdf_response" = "200" ]; then
+            echo "✅ Production PDF generation API is working"
+          elif [ "$pdf_response" = "500" ]; then
+            echo "⚠️ Production PDF API returned 500 - checking error details..."
+            # Get error details without failing the deployment
+            pdf_error=$(curl -s "$PRODUCTION_URL/api/resume-pdf" | head -c 200 || echo "Could not get error details")
+            echo "Production PDF Error: $pdf_error"
+            echo "⚠️ PDF generation may need attention in production"
+          else
+            echo "⚠️ Production PDF API returned status $pdf_response - may need investigation"
           fi
 
       - name: Post-deployment validation

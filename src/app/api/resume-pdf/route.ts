@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import puppeteer from "puppeteer";
 
 // Common Chrome arguments
 const CHROME_ARGS = [
@@ -14,17 +13,38 @@ const CHROME_ARGS = [
 ];
 
 async function launchBrowser() {
-  // TEMPORARY FIX: Always use regular puppeteer since our test proved it works
-  console.error("FORCE: Using regular puppeteer");
-  console.error("Launching browser...");
+  // Detect if we're running on Vercel
+  const isVercel = process.env.VERCEL === "1" || !!process.env.VERCEL_ENV;
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: CHROME_ARGS,
-  });
+  console.error(`Running on Vercel: ${isVercel}`);
+  console.error(`NODE_ENV: ${process.env.NODE_ENV}`);
 
-  console.error("Browser launched successfully!");
-  return browser;
+  if (isVercel) {
+    // Production on Vercel: Use @sparticuz/chromium with puppeteer-core
+    console.error("Using @sparticuz/chromium for Vercel deployment");
+
+    const chromium = await import("@sparticuz/chromium");
+    const puppeteerCore = await import("puppeteer-core");
+
+    const execPath = await chromium.default.executablePath();
+    console.error(`Chromium executable path: ${execPath}`);
+
+    return await puppeteerCore.default.launch({
+      args: [...chromium.default.args, ...CHROME_ARGS],
+      executablePath: execPath,
+      headless: true,
+    });
+  } else {
+    // Local development: Use regular puppeteer
+    console.error("Using regular puppeteer for local development");
+
+    const puppeteer = await import("puppeteer");
+
+    return await puppeteer.default.launch({
+      headless: true,
+      args: CHROME_ARGS,
+    });
+  }
 }
 export async function GET(request: NextRequest) {
   try {
