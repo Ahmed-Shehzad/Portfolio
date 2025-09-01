@@ -12,7 +12,7 @@ export function DownloadButton() {
       setError(null);
 
       // Call the API to generate PDF with proper headers
-      const response = await fetch("/api/resume-pdf", {
+      const response = await fetch("http://localhost:3000/api/resume-pdf", {
         method: "GET",
         headers: {
           Accept: "application/pdf",

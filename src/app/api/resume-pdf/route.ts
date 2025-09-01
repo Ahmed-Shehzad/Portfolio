@@ -1,6 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 
+// Common Chrome arguments
+const CHROME_ARGS = [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--disable-web-security",
+  "--disable-features=VizDisplayCompositor",
+  "--disable-dev-shm-usage",
+  "--disable-software-rasterizer",
+  "--disable-gpu",
+  "--disable-extensions",
+];
+
+async function launchBrowser() {
+  // TEMPORARY FIX: Always use regular puppeteer since our test proved it works
+  console.error("FORCE: Using regular puppeteer");
+  console.error("Launching browser...");
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: CHROME_ARGS,
+  });
+
+  console.error("Browser launched successfully!");
+  return browser;
+}
 export async function GET(request: NextRequest) {
   try {
     // Get the base URL from the request
@@ -14,17 +39,21 @@ export async function GET(request: NextRequest) {
 
     console.error(`Generating PDF for: ${baseUrl}/resume`);
 
-    // Use puppeteer for both development and production
-    const launchOptions: Parameters<typeof puppeteer.launch>[0] = {
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-web-security",
-        "--disable-features=VizDisplayCompositor",
-      ],
-    };
-    const browser = await puppeteer.launch(launchOptions);
+    let browser;
+    try {
+      console.error("About to launch browser...");
+      browser = await launchBrowser();
+      console.error("Browser launched successfully");
+    } catch (browserError) {
+      console.error("Browser launch failed:", browserError);
+      return NextResponse.json(
+        {
+          error: "Browser launch failed",
+          details: browserError instanceof Error ? browserError.message : String(browserError),
+        },
+        { status: 500 }
+      );
+    }
     const page = await browser.newPage();
 
     // Set headers to bypass security checkpoints
