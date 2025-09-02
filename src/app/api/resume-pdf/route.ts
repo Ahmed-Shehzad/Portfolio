@@ -189,10 +189,10 @@ function getResumePrintStyles(): string {
     /* Grid layout exactly as browser but compressed */
     .resume-grid {
       display: grid !important;
-      grid-template-columns: 220px 1fr !important; /* Narrower sidebar for single page */
+      grid-template-columns: 200px 1fr !important; /* Sidebar increased by 20% (180px * 1.2), main content takes remaining space */
       gap: 8px !important; /* Minimal gap */
       width: 100% !important;
-      max-width: 210mm !important; /* A4 width constraint */
+      max-width: 100% !important; /* Remove A4 constraint to use full page width */
       height: 100% !important;
       flex: 1 !important;
       overflow: hidden !important;
@@ -203,7 +203,7 @@ function getResumePrintStyles(): string {
       padding: 6px !important;
       height: 100% !important;
       width: 100% !important;
-      max-width: calc(210mm - 220px - 8px) !important; /* Remaining width after sidebar and gap */
+      max-width: 100% !important; /* Remove width constraint to take all available space */
       display: flex !important;
       flex-direction: column !important;
       overflow: hidden !important;
@@ -213,14 +213,14 @@ function getResumePrintStyles(): string {
     /* Main sections width control and content spacing */
     main > section {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 90% !important;
       margin: 0 !important; /* Remove all vertical margins between sections */
       padding: 0 !important; /* Remove any padding that might create space */
     }
 
     main > section > div {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 90% !important;
       margin: 0 !important; /* Remove margins from section divs */
     }
 
@@ -233,7 +233,7 @@ function getResumePrintStyles(): string {
     .employment-section .text-sm,
     .employment-section ul li {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 90% !important;
       text-align: justify !important;
       text-justify: inter-word !important;
       word-wrap: break-word !important;
