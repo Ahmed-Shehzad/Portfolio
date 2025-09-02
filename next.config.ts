@@ -73,15 +73,22 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Performance and caching headers
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
           {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' vercel.live va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "font-src 'self' fonts.gstatic.com data:",
               "img-src 'self' data: https:",
-              "connect-src 'self' https:",
+              "connect-src 'self' https: vercel.live va.vercel-scripts.com vitals.vercel-insights.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

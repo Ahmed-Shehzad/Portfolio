@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCoverLetterContext } from "../contexts/CoverLetterContext";
 
 export function RecipientSection() {
-  const [companyName, setCompanyName] = useState("");
+  const { data, updateData } = useCoverLetterContext();
+  const { companyName } = data;
 
   return (
     <section className="mb-6">
@@ -24,9 +25,9 @@ export function RecipientSection() {
             id="company-name"
             type="text"
             value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
+            onChange={(e) => updateData({ companyName: e.target.value })}
             placeholder="Enter company name..."
-            className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+            className="w-full rounded-md border border-gray-300 p-3 text-gray-900 placeholder-gray-500 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
           />
         </div>
 

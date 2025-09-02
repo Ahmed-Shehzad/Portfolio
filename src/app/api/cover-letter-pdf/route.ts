@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Interface for cover letter form data
+interface CoverLetterFormData {
+  specificReason: string;
+  salaryExpectations: string;
+  expectedJoiningDate: string;
+  companyName: string;
+  positionName: string;
+}
+
 // Common Chrome arguments
 const CHROME_ARGS = [
   "--no-sandbox",
@@ -48,7 +57,8 @@ async function launchBrowser() {
 }
 
 async function generateCoverLetterPDF(
-  baseUrl: string,
+  coverLetterUrl: string,
+  formData: CoverLetterFormData,
   browser: Awaited<ReturnType<typeof launchBrowser>>
 ) {
   const page = await browser.newPage();
@@ -66,10 +76,10 @@ async function generateCoverLetterPDF(
   // Set viewport for consistent rendering
   await page.setViewport({ width: 1200, height: 800 });
 
-  console.error(`Navigating to: ${baseUrl}/cover-letter`);
+  console.error(`Navigating to: ${coverLetterUrl}`);
 
   // Navigate with timeout and wait for network idle
-  await page.goto(`${baseUrl}/cover-letter`, {
+  await page.goto(coverLetterUrl, {
     waitUntil: ["networkidle0", "domcontentloaded"],
     timeout: 60000,
   });
@@ -87,7 +97,34 @@ async function generateCoverLetterPDF(
   // Wait a bit more for any lazy-loaded content
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  console.error("Content loaded, generating PDF...");
+  console.error("Content loaded, injecting form data...");
+
+  // Inject form data directly into the page using JavaScript
+  const formDataString = JSON.stringify(formData);
+  const injectionScript = `
+    (function() {
+      const data = ${formDataString};
+
+      // Set form data in localStorage for React components to read
+      window.localStorage.setItem("coverLetterPDFData", JSON.stringify(data));
+
+      // Trigger a custom event to notify React components
+      window.dispatchEvent(
+        new CustomEvent("coverLetterDataReady", {
+          detail: data,
+        })
+      );
+    })();
+  `;
+
+  await page.addScriptTag({
+    content: injectionScript,
+  });
+
+  // Wait a moment for React to process the data
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  console.error("Form data injected, generating PDF...");
 
   // Add print styles to optimize cover letter for printing
   await page.addStyleTag({
@@ -470,53 +507,91 @@ function getBaseUrl(request: NextRequest): string {
   return `${protocol}://${host}`;
 }
 
-export async function GET(request: NextRequest) {
+// Helper function to parse request body and extract form data
+async function parseFormData(request: NextRequest): Promise<CoverLetterFormData> {
+  const defaultFormData: CoverLetterFormData = {
+    specificReason: "",
+    salaryExpectations: "",
+    expectedJoiningDate: "",
+    companyName: "",
+    positionName: "Software Engineer", // Default value
+  };
+
+  try {
+    const body = await request.json();
+    return {
+      specificReason: body.specificReason || "",
+      salaryExpectations: body.salaryExpectations || "",
+      expectedJoiningDate: body.expectedJoiningDate || "",
+      companyName: body.companyName || "",
+      positionName: body.positionName || "Software Engineer", // Default value
+    };
+  } catch (parseError) {
+    console.error("Error parsing request body:", parseError);
+    return defaultFormData;
+  }
+}
+
+// Helper function to create error responses
+function createErrorResponse(error: string, details: string, status: number = 500) {
+  return NextResponse.json({ error, details }, { status });
+}
+
+// Helper function to create PDF response
+function createPDFResponse(pdf: Uint8Array) {
+  return new NextResponse(Buffer.from(pdf), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=cover-letter.pdf",
+      "Content-Length": pdf.length.toString(),
+    },
+  });
+}
+
+// Helper function to safely close browser
+async function closeBrowserSafely(browser: Awaited<ReturnType<typeof launchBrowser>> | undefined) {
+  if (browser) {
+    try {
+      await browser.close();
+      console.error("Browser closed successfully");
+    } catch (closeError) {
+      console.error("Failed to close browser:", closeError);
+    }
+  }
+}
+
+export async function POST(request: NextRequest) {
   let browser: Awaited<ReturnType<typeof launchBrowser>> | undefined;
 
   try {
     const baseUrl = getBaseUrl(request);
-    console.error(`Generating PDF for: ${baseUrl}/cover-letter`);
+    const formData = await parseFormData(request);
+    const coverLetterUrl = new URL("/cover-letter", baseUrl);
 
+    console.error(`Generating PDF for: ${coverLetterUrl.toString()}`);
+    console.error(`Form data:`, formData);
+
+    // Launch browser
     try {
       console.error("About to launch browser...");
       browser = await launchBrowser();
       console.error("Browser launched successfully");
     } catch (browserError) {
-      console.error("Browser launch failed:", browserError);
-      return NextResponse.json(
-        {
-          error: "Browser launch failed",
-          details: browserError instanceof Error ? browserError.message : String(browserError),
-        },
-        { status: 500 }
-      );
+      const details = browserError instanceof Error ? browserError.message : String(browserError);
+      return createErrorResponse("Browser launch failed", details);
     }
 
+    // Generate PDF
     try {
-      const pdf = await generateCoverLetterPDF(baseUrl, browser);
-
-      // Return PDF as response
-      return new NextResponse(Buffer.from(pdf), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": "attachment; filename=cover-letter.pdf",
-          "Content-Length": pdf.length.toString(),
-        },
-      });
+      const pdf = await generateCoverLetterPDF(coverLetterUrl.toString(), formData, browser);
+      return createPDFResponse(pdf);
     } catch (pageError) {
-      console.error("Page navigation/PDF generation failed:", pageError);
-      return NextResponse.json(
-        {
-          error: "Page navigation failed",
-          details: pageError instanceof Error ? pageError.message : String(pageError),
-        },
-        { status: 500 }
-      );
+      const details = pageError instanceof Error ? pageError.message : String(pageError);
+      return createErrorResponse("Page navigation failed", details);
     }
   } catch (error) {
     console.error("PDF generation error:", error);
-
     const errorStack =
       process.env.NODE_ENV === "development" && error instanceof Error ? error.stack : undefined;
 
@@ -529,14 +604,6 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   } finally {
-    // Ensure browser is closed even if there's an error
-    if (browser) {
-      try {
-        await browser.close();
-        console.error("Browser closed successfully");
-      } catch (closeError) {
-        console.error("Failed to close browser:", closeError);
-      }
-    }
+    await closeBrowserSafely(browser);
   }
 }

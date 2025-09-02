@@ -1,18 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useCoverLetterContext } from "../contexts/CoverLetterContext";
 
 export function CoverLetterContent() {
-  const [specificReason, setSpecificReason] = useState("");
-  const [salaryExpectations, setSalaryExpectations] = useState("");
-  const [expectedJoiningDate, setExpectedJoiningDate] = useState("");
+  const { data, updateData } = useCoverLetterContext();
+  const { specificReason, salaryExpectations, expectedJoiningDate, positionName } = data;
 
   return (
     <section className="cover-letter-content">
       <div className="rounded-lg bg-white p-3 shadow-sm print:rounded-none print:bg-transparent print:p-1 print:shadow-none">
+        <div className="mb-6 print:hidden">
+          <label htmlFor="position-name" className="mb-2 block text-sm font-medium text-gray-700">
+            Position Name:
+          </label>
+          <input
+            id="position-name"
+            type="text"
+            value={positionName}
+            onChange={(e) => updateData({ positionName: e.target.value })}
+            placeholder="Software Engineer"
+            className="w-full rounded-md border border-gray-300 p-3 text-gray-900 placeholder-gray-500 shadow-sm transition-colors duration-200 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+            aria-describedby="position-name-help"
+          />
+          <p id="position-name-help" className="mt-1 text-xs text-gray-500">
+            This will update the subject line and position references in the PDF. Default is
+            &ldquo;Software Engineer&rdquo;.
+          </p>
+        </div>
+
         <div className="mb-4">
           <p className="text-md font-medium text-gray-800">
-            Subject: Application for Software Engineer Position
+            Subject: Application for {positionName} Position
           </p>
         </div>
 
@@ -20,7 +38,7 @@ export function CoverLetterContent() {
           <p>Dear Hiring Manager,</p>
 
           <p>
-            I am writing to express my strong interest in the Software Engineer position at your
+            I am writing to express my strong interest in the {positionName} position at your
             company. With over 5 years of professional experience in backend development and
             full-stack engineering, I am excited about the opportunity to contribute to your team
             and help drive innovative solutions.
@@ -84,12 +102,13 @@ export function CoverLetterContent() {
               <textarea
                 id="specific-reason"
                 value={specificReason}
-                onChange={(e) => setSpecificReason(e.target.value)}
+                onChange={(e) => updateData({ specificReason: e.target.value })}
                 placeholder="Enter your specific reason for being interested in this company or role..."
-                className="w-full resize-none rounded-md border border-gray-300 p-3 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                className="w-full resize-none rounded-md border border-gray-300 p-3 text-gray-900 placeholder-gray-500 shadow-sm transition-colors duration-200 focus:border-green-500 focus:ring-2 focus:ring-green-500"
                 rows={3}
+                aria-describedby="specific-reason-help"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p id="specific-reason-help" className="mt-1 text-xs text-gray-500">
                 This will update the PDF in real-time. Leave empty to show placeholder text.
               </p>
 
@@ -105,11 +124,12 @@ export function CoverLetterContent() {
                     id="salary-expectations"
                     type="text"
                     value={salaryExpectations}
-                    onChange={(e) => setSalaryExpectations(e.target.value)}
+                    onChange={(e) => updateData({ salaryExpectations: e.target.value })}
                     placeholder="e.g., €60,000 - €70,000 annually"
-                    className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                    className="w-full rounded-md border border-gray-300 p-3 text-gray-900 placeholder-gray-500 shadow-sm transition-colors duration-200 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                    aria-describedby="salary-help"
                   />
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p id="salary-help" className="mt-1 text-xs text-gray-500">
                     Optional: Will be included in the closing paragraph if filled.
                   </p>
                 </div>
@@ -125,11 +145,12 @@ export function CoverLetterContent() {
                     id="expected-joining-date"
                     type="text"
                     value={expectedJoiningDate}
-                    onChange={(e) => setExpectedJoiningDate(e.target.value)}
+                    onChange={(e) => updateData({ expectedJoiningDate: e.target.value })}
                     placeholder="e.g., immediately, 2 weeks notice, January 2025"
-                    className="w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                    className="w-full rounded-md border border-gray-300 p-3 text-gray-900 placeholder-gray-500 shadow-sm transition-colors duration-200 focus:border-green-500 focus:ring-2 focus:ring-green-500"
+                    aria-describedby="joining-date-help"
                   />
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p id="joining-date-help" className="mt-1 text-xs text-gray-500">
                     Optional: Will be included in the closing paragraph if filled.
                   </p>
                 </div>
@@ -141,7 +162,7 @@ export function CoverLetterContent() {
             I would welcome the opportunity to discuss how my skills and experience align with your
             needs.{" "}
             {salaryExpectations &&
-              `Regarding compensation, my salary expectation is ${salaryExpectations}.`}{" "}
+              `Regarding compensation, my salary expectation is ${salaryExpectations} € per annum.`}{" "}
             {expectedJoiningDate && `I am available to start from ${expectedJoiningDate}.`} Thank
             you for considering my application. I look forward to hearing from you.
           </p>

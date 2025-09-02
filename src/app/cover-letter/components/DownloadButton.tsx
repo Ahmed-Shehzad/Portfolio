@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useCoverLetterContext } from "../contexts/CoverLetterContext";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const { data } = useCoverLetterContext();
 
   const handleDownload = async () => {
     try {
@@ -14,16 +16,22 @@ export function DownloadButton() {
       // Get the current protocol and domain
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
-      // Call the API to generate PDF with proper headers
+      // Call the API to generate PDF with form data in request body
       const response = await fetch(`${baseUrl}/api/cover-letter-pdf`, {
-        method: "GET",
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Accept: "application/pdf",
           "Cache-Control": "no-cache",
           "User-Agent": "Mozilla/5.0 (compatible; PDF-Generator)",
         },
+        body: JSON.stringify({
+          companyName: data.companyName || "",
+          specificReason: data.specificReason || "",
+          salaryExpectations: data.salaryExpectations || "",
+          expectedJoiningDate: data.expectedJoiningDate || "",
+        }),
       });
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
