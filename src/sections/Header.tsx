@@ -1,6 +1,7 @@
 "use client";
 
 import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
+import { env } from "@/config/env";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
@@ -8,6 +9,8 @@ interface HeaderOption {
   title: string;
   href: string;
   id: string; // Pre-computed id
+  isExternal?: boolean; // Flag to indicate if this is an external page
+  showInNavigation?: boolean; // Flag to control visibility in navigation
 }
 
 interface SectionElement {
@@ -32,7 +35,14 @@ const headerOptions: HeaderOption[] = [
   { title: "Projects", href: "#projects", id: "projects" },
   { title: "About", href: "#about", id: "about" },
   { title: "Contact", href: "#contact", id: "contact" },
-  { title: "Resume", href: "/resume", id: "resume" },
+  { title: "Resume", href: "/resume", id: "resume", isExternal: true },
+  {
+    title: "Cover Letter",
+    href: "/cover-letter",
+    id: "cover-letter",
+    isExternal: true,
+    showInNavigation: env.isDevelopment, // Only show in nav during development
+  },
 ];
 
 // Default header option for fallback scenarios
@@ -48,14 +58,17 @@ const DEFAULT_HEADER_OPTION: HeaderOption = {
  */
 const NavigationItem: FC<NavigationItemProps> = (props) => {
   const { option, isActive, onClick } = props;
-  const isResume = option.id === "resume";
+  const isExternalPage = option.isExternal || false;
   const className = `nav-item ${
-    isActive && !isResume ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900" : ""
+    isActive && !isExternalPage
+      ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900"
+      : ""
   }`;
 
-  if (isResume) {
+  if (isExternalPage) {
+    const ariaLabel = `View ${option.title} Page`;
     return (
-      <Link className={className} href={option.href} aria-label="View Resume Page">
+      <Link className={className} href={option.href} aria-label={ariaLabel}>
         {option.title}
       </Link>
     );
@@ -140,6 +153,11 @@ export const Header = () => {
       .filter((option) => option.href.startsWith("#")) // Only hash-based sections
       .forEach((option) => map.set(option.id, option));
     return map;
+  }, []);
+
+  // Filter options for navigation display
+  const navigationOptions = useMemo(() => {
+    return headerOptions.filter((option) => option.showInNavigation !== false);
   }, []);
 
   // Optimized URL update function
@@ -239,7 +257,7 @@ export const Header = () => {
           role="navigation"
           aria-label="Main navigation"
         >
-          {headerOptions.map((option) => (
+          {navigationOptions.map((option) => (
             <NavigationItem
               key={option.title}
               option={option}
