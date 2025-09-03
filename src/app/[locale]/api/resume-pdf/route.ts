@@ -48,6 +48,7 @@ async function launchBrowser() {
 }
 async function generateResumePDF(
   baseUrl: string,
+  locale: string,
   browser: Awaited<ReturnType<typeof launchBrowser>>
 ) {
   const page = await browser.newPage();
@@ -65,10 +66,10 @@ async function generateResumePDF(
   // Set viewport for consistent rendering
   await page.setViewport({ width: 1200, height: 800 });
 
-  console.error(`Navigating to: ${baseUrl}/resume`);
+  console.error(`Navigating to: ${baseUrl}/${locale}/resume`);
 
   // Navigate with timeout and wait for network idle
-  await page.goto(`${baseUrl}/resume`, {
+  await page.goto(`${baseUrl}/${locale}/resume`, {
     waitUntil: ["networkidle0", "domcontentloaded"],
     timeout: 60000, // Increased timeout for slow serverless starts
   });
@@ -189,10 +190,10 @@ function getResumePrintStyles(): string {
     /* Grid layout exactly as browser but compressed */
     .resume-grid {
       display: grid !important;
-      grid-template-columns: 220px 1fr !important; /* Narrower sidebar for single page */
+      grid-template-columns: 200px 1fr !important; /* Sidebar increased by 20% (180px * 1.2), main content takes remaining space */
       gap: 8px !important; /* Minimal gap */
       width: 100% !important;
-      max-width: 210mm !important; /* A4 width constraint */
+      max-width: 100% !important; /* Remove A4 constraint to use full page width */
       height: 100% !important;
       flex: 1 !important;
       overflow: hidden !important;
@@ -203,7 +204,7 @@ function getResumePrintStyles(): string {
       padding: 6px !important;
       height: 100% !important;
       width: 100% !important;
-      max-width: calc(210mm - 220px - 8px) !important; /* Remaining width after sidebar and gap */
+      max-width: 100% !important; /* Remove width constraint to take all available space */
       display: flex !important;
       flex-direction: column !important;
       overflow: hidden !important;
@@ -213,14 +214,14 @@ function getResumePrintStyles(): string {
     /* Main sections width control and content spacing */
     main > section {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 90% !important;
       margin: 0 !important; /* Remove all vertical margins between sections */
       padding: 0 !important; /* Remove any padding that might create space */
     }
 
     main > section > div {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 90% !important;
       margin: 0 !important; /* Remove margins from section divs */
     }
 
@@ -233,7 +234,7 @@ function getResumePrintStyles(): string {
     .employment-section .text-sm,
     .employment-section ul li {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 90% !important;
       text-align: justify !important;
       text-justify: inter-word !important;
       word-wrap: break-word !important;
@@ -522,12 +523,13 @@ function getBaseUrl(request: NextRequest): string {
   return `${protocol}://${host}`;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, context: { params: Promise<{ locale: string }> }) {
   let browser: Awaited<ReturnType<typeof launchBrowser>> | undefined;
 
   try {
     const baseUrl = getBaseUrl(request);
-    console.error(`Generating PDF for: ${baseUrl}/resume`);
+    const { locale } = await context.params;
+    console.error(`Generating PDF for: ${baseUrl}/${locale}/resume`);
 
     try {
       console.error("About to launch browser...");
@@ -545,7 +547,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const pdf = await generateResumePDF(baseUrl, browser);
+      const pdf = await generateResumePDF(baseUrl, locale, browser);
 
       console.error(`PDF generated successfully, size: ${pdf.length} bytes`);
 

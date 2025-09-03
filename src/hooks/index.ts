@@ -4,6 +4,7 @@ export {
   useBfcacheCompatibleScrollListener,
 } from "./useBfcacheCompatible";
 export { useScrollAnimation } from "./useScrollAnimation";
+export { useScreenSize } from "./useScreenSize";
 
 // Web Worker hooks - imported from the new modular structure
 export {

@@ -2,6 +2,7 @@
 
 import { SectionHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
+import { useTranslations } from "next-intl";
 import { memo } from "react";
 import {
   PersonalIntroduction,
@@ -33,15 +34,13 @@ import {
  * - Animation wrappers preserve DOM order for assistive tech.
  */
 export const AboutSection = memo(() => {
+  const t = useTranslations("about");
+
   return (
     <section id="about" className="py-20 md:px-24 lg:py-28">
       <div className="container">
         <ScrollAnimationWrapper animation="fadeInUp">
-          <SectionHeader
-            eyebrow="About Me"
-            title="My Journey as a Developer"
-            description="From curiosity to expertise - discover what drives my passion for building exceptional digital experiences."
-          />
+          <SectionHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
         </ScrollAnimationWrapper>
 
         <div className="space-y-16">

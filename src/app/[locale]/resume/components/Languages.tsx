@@ -1,12 +1,9 @@
+import { useTranslations } from "next-intl";
+
 interface LanguageData {
   language: string;
   level: number;
 }
-
-const languagesData: LanguageData[] = [
-  { language: "English", level: 4 },
-  { language: "German", level: 3 },
-];
 
 interface LanguageItemProps {
   language: string;
@@ -14,21 +11,10 @@ interface LanguageItemProps {
 }
 
 function LanguageItem({ language, level }: Readonly<LanguageItemProps>) {
+  const t = useTranslations("resume.languages");
+
   const getLevelDescription = (level: number): string => {
-    switch (level) {
-      case 1:
-        return "Beginner";
-      case 2:
-        return "Novice";
-      case 3:
-        return "Intermediate";
-      case 4:
-        return "Advanced";
-      case 5:
-        return "Expert";
-      default:
-        return "";
-    }
+    return t(`levelDescriptions.${level}`) || "";
   };
 
   return (
@@ -46,12 +32,20 @@ function LanguageItem({ language, level }: Readonly<LanguageItemProps>) {
 }
 
 export function Languages() {
+  const t = useTranslations("resume.languages");
+
+  // Convert translation data to LanguageData array
+  const languagesData: LanguageData[] = Array.from({ length: 2 }, (_, i) => ({
+    language: t(`items.${i}.language`),
+    level: Number(t(`items.${i}.level`)) || 0,
+  })).filter((lang) => lang.language); // Filter out empty languages
+
   return (
     <>
       <h4 className="mt-6 flex items-center gap-2 font-semibold text-green-500">
-        <span>🌐</span> Languages
+        <span>🌍</span> {t("title")}
       </h4>
-      <ul className="text-md mt-3 space-y-3 print:space-y-1">
+      <ul className="languages-section text-md mt-3 space-y-3 print:space-y-1">
         {languagesData.map((language) => (
           <LanguageItem key={language.language} {...language} />
         ))}

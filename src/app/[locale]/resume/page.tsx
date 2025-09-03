@@ -1,6 +1,13 @@
 import { DownloadButton, ResumeSidebar, ResumeMainContent } from "./components";
 
-export default function ResumePage() {
+interface ResumePageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function ResumePage({ params }: ResumePageProps) {
+  // Await params to ensure proper locale handling
+  await params;
+
   return (
     <div
       className="min-h-screen overflow-x-auto bg-gradient-to-b from-slate-900 to-slate-950 p-6"

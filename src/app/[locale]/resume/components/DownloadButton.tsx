@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations("resume.downloadButton");
 
   const handleDownload = async () => {
     try {
@@ -14,8 +17,8 @@ export function DownloadButton() {
       // Get the current protocol and domain
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
-      // Call the API to generate PDF with proper headers
-      const response = await fetch(`${baseUrl}/api/resume-pdf`, {
+      // Call the API to generate PDF with proper headers (using locale-aware route)
+      const response = await fetch(`${baseUrl}/${locale}/api/resume-pdf`, {
         method: "GET",
         headers: {
           Accept: "application/pdf",
@@ -36,7 +39,7 @@ export function DownloadButton() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "resume.pdf";
+      link.download = `${locale}/resume.pdf`;
       document.body.appendChild(link);
       link.click();
 
@@ -45,7 +48,7 @@ export function DownloadButton() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("PDF generation error:", error);
-      setError(error instanceof Error ? error.message : "Failed to generate PDF");
+      setError(error instanceof Error ? error.message : t("error.failed"));
     } finally {
       setIsGenerating(false);
     }
@@ -56,13 +59,13 @@ export function DownloadButton() {
       {error && (
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
           <div className="mx-4 max-w-md rounded-lg bg-white p-6 shadow-lg">
-            <h3 className="mb-2 text-lg font-semibold text-red-600">PDF Generation Error</h3>
+            <h3 className="mb-2 text-lg font-semibold text-red-600">{t("error.title")}</h3>
             <p className="mb-4 text-gray-700">{error}</p>
             <button
               onClick={() => setError(null)}
               className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
             >
-              Close
+              {t("error.close")}
             </button>
           </div>
         </div>
@@ -73,7 +76,7 @@ export function DownloadButton() {
         className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white shadow-lg transition-colors focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none ${
           isGenerating ? "cursor-not-allowed bg-gray-400" : "bg-green-600 hover:bg-green-700"
         }`}
-        aria-label={isGenerating ? "Generating PDF..." : "Download Resume"}
+        aria-label={isGenerating ? t("ariaLabel.generating") : t("ariaLabel.download")}
       >
         {isGenerating ? (
           <>
@@ -92,7 +95,7 @@ export function DownloadButton() {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-            <span>Generating PDF...</span>
+            <span>{t("generating")}</span>
           </>
         ) : (
           <>
@@ -110,7 +113,7 @@ export function DownloadButton() {
                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <span>Download PDF</span>
+            <span>{t("download")}</span>
           </>
         )}
       </button>

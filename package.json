@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run worker:watch & next dev",
+    "dev": "npm run build &&npm run worker:watch & next dev",
     "build": "npm run build:worker && next build",
     "prebuild": "npm run format:fix",
     "start": "next start",
@@ -46,6 +46,7 @@
     "browserslist": "^4.25.4",
     "leaflet": "^1.9.4",
     "next": "^15.5.2",
+    "next-intl": "4.3.5",
     "puppeteer": "24.17.1",
     "puppeteer-core": "24.17.1",
     "react": "^19.1.1",

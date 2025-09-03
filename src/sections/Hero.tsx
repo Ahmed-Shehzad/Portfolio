@@ -7,6 +7,7 @@ import GrainImage from "@/assets/images/grain.jpg";
 import PortraitImage from "@/assets/images/me.jpg";
 import { HeroOrbit } from "@/components/layout";
 import { OptimizedImage } from "@/components/ui";
+import { useTranslations } from "next-intl";
 import { memo, useCallback } from "react";
 
 /**
@@ -31,6 +32,7 @@ import { memo, useCallback } from "react";
  * - Thoughtful alt text avoids redundancy and conveys context.
  */
 export const HeroSection = memo(() => {
+  const t = useTranslations("hero");
   const handleConnectClick = useCallback(() => {
     if (typeof window === "undefined" || typeof document === "undefined") return;
 
@@ -195,27 +197,25 @@ export const HeroSection = memo(() => {
               </div>
               <div className="text-center md:text-right">
                 <h1 className="font-serif text-3xl tracking-wide md:text-5xl">
-                  <span className="block">Muhammad Ahmed Shehzad</span>
+                  <span className="block">{t("name")}</span>
                 </h1>
                 <div className="mt-3 inline-flex items-center gap-4 rounded-lg border border-gray-800 bg-gray-950 px-4 py-1.5">
                   <div className="relative size-2.5 rounded-full bg-green-500">
                     <div className="animation-ping absolute inset-0 rounded-full bg-green-500" />
                   </div>
-                  <div className="text-sm font-medium">Available for new projects</div>
+                  <div className="text-sm font-medium">{t("availability")}</div>
                 </div>
               </div>
             </div>
           </div>
-          <p className="mt-4 text-center text-gray-200 md:text-lg">
-            I am a Full Stack Developer with a passion for building web applications and services.
-          </p>
+          <p className="mt-4 text-center text-gray-200 md:text-lg">{t("description")}</p>
         </div>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row">
           <button
             onClick={handleExploreClick}
             className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-xl border border-white/15 px-6"
           >
-            <span className="font-semibold">Explore My Work</span>
+            <span className="font-semibold">{t("buttons.explore")}</span>
             <ArrowDown className="size-4" />
           </button>
           <button
@@ -223,7 +223,7 @@ export const HeroSection = memo(() => {
             className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-xl border border-white bg-white px-6 text-gray-900"
           >
             <span>👋</span>
-            <span className="font-semibold">Let&apos;s Connect</span>
+            <span className="font-semibold">{t("buttons.connect")}</span>
           </button>
         </div>
       </div>

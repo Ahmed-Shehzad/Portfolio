@@ -271,9 +271,6 @@ function getCoverLetterPrintStyles(): string {
         max-width: 100% !important;
         text-align: justify !important;
         text-justify: inter-word !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        hyphens: auto !important;
       }
 
       /* Adjusted font sizes for main content paragraphs (10% decrease) */
@@ -561,13 +558,14 @@ async function closeBrowserSafely(browser: Awaited<ReturnType<typeof launchBrows
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, context: { params: Promise<{ locale: string }> }) {
   let browser: Awaited<ReturnType<typeof launchBrowser>> | undefined;
 
   try {
     const baseUrl = getBaseUrl(request);
+    const { locale } = await context.params;
     const formData = await parseFormData(request);
-    const coverLetterUrl = new URL("/cover-letter", baseUrl);
+    const coverLetterUrl = new URL(`/${locale}/cover-letter`, baseUrl);
 
     console.error(`Generating PDF for: ${coverLetterUrl.toString()}`);
     console.error(`Form data:`, formData);

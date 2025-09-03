@@ -1,0 +1,460 @@
+{
+  "metadata": {
+    "title": "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
+    "description": "Backend Developer specialising in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.",
+    "keywords": "Backend Developer, Full Stack Engineer, C#, .NET, TypeScript, React, Next.js, Server-side Development, API Development, Web Developer, Software Engineer, Database Architecture",
+    "author": "Muhammad Ahmed Shehzad",
+    "openGraph": {
+      "title": "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
+      "siteName": "Muhammad Ahmed Shehzad - Portfolio",
+      "imageAlt": "Muhammad Ahmed Shehzad - Full Stack Developer"
+    },
+    "twitter": {
+      "title": "Muhammad Ahmed Shehzad - Full Stack Developer",
+      "description": "Full Stack Developer specialising in TypeScript, React, Next.js, C#, .NET, and modern web technologies."
+    }
+  },
+  "hero": {
+    "name": "Muhammad Ahmed Shehzad",
+    "availability": "Available for new projects",
+    "description": "I am a Full Stack Developer with a passion for building web applications and services.",
+    "buttons": {
+      "explore": "Explore My Work",
+      "connect": "Let's Connect"
+    }
+  },
+  "about": {
+    "eyebrow": "About Me",
+    "title": "My Journey as a Developer",
+    "description": "From curiosity to expertise - discover what drives my passion for building exceptional digital experiences.",
+    "personalIntroduction": {
+      "title": "Backend Developer & Full Stack Technology Enthusiast",
+      "intro": "I'm <strong>Muhammad Ahmed Shehzad</strong>, a Backend Developer specialising in building scalable, performance-driven server-side applications and robust system architectures. Whilst my core expertise lies in backend development, I maintain proficiency across the full stack — enabling me to deliver comprehensive solutions with clean architecture, maintainability, and measurable business impact.",
+      "journey": {
+        "title": "The Journey That Shaped Me",
+        "description": "My journey in tech started when I built my first interactive web page as a teenager, fascinated by how a few lines of code could bring ideas to life. Over the years, I've transformed that curiosity into a professional skill set — delivering solutions for startups, enterprises, and everything in between."
+      },
+      "drives": {
+        "title": "What Drives Me Today",
+        "description": "I believe great software isn't just about functionality — it's about creating experiences that users love and businesses can rely on. Whether it's optimising performance, implementing robust architecture, or crafting intuitive interfaces, I approach every project with the same passion that got me started: the excitement of solving complex problems through elegant code."
+      },
+      "expertise": {
+        "title": "My Core Expertise & Approach",
+        "description1": "As a <strong>Backend Developer</strong> at heart, my true expertise lies in architecting robust server-side solutions, designing scalable APIs, and building reliable data architectures. Whilst I'm proficient with frontend technologies like React, TypeScript, and Tailwind CSS — they're tools I can work with effectively rather than my primary specialisation.",
+        "description2": "I'm passionate about leveraging <strong>AI Assistant Programming</strong> as a powerful pair programming partner. Using tools like <strong>GitHub Copilot</strong> and <strong>AWS CodeWhisperer</strong>, I combine AI efficiency with solid engineering principles — accelerating development whilst maintaining code quality and architectural integrity. Rather than relying on \"vibe coding,\" I use these AI tools with deep understanding and intentionality."
+      }
+    },
+    "coreValues": {
+      "title": "Core Values",
+      "description": "The principles that drive my approach to development and collaboration.",
+      "values": {
+        "quality": {
+          "title": "Quality First",
+          "description": "Clean, maintainable code"
+        },
+        "innovation": {
+          "title": "Innovation",
+          "description": "Pushing boundaries daily"
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "description": "Team success over solo wins"
+        },
+        "excellence": {
+          "title": "Excellence",
+          "description": "Exceeding expectations always"
+        },
+        "reliability": {
+          "title": "Reliability",
+          "description": "Consistent delivery you can trust"
+        },
+        "growth": {
+          "title": "Growth",
+          "description": "Always learning, always improving"
+        }
+      }
+    }
+  },
+  "projects": {
+    "eyebrow": "Real World Results",
+    "title": "Featured Projects",
+    "description": "Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications.",
+    "loading": "Loading projects...",
+    "error": "Failed to load projects",
+    "errorDescription": "Please try refreshing the page"
+  },
+  "testimonials": {
+    "items": {
+      "0": {
+        "name": "Alex Thompson",
+        "position": "Senior Product Manager",
+        "company": "TechFlow Solutions",
+        "text": "Ahmed's attention to detail and problem-solving skills are exceptional. He delivered our project ahead of schedule and exceeded all expectations.",
+        "avatar": "memojiAvatar1"
+      },
+      "1": {
+        "name": "Maria Rodriguez",
+        "position": "Lead Designer",
+        "company": "CreativeCore",
+        "text": "Working with Ahmed was a pleasure. His ability to translate design concepts into pixel-perfect, responsive interfaces is truly impressive.",
+        "avatar": "memojiAvatar2"
+      },
+      "2": {
+        "name": "James Chen",
+        "position": "CTO",
+        "company": "InnovateLab",
+        "text": "Ahmed brought both technical expertise and strategic thinking to our team. His solutions are not just functional but also scalable and maintainable.",
+        "avatar": "memojiAvatar3"
+      },
+      "3": {
+        "name": "Fatima Rahman",
+        "position": "Product Owner",
+        "company": "DataStream Inc",
+        "text": "Ahmed's communication skills are as impressive as his technical abilities. He kept our entire team informed throughout the development process.",
+        "avatar": "memojiAvatar4"
+      },
+      "4": {
+        "name": "David Kim",
+        "position": "Engineering Manager",
+        "company": "NextGen Software",
+        "text": "The quality of Ahmed's work speaks for itself. Clean, well-documented code that our entire team could easily understand and build upon.",
+        "avatar": "memojiAvatar5"
+      }
+    }
+  },
+  "contact": {
+    "title": "Let's create something amazing together",
+    "description": "Ready to bring your project to life? Let's connect and discuss how I can help you to achieve your goals.",
+    "button": "Contact Me"
+  },
+  "footer": {
+    "links": [
+      {
+        "href": "#home",
+        "label": "Home"
+      },
+      {
+        "href": "#projects",
+        "label": "Projects"
+      },
+      {
+        "href": "#about",
+        "label": "About"
+      },
+      {
+        "href": "#contact",
+        "label": "Contact"
+      }
+    ],
+    "copyright": "© 2024 Muhammad Ahmed Shehzad. All rights reserved."
+  },
+  "technologies": {
+    "words": {
+      "0": "React",
+      "1": "Redux",
+      "2": "TypeScript",
+      "3": "JavaScript",
+      "4": "Node.js",
+      "5": "Express.js",
+      "6": "Next.js",
+      "7": "C#",
+      "8": ".NET",
+      "9": "ASP.NET Core",
+      "10": "Entity Framework",
+      "11": "SQL Server",
+      "12": "PostgreSQL",
+      "13": "MongoDB",
+      "14": "Docker",
+      "15": "Kubernetes",
+      "16": "AWS",
+      "17": "Azure",
+      "18": "Git",
+      "19": "GitHub",
+      "20": "REST APIs",
+      "21": "GraphQL",
+      "22": "Microservices",
+      "23": "Clean Architecture",
+      "24": "Test Driven Development",
+      "25": "Domain Driven Design",
+      "26": "Command Query Responsibility Segregation",
+      "27": "DevOps"
+    }
+  },
+  "resume": {
+    "header": {
+      "name": "Muhammad Ahmed Shehzad",
+      "title": "Software Engineer"
+    },
+    "downloadButton": {
+      "download": "Download PDF",
+      "generating": "Generating PDF...",
+      "error": {
+        "title": "PDF Generation Error",
+        "failed": "Failed to generate PDF",
+        "close": "Close"
+      },
+      "ariaLabel": {
+        "generating": "Generating PDF...",
+        "download": "Download Resume"
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "I'm a software developer with over 5 years of experience building web applications. I enjoy working on both frontend and backend development, and I'm passionate about writing clean, maintainable code. I've worked with various technologies and love learning new ones to solve interesting problems."
+    },
+    "employment": {
+      "title": "Employment History",
+      "jobTitles": {
+        "softwareEngineer": "Software Engineer",
+        "softwareDeveloper": "Software Developer"
+      },
+      "jobs": {
+        "0": {
+          "title": "Software Engineer",
+          "company": "Verbund Pflegehilfe",
+          "period": "Jul 2023 – Present",
+          "location": "Mainz",
+          "responsibilities": {
+            "0": "Develop and maintain a platform that connects people needing care with local healthcare providers",
+            "1": "Built a CRM system used daily by our consultant team to manage client relationships and track progress",
+            "2": "Created an automated calling system using Twilio API that helps our team reach clients more efficiently"
+          }
+        },
+        "1": {
+          "title": "Software Developer",
+          "company": "Sustayn GmbH",
+          "period": "Feb 2022 – Jul 2023",
+          "location": "Essen",
+          "responsibilities": {
+            "0": "Built an employee engagement platform focused on learning and development for corporate clients",
+            "1": "Added gamification features like challenges and knowledge-sharing to make learning more engaging",
+            "2": "Worked on reward systems that encouraged employees to participate more actively in company programs"
+          }
+        },
+        "2": {
+          "title": "Software Engineer",
+          "company": "FPT Software",
+          "period": "Sep 2021 – Nov 2021",
+          "location": "Essen",
+          "responsibilities": {
+            "0": "Worked on a Lidar Management System for RWE, handling large amounts of wind energy sensor data",
+            "1": "Built several REST APIs using .NET and C# for data processing and management",
+            "2": "Developed React frontend applications with focus on performance and user experience",
+            "3": "Optimized system performance by improving API design and database queries"
+          }
+        },
+        "3": {
+          "title": "Software Developer",
+          "company": "SODEFA GmbH Co. & KG",
+          "period": "Aug 2019 – Sep 2021",
+          "location": "Hürth",
+          "responsibilities": {
+            "0": "Created a heating oil price calculator that customers use to get accurate pricing quotes",
+            "1": "Built an online ordering system that streamlined the customer purchase process",
+            "2": "Developed logistics tools to help the company manage their delivery fleet and reduce costs"
+          }
+        },
+        "4": {
+          "title": "Software Developer",
+          "company": "Cybersoft North America Inc.",
+          "period": "Apr 2018 – Oct 2018",
+          "location": "Lahore",
+          "responsibilities": {
+            "0": "Developed Digital Signage applications using .NET and C# for content management and display",
+            "1": "Implemented real-time communication using SignalR for live content updates across displays",
+            "2": "Created custom controls in CMS for managing digital signage applications deployed at banks, restaurants, and billboards",
+            "3": "Collaborated with clients to customize digital displays according to their branding and content requirements"
+          }
+        },
+        "5": {
+          "title": "Software Engineer",
+          "company": "Six Logics",
+          "period": "Nov 2016 – Apr 2018",
+          "location": "Lahore",
+          "responsibilities": {
+            "0": "Worked on live sports score features for 365Scores, a popular sports app",
+            "1": "Built personalized content feeds showing users their favorite teams and players",
+            "2": "Created tools for content publishers to integrate our sports data into their platforms"
+          }
+        }
+      }
+    },
+    "skills": {
+      "title": "Skills",
+      "categories": {
+        "0": {
+          "title": "Backend (5+ years)",
+          "skills": {
+            "0": {
+              "skill": "C#",
+              "level": "4",
+              "years": "4+ years"
+            },
+            "1": {
+              "skill": ".NET",
+              "level": "5",
+              "years": "5+ years"
+            },
+            "2": {
+              "skill": "RESTful APIs",
+              "level": "5",
+              "years": "5+ years"
+            },
+            "3": {
+              "skill": "GraphQL",
+              "level": "3",
+              "years": "2+ years"
+            }
+          }
+        },
+        "1": {
+          "title": "Frontend (3+ years)",
+          "skills": {
+            "0": {
+              "skill": "TypeScript",
+              "level": "5",
+              "years": "3+ years"
+            },
+            "1": {
+              "skill": "ReactJS",
+              "level": "3",
+              "years": "2+ years"
+            },
+            "2": {
+              "skill": "Tailwind",
+              "level": "5",
+              "years": "2+ years"
+            }
+          }
+        },
+        "2": {
+          "title": "Tools & DevOps (3+ years)",
+          "skills": {
+            "0": {
+              "skill": "Docker",
+              "level": "3",
+              "years": "2+ years"
+            },
+            "1": {
+              "skill": "Node.js",
+              "level": "3",
+              "years": "2+ years"
+            },
+            "2": {
+              "skill": "Python",
+              "level": "3",
+              "years": "2+ years"
+            }
+          }
+        },
+        "3": {
+          "title": "Databases (4+ years)",
+          "skills": {
+            "0": {
+              "skill": "MS SQL Server",
+              "level": "4",
+              "years": "4+ years"
+            },
+            "1": {
+              "skill": "PostgreSQL",
+              "level": "3",
+              "years": "2+ years"
+            },
+            "2": {
+              "skill": "MongoDB",
+              "level": "3",
+              "years": "2+ years"
+            }
+          }
+        },
+        "4": {
+          "title": "Architecture & Practices (3+ years)",
+          "skills": {
+            "0": {
+              "skill": "Command Query Responsibility Segregation",
+              "level": "4",
+              "years": "3+ years"
+            },
+            "1": {
+              "skill": "Domain-Driven Design",
+              "level": "3",
+              "years": "2+ years"
+            },
+            "2": {
+              "skill": "Test-Driven Development",
+              "level": "3",
+              "years": "2+ years"
+            },
+            "3": {
+              "skill": "Clean Architecture",
+              "level": "4",
+              "years": "3+ years"
+            }
+          }
+        }
+      },
+      "levelDescriptions": {
+        "1": "Beginner",
+        "2": "Novice",
+        "3": "Intermediate",
+        "4": "Advanced",
+        "5": "Expert"
+      }
+    },
+    "education": {
+      "title": "Education",
+      "institution": "University of South Asia",
+      "degree": "Bachelor of Science in Computer Science",
+      "period": "Sep 2012 – Sep 2017",
+      "location": "Lahore"
+    },
+    "languages": {
+      "title": "Languages",
+      "items": {
+        "0": { "language": "English", "level": "4" },
+        "1": { "language": "German", "level": "3" }
+      },
+      "levelDescriptions": {
+        "1": "Beginner",
+        "2": "Novice",
+        "3": "Intermediate",
+        "4": "Advanced",
+        "5": "Expert"
+      }
+    }
+  },
+  "coverLetter": {
+    "subject": "Application for {positionName} Position",
+    "greeting": "Dear Hiring Manager,",
+    "content": {
+      "opening": "I am writing to express my strong interest in the {positionName} position at your company. With over 5 years of professional experience in backend development and full-stack engineering, I am excited about the opportunity to contribute to your team and help drive innovative solutions.",
+      "experience1": "Throughout my career, I have specialized in building robust, scalable applications using C#, .NET, and modern web technologies. Currently at Verbund Pflegehilfe, I develop and maintain a healthcare platform connecting patients with local providers, built a comprehensive CRM system, and created an automated calling system using Twilio API. Previously at Sustayn GmbH, I built an employee engagement platform with gamification features and reward systems that significantly increased user participation in corporate learning programs.",
+      "experience2": "My experience spans diverse industries and challenging technical projects. At FPT Software, I worked on a Lidar Management System for RWE, processing large volumes of wind energy sensor data and building high-performance REST APIs. During my time at SODEFA GmbH, I created customer-facing tools including a heating oil price calculator and logistics management system that streamlined operations and provided realtime transparency. Earlier in my career at Cybersoft North America, I developed Digital Signage applications with real-time content updates using SignalR, deployed across banks and restaurants.",
+      "technical": "My technical skillset encompasses both backend and frontend development, with proficiency in TypeScript, React, and modern development practices including Clean Architecture, Domain-Driven Design, and CQRS patterns. At Six Logics, I contributed to 365Scores, a popular sports app, building live score features and personalized content feeds. I am particularly passionate about writing maintainable, testable code and implementing solutions that scale effectively as businesses grow.",
+      "unique": "What sets me apart is my commitment to continuous learning and proven track record across multiple industries. From healthcare platforms and employee engagement systems to wind energy data management, digital signage applications, logistics tools, and sports data platforms, I have successfully delivered solutions in diverse domains. This breadth of experience has given me a unique perspective on software engineering challenges and the adaptability to quickly understand new business requirements and deliver effective solutions.",
+      "interest": "I am particularly drawn to your company because of",
+      "interestPlaceholder": "[specific reason will appear here when filled]",
+      "value": ". I believe my experience in building user-focused applications, combined with my strong technical foundation and collaborative approach, would make me a valuable addition to your team.",
+      "closing1": "I would welcome the opportunity to discuss how my skills and experience align with your needs.",
+      "salaryText": "Regarding compensation, my salary expectation is {salaryExpectations} € per annum.",
+      "availabilityText": "I am available to start from {expectedJoiningDate}.",
+      "closing2": "Thank you for considering my application. I look forward to hearing from you.",
+      "signature": "Best regards,",
+      "name": "Muhammad Ahmed Shehzad"
+    },
+    "forms": {
+      "positionName": "Position Name:",
+      "positionNamePlaceholder": "Software Engineer",
+      "positionNameHelp": "This will update the subject line and position references in the PDF. Default is \"Software Engineer\".",
+      "specificReason": "Specific reason for interest in this company/role:",
+      "specificReasonPlaceholder": "Enter your specific reason for being interested in this company or role...",
+      "specificReasonHelp": "This will update the PDF in real-time. Leave empty to show placeholder text.",
+      "salaryExpectations": "Salary Expectations:",
+      "salaryExpectationsPlaceholder": "e.g., €60,000 - €70,000 annually",
+      "salaryHelp": "Optional: Will be included in the closing paragraph if filled.",
+      "expectedJoiningDate": "Expected Joining Date:",
+      "expectedJoiningDatePlaceholder": "e.g., immediately, 2 weeks notice, January 2025",
+      "joiningDateHelp": "Optional: Will be included in the closing paragraph if filled."
+    }
+  }
+}
