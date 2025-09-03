@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    reporters: process.env.CI
+    reporters: process.env["CI"]
       ? ["default", ["junit", { outputFile: "coverage/sonar-report.xml" }]]
       : ["default"],
     setupFiles: ["./src/test/setup.ts"],

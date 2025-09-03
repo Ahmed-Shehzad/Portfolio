@@ -61,7 +61,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       .join("");
   };
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     const safeErrorMessage = this.sanitizeLog(error.message ?? "Unknown error");
     const safeErrorStack = this.sanitizeLog(error.stack ?? "");
     const safeComponentStack = this.sanitizeLog(errorInfo.componentStack ?? "");
@@ -91,7 +91,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     this.setState({ hasError: false });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       // Render custom fallback UI or use provided fallback
       if (this.props.fallback) {

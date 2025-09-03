@@ -55,46 +55,24 @@ jobs:
 
       - name: Type checking
         run: |
-          echo "TypeScript version:"
-          npx tsc --version
-          echo "Checking file structure:"
-          ls -la *.d.ts
-          echo "Creating CI-specific tsconfig with comprehensive path resolution..."
-          cat > tsconfig.ci.json << 'EOF'
-          {
-            "extends": "./tsconfig.json",
-            "compilerOptions": {
-              "skipLibCheck": true,
-              "noEmit": true,
-              "moduleResolution": "node",
-              "baseUrl": ".",
-              "paths": {
-                "@/*": ["./src/*"],
-                "@/assets/*": ["./src/assets/*"],
-                "@/assets/images/*": ["./src/assets/images/*"],
-                "@/features/*": ["./src/features/*"],
-                "@/config/*": ["./src/config/*"]
-              },
-              "typeRoots": ["./node_modules/@types", "./types", "."]
-            },
-            "include": [
-              "next-env.d.ts",
-              "**/*.ts",
-              "**/*.tsx",
-              "global.d.ts",
-              "images.d.ts",
-              "svg.d.ts",
-              "image-types.d.ts",
-              "src/**/*.ts",
-              "src/**/*.tsx",
-              "src/types/**/*.d.ts"
-            ]
-          }
-          EOF
-          echo "Generated CI TypeScript config:"
-          cat tsconfig.ci.json
-          echo "Running type check with CI config..."
-          npx tsc --project tsconfig.ci.json --listFiles | head -10
+          echo "🔧 Enhanced TypeScript Quality Gate"
+          echo "===================================="
+
+          # Run comprehensive type checking with detailed diagnostics
+          npm run type-check:quality-gate
+
+          # Upload type checking report as artifact
+          echo "📊 Type checking completed with detailed diagnostics"
+
+      - name: Upload TypeScript Reports
+        if: always() # Upload reports even if type checking fails
+        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+        with:
+          name: typescript-reports
+          path: |
+            reports/typescript-report.txt
+            node_modules/.cache/tsconfig.ci.tsbuildinfo
+          retention-days: 7
 
       - name: Build application
         run: npm run build
