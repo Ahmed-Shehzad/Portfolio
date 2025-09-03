@@ -2,6 +2,7 @@
 
 import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
 import { useScreenSize } from "@/hooks/useScreenSize";
+import { LanguageSwitcher } from "@/components/ui";
 import { env } from "@/config/env";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
@@ -324,24 +325,27 @@ export const Header = () => {
 
           {/* Desktop navigation */}
           {!showMobileUI && (
-            <nav
-              className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
-              role="navigation"
-              aria-label="Main navigation"
-            >
-              {navigationOptions.map((option) => (
-                <NavigationItem
-                  key={option.title}
-                  option={option}
-                  isActive={activeOption.title === option.title}
-                  onClick={handleNavClick}
-                />
-              ))}
-            </nav>
+            <div className="flex items-center gap-4">
+              <nav
+                className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
+                role="navigation"
+                aria-label="Main navigation"
+              >
+                {navigationOptions.map((option) => (
+                  <NavigationItem
+                    key={option.title}
+                    option={option}
+                    isActive={activeOption.title === option.title}
+                    onClick={handleNavClick}
+                  />
+                ))}
+              </nav>
+              <LanguageSwitcher />
+            </div>
           )}
 
-          {/* Spacer for mobile to keep button on the left */}
-          {showMobileUI && <div className="w-8" />}
+          {/* Mobile Language Switcher */}
+          {showMobileUI && <LanguageSwitcher />}
         </div>
       </header>
 
@@ -397,6 +401,12 @@ export const Header = () => {
               />
             ))}
           </nav>
+
+          {/* Language switcher in mobile menu */}
+          <div className="border-t border-white/10 p-6">
+            <div className="mb-3 text-sm font-medium text-white/70">Language</div>
+            <LanguageSwitcher className="w-full" />
+          </div>
         </div>
       )}
     </>
