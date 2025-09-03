@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 interface SkillItemData {
   skill: string;
   level: number;
@@ -9,50 +11,6 @@ interface SkillCategory {
   skills: SkillItemData[];
 }
 
-const skillsData: SkillCategory[] = [
-  {
-    title: "Backend (5+ years)",
-    skills: [
-      { skill: "C#", level: 4, years: "4+ years" },
-      { skill: ".NET", level: 5, years: "5+ years" },
-      { skill: "RESTful APIs", level: 5, years: "5+ years" },
-      { skill: "GraphQL", level: 3, years: "2+ years" },
-    ],
-  },
-  {
-    title: "Frontend (3+ years)",
-    skills: [
-      { skill: "TypeScript", level: 5, years: "3+ years" },
-      { skill: "ReactJS", level: 3, years: "2+ years" },
-      { skill: "Tailwind", level: 5, years: "2+ years" },
-    ],
-  },
-  {
-    title: "Tools & DevOps (3+ years)",
-    skills: [
-      { skill: "Docker", level: 3, years: "2+ years" },
-      { skill: "Node.js", level: 3, years: "2+ years" },
-      { skill: "Python", level: 3, years: "2+ years" },
-    ],
-  },
-  {
-    title: "Databases (4+ years)",
-    skills: [
-      { skill: "MS SQL Server", level: 4, years: "4+ years" },
-      { skill: "PostgreSQL", level: 3, years: "2+ years" },
-    ],
-  },
-  {
-    title: "Architecture & Practices (3+ years)",
-    skills: [
-      { skill: "Command Query Responsibility Segregation", level: 4, years: "3+ years" },
-      { skill: "Domain-Driven Design", level: 3, years: "2+ years" },
-      { skill: "Test-Driven Development", level: 3, years: "2+ years" },
-      { skill: "Clean Architecture", level: 4, years: "3+ years" },
-    ],
-  },
-];
-
 interface SkillItemProps {
   skill: string;
   level: number;
@@ -60,25 +18,14 @@ interface SkillItemProps {
 }
 
 function SkillItem({ skill, level, years }: Readonly<SkillItemProps>) {
+  const t = useTranslations("resume.skills");
+
   const getLevelDescription = (level: number): string => {
-    switch (level) {
-      case 1:
-        return "Beginner";
-      case 2:
-        return "Novice";
-      case 3:
-        return "Intermediate";
-      case 4:
-        return "Advanced";
-      case 5:
-        return "Expert";
-      default:
-        return "";
-    }
+    return t(`levelDescriptions.${level}`) || "";
   };
 
   return (
-    <li className="rounded-lg bg-white p-3 shadow-sm print:rounded-none print:bg-transparent print:p-1 print:shadow-none">
+    <li className="mb-4 rounded-lg bg-white p-3 shadow-sm print:rounded-none print:bg-transparent print:p-1 print:shadow-none">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-800">{skill}</span>
         <div className="flex items-center gap-2">
@@ -105,10 +52,27 @@ function SkillCategory({ title, skills }: Readonly<SkillCategory>) {
 }
 
 export function Skills() {
+  const t = useTranslations("resume.skills");
+
+  // Convert translation data to SkillCategory array
+  const skillsData: SkillCategory[] = Array.from({ length: 5 }, (_, i) => {
+    // Determine number of skills per category
+    const skillCount = i === 0 || i === 4 ? 4 : 3;
+
+    return {
+      title: t(`categories.${i}.title`),
+      skills: Array.from({ length: skillCount }, (__, j) => ({
+        skill: t(`categories.${i}.skills.${j}.skill`),
+        level: Number(t(`categories.${i}.skills.${j}.level`)) || 0,
+        years: t(`categories.${i}.skills.${j}.years`),
+      })).filter((skill) => skill.skill), // Filter out empty skills
+    };
+  }).filter((category) => category.title); // Filter out empty categories
+
   return (
     <>
       <h4 className="mt-6 flex items-center gap-2 font-semibold text-green-500">
-        <span>🛠️</span> Skills
+        <span>🛠️</span> {t("title")}
       </h4>
       <ul className="skills-section text-md mt-3 space-y-3 print:space-y-1">
         {skillsData.map((category, index) => (

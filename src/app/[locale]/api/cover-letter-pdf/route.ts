@@ -271,9 +271,6 @@ function getCoverLetterPrintStyles(): string {
         max-width: 100% !important;
         text-align: justify !important;
         text-justify: inter-word !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        hyphens: auto !important;
       }
 
       /* Adjusted font sizes for main content paragraphs (10% decrease) */

@@ -1,8 +1,8 @@
 "use client";
 
 import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
+import { useScreenSize } from "@/hooks/useScreenSize";
 import { env } from "@/config/env";
-import { LanguageSwitcher } from "@/components/ui";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -70,10 +70,10 @@ const DEFAULT_HEADER_OPTION: HeaderOption = {
 const NavigationItem: FC<NavigationItemProps> = (props) => {
   const { option, isActive, onClick } = props;
   const isExternalPage = option.isExternal || false;
-  const className = `nav-item ${
+  const className = `nav-item block w-full text-left py-3 px-4 rounded-lg transition-colors duration-200 md:w-auto md:text-center md:py-2 md:rounded-full ${
     isActive && !isExternalPage
-      ? "bg-white text-gray-900 hover:bg-white/70 hover:text-gray-900"
-      : ""
+      ? "bg-white text-gray-900 hover:bg-white/90"
+      : "text-white hover:bg-white/10 md:hover:bg-white/20"
   }`;
 
   if (isExternalPage) {
@@ -121,6 +121,13 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
  */
 export const Header = () => {
   const locale = useLocale();
+  const { isMobile, isTablet } = useScreenSize();
+
+  // Mobile menu state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Determine if we should show mobile UI (mobile or tablet)
+  const showMobileUI = isMobile || isTablet;
 
   // Create locale-aware header options
   const headerOptions = useMemo(() => createHeaderOptions(locale), [locale]);
@@ -154,10 +161,24 @@ export const Header = () => {
       setSectionElements(elements);
     };
 
+    const handleResize = () => {
+      updateElements();
+    };
+
     updateElements();
-    window.addEventListener("resize", updateElements);
-    return () => window.removeEventListener("resize", updateElements);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [headerOptions]);
+
+  // Close mobile menu when switching to desktop view
+  useEffect(() => {
+    if (!showMobileUI && isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [showMobileUI, isMobileMenuOpen]);
 
   // Memoize contact section for bottom detection
   const contactSection = useMemo(
@@ -243,6 +264,7 @@ export const Header = () => {
     (option: HeaderOption) => {
       setActiveOption(option);
       updateURL(option);
+      setIsMobileMenuOpen(false); // Close mobile menu when navigation item is clicked
 
       if (typeof window === "undefined") return; // SSR check
 
@@ -266,28 +288,117 @@ export const Header = () => {
   );
 
   return (
-    <header
-      className="fixed top-0 z-10 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm"
-      role="banner"
-    >
-      <div className="flex w-full items-center justify-between px-4 pt-8 pb-4 md:px-24">
-        <div /> {/* Spacer for balance */}
-        <nav
-          className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
-          role="navigation"
-          aria-label="Main navigation"
+    <>
+      <header
+        className="fixed top-0 z-10 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm"
+        role="banner"
+      >
+        <div
+          className={`flex w-full items-center px-4 pt-8 pb-4 md:px-24 ${showMobileUI ? "justify-between" : "justify-center"}`}
         >
-          {navigationOptions.map((option) => (
-            <NavigationItem
-              key={option.title}
-              option={option}
-              isActive={activeOption.title === option.title}
-              onClick={handleNavClick}
-            />
-          ))}
-        </nav>
-        <LanguageSwitcher />
-      </div>
-    </header>
+          {/* Mobile/Tablet menu button */}
+          {showMobileUI && (
+            <button
+              className="flex h-8 w-8 flex-col items-center justify-center space-y-1.5"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span
+                className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${
+                  isMobileMenuOpen ? "translate-y-2 rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-6 bg-white transition-opacity duration-300 ${
+                  isMobileMenuOpen ? "opacity-0" : ""
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${
+                  isMobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
+                }`}
+              />
+            </button>
+          )}
+
+          {/* Desktop navigation */}
+          {!showMobileUI && (
+            <nav
+              className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
+              role="navigation"
+              aria-label="Main navigation"
+            >
+              {navigationOptions.map((option) => (
+                <NavigationItem
+                  key={option.title}
+                  option={option}
+                  isActive={activeOption.title === option.title}
+                  onClick={handleNavClick}
+                />
+              ))}
+            </nav>
+          )}
+
+          {/* Spacer for mobile to keep button on the left */}
+          {showMobileUI && <div className="w-8" />}
+        </div>
+      </header>
+
+      {/* Mobile/Tablet side drawer overlay */}
+      {showMobileUI && isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile/Tablet side drawer */}
+      {showMobileUI && (
+        <div
+          className={`fixed top-0 left-0 z-50 h-full w-72 transform bg-black/10 backdrop-blur-lg transition-transform duration-300 ease-in-out ${
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {/* Drawer header */}
+          <div className="flex items-center justify-between border-b border-white/10 p-6">
+            <h2 className="text-xl font-semibold text-white">Portfolio</h2>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+              aria-label="Close navigation menu"
+            >
+              <span className="sr-only">Close menu</span>
+              <svg
+                className="h-6 w-6 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Drawer navigation */}
+          <nav
+            className="flex flex-col space-y-2 p-6"
+            role="navigation"
+            aria-label="Mobile navigation"
+          >
+            {navigationOptions.map((option) => (
+              <NavigationItem
+                key={option.title}
+                option={option}
+                isActive={activeOption.title === option.title}
+                onClick={handleNavClick}
+              />
+            ))}
+          </nav>
+        </div>
+      )}
+    </>
   );
 };

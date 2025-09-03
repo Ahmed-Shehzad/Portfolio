@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run worker:watch & next dev",
+    "dev": "npm run build &&npm run worker:watch & next dev",
     "build": "npm run build:worker && next build",
     "prebuild": "npm run format:fix",
     "start": "next start",

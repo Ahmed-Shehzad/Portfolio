@@ -46,7 +46,7 @@ export function DownloadButton() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "cover-letter.pdf";
+      link.download = `${locale}/cover-letter.pdf`;
       document.body.appendChild(link);
       link.click();
 
