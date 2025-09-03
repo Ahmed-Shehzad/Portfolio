@@ -1,0 +1,183 @@
+{
+  "metadata": {
+    "title": "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
+    "description": "Backend Developer specialising in C#, .NET, TypeScript, and scalable server-side architectures. Proficient in full-stack development with React, Next.js, and modern web technologies.",
+    "keywords": "Backend Developer, Full Stack Engineer, C#, .NET, TypeScript, React, Next.js, Server-side Development, API Development, Web Developer, Software Engineer, Database Architecture",
+    "author": "Muhammad Ahmed Shehzad",
+    "openGraph": {
+      "title": "Muhammad Ahmed Shehzad - Backend Developer & Full Stack Engineer",
+      "siteName": "Muhammad Ahmed Shehzad - Portfolio",
+      "imageAlt": "Muhammad Ahmed Shehzad - Full Stack Developer"
+    },
+    "twitter": {
+      "title": "Muhammad Ahmed Shehzad - Full Stack Developer",
+      "description": "Full Stack Developer specialising in TypeScript, React, Next.js, C#, .NET, and modern web technologies."
+    }
+  },
+  "hero": {
+    "name": "Muhammad Ahmed Shehzad",
+    "availability": "Available for new projects",
+    "description": "I am a Full Stack Developer with a passion for building web applications and services.",
+    "buttons": {
+      "explore": "Explore My Work",
+      "connect": "Let's Connect"
+    }
+  },
+  "about": {
+    "eyebrow": "About Me",
+    "title": "My Journey as a Developer",
+    "description": "From curiosity to expertise - discover what drives my passion for building exceptional digital experiences.",
+    "personalIntroduction": {
+      "title": "Backend Developer & Full Stack Technology Enthusiast",
+      "intro": "I'm <strong>Muhammad Ahmed Shehzad</strong>, a Backend Developer specialising in building scalable, performance-driven server-side applications and robust system architectures. Whilst my core expertise lies in backend development, I maintain proficiency across the full stack — enabling me to deliver comprehensive solutions with clean architecture, maintainability, and measurable business impact.",
+      "journey": {
+        "title": "The Journey That Shaped Me",
+        "description": "My journey in tech started when I built my first interactive web page as a teenager, fascinated by how a few lines of code could bring ideas to life. Over the years, I've transformed that curiosity into a professional skill set — delivering solutions for startups, enterprises, and everything in between."
+      },
+      "drives": {
+        "title": "What Drives Me Today",
+        "description": "I believe great software isn't just about functionality — it's about creating experiences that users love and businesses can rely on. Whether it's optimising performance, implementing robust architecture, or crafting intuitive interfaces, I approach every project with the same passion that got me started: the excitement of solving complex problems through elegant code."
+      },
+      "expertise": {
+        "title": "My Core Expertise & Approach",
+        "description1": "As a <strong>Backend Developer</strong> at heart, my true expertise lies in architecting robust server-side solutions, designing scalable APIs, and building reliable data architectures. Whilst I'm proficient with frontend technologies like React, TypeScript, and Tailwind CSS — they're tools I can work with effectively rather than my primary specialisation.",
+        "description2": "I'm passionate about leveraging <strong>AI Assistant Programming</strong> as a powerful pair programming partner. Using tools like <strong>GitHub Copilot</strong> and <strong>AWS CodeWhisperer</strong>, I combine AI efficiency with solid engineering principles — accelerating development whilst maintaining code quality and architectural integrity. Rather than relying on \"vibe coding,\" I use these AI tools with deep understanding and intentionality."
+      }
+    },
+    "coreValues": {
+      "title": "Core Values",
+      "description": "The principles that drive my approach to development and collaboration.",
+      "values": {
+        "quality": {
+          "title": "Quality First",
+          "description": "Clean, maintainable code"
+        },
+        "innovation": {
+          "title": "Innovation",
+          "description": "Pushing boundaries daily"
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "description": "Team success over solo wins"
+        },
+        "excellence": {
+          "title": "Excellence",
+          "description": "Exceeding expectations always"
+        },
+        "reliability": {
+          "title": "Reliability",
+          "description": "Consistent delivery you can trust"
+        },
+        "growth": {
+          "title": "Growth",
+          "description": "Always learning, always improving"
+        }
+      }
+    }
+  },
+  "projects": {
+    "eyebrow": "Real World Results",
+    "title": "Featured Projects",
+    "description": "Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications.",
+    "loading": "Loading projects...",
+    "error": "Failed to load projects",
+    "errorDescription": "Please try refreshing the page"
+  },
+  "testimonials": {
+    "items": {
+      "0": {
+        "name": "Alex Thompson",
+        "position": "Senior Product Manager",
+        "company": "TechFlow Solutions",
+        "text": "Ahmed's attention to detail and problem-solving skills are exceptional. He delivered our project ahead of schedule and exceeded all expectations.",
+        "avatar": "memojiAvatar1"
+      },
+      "1": {
+        "name": "Maria Rodriguez",
+        "position": "Lead Designer",
+        "company": "CreativeCore",
+        "text": "Working with Ahmed was a pleasure. His ability to translate design concepts into pixel-perfect, responsive interfaces is truly impressive.",
+        "avatar": "memojiAvatar2"
+      },
+      "2": {
+        "name": "James Chen",
+        "position": "CTO",
+        "company": "InnovateLab",
+        "text": "Ahmed brought both technical expertise and strategic thinking to our team. His solutions are not just functional but also scalable and maintainable.",
+        "avatar": "memojiAvatar3"
+      },
+      "3": {
+        "name": "Fatima Rahman",
+        "position": "Product Owner",
+        "company": "DataStream Inc",
+        "text": "Ahmed's communication skills are as impressive as his technical abilities. He kept our entire team informed throughout the development process.",
+        "avatar": "memojiAvatar4"
+      },
+      "4": {
+        "name": "David Kim",
+        "position": "Engineering Manager",
+        "company": "NextGen Software",
+        "text": "The quality of Ahmed's work speaks for itself. Clean, well-documented code that our entire team could easily understand and build upon.",
+        "avatar": "memojiAvatar5"
+      }
+    }
+  },
+  "contact": {
+    "title": "Let's create something amazing together",
+    "description": "Ready to bring your project to life? Let's connect and discuss how I can help you to achieve your goals.",
+    "button": "Contact Me"
+  },
+  "footer": {
+    "links": [
+      {
+        "href": "#home",
+        "label": "Home"
+      },
+      {
+        "href": "#projects",
+        "label": "Projects"
+      },
+      {
+        "href": "#about",
+        "label": "About"
+      },
+      {
+        "href": "#contact",
+        "label": "Contact"
+      }
+    ],
+    "copyright": "© 2024 Muhammad Ahmed Shehzad. All rights reserved."
+  },
+  "technologies": {
+    "words": {
+      "0": "React",
+      "1": "Redux",
+      "2": "TypeScript",
+      "3": "JavaScript",
+      "4": "Node.js",
+      "5": "Express.js",
+      "6": "Next.js",
+      "7": "C#",
+      "8": ".NET",
+      "9": "ASP.NET Core",
+      "10": "Entity Framework",
+      "11": "SQL Server",
+      "12": "PostgreSQL",
+      "13": "MongoDB",
+      "14": "Docker",
+      "15": "Kubernetes",
+      "16": "AWS",
+      "17": "Azure",
+      "18": "Git",
+      "19": "GitHub",
+      "20": "REST APIs",
+      "21": "GraphQL",
+      "22": "Microservices",
+      "23": "Clean Architecture",
+      "24": "Test Driven Development",
+      "25": "Domain Driven Design",
+      "26": "Command Query Responsibility Segregation",
+      "27": "DevOps"
+    }
+  }
+}

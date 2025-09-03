@@ -5,92 +5,11 @@ import memojiAvatar4 from "@/assets/images/memoji-avatar-4.png";
 import memojiAvatar5 from "@/assets/images/memoji-avatar-5.png";
 import { Card, OptimizedImage, SectionHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
+import { useTranslations } from "next-intl";
 import { Fragment, memo, useMemo } from "react";
 
 // NOTE: Avatars manually reassigned to better align with perceived gender / persona of each testimonial.
 // If the visual assets differ from these assumptions, adjust the mapping below without changing order of entries.
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    position: "Product Manager",
-    company: "CloudFlow Technologies",
-    text: "Working with Ahmed was a game-changer for our SaaS product launch. He implemented a scalable architecture that reduced our deployment time by 40%, which meant we could ship features faster and respond to market changes instantly. His ability to explain complex technical concepts in simple terms also helped our non-technical team members align better with development goals.",
-    avatar: memojiAvatar4,
-    companyColor: "#3B82F6",
-  },
-  {
-    name: "Marcus Rivera",
-    position: "Chief Technology Officer",
-    company: "BrightByte Solutions",
-    text: "Ahmed's deep understanding of both frontend and backend systems allowed us to refactor a legacy codebase without any downtime — something I didn't think was possible. He introduced a clean architecture pattern that made onboarding new developers significantly easier. His code reviews are always constructive, and his documentation is top-notch.",
-    avatar: memojiAvatar1,
-    companyColor: "#10B981",
-  },
-  {
-    name: "Dr. Emily Zhang",
-    position: "Founder & CEO",
-    company: "VisionX AI",
-    text: "Ahmed doesn't just write code — he solves business problems. For our AI-driven platform, he built a microservices architecture on AWS that could handle a 3x traffic surge overnight without any hiccups. His proactive communication and dedication to deadlines made him feel like part of our core team.",
-    avatar: memojiAvatar2,
-    companyColor: "#8B5CF6",
-  },
-  {
-    name: "Jordan Thompson",
-    position: "Design Director",
-    company: "PixelCraft Studio",
-    text: "Ahmed is one of those rare developers who truly respects design. He translated our Figma prototypes into responsive, accessible, and high-performance UI components with pixel-perfect accuracy. Even better, he suggested subtle UX improvements that increased user engagement by 25%.",
-    avatar: memojiAvatar5,
-    companyColor: "#F59E0B",
-  },
-  {
-    name: "Alex Rodriguez",
-    position: "VP of Engineering",
-    company: "NovaTech Global",
-    text: "We were struggling with downtime and slow releases before Ahmed stepped in. Within two months, he set up an automated CI/CD pipeline, integrated containerization with Kubernetes, and improved our system reliability by 99.9%. His approach to problem-solving is both methodical and creative.",
-    avatar: memojiAvatar3,
-    companyColor: "#EF4444",
-  },
-  {
-    name: "Priya Natarajan",
-    position: "Head of Product",
-    company: "QuantumCraft Labs",
-    text: "Ahmed quickly aligned engineering with product outcomes. He improved our build pipeline and introduced metrics-driven releases, which cut our time-to-validate A/B tests in half and boosted conversion across our onboarding flow.",
-    avatar: memojiAvatar2,
-    companyColor: "#06B6D4",
-  },
-  {
-    name: "Tomás Álvarez",
-    position: "Engineering Manager",
-    company: "Altitude Networks",
-    text: "Our React app felt sluggish under load until Ahmed profiled critical paths and implemented intelligent memoization and virtualization. Lighthouse and Core Web Vitals jumped across the board, and our support tickets dropped noticeably.",
-    avatar: memojiAvatar5,
-    companyColor: "#E11D48",
-  },
-  {
-    name: "Lina Park",
-    position: "Chief Operating Officer",
-    company: "Harbor Health",
-    text: "Compliance, reliability, and speed rarely coexist. Ahmed standardized our infra-as-code, added robust observability, and set SLOs that helped us maintain 99.95% uptime while accelerating feature delivery.",
-    avatar: memojiAvatar3,
-    companyColor: "#84CC16",
-  },
-  {
-    name: "Noah Williams",
-    position: "Lead Frontend Engineer",
-    company: "Aurora Commerce",
-    text: "Ahmed elevated our design system with accessible, reusable components and rigorous testing. Storybook coverage improved, and our team shipped consistent UI faster with fewer regressions.",
-    avatar: memojiAvatar1,
-    companyColor: "#14B8A6",
-  },
-  {
-    name: "Fatima Rahman",
-    position: "Product Owner",
-    company: "Stellar Fintech",
-    text: "From discovery to delivery, Ahmed kept us focused on user value. His developer experience improvements and documentation reduced onboarding time for new engineers from weeks to days.",
-    avatar: memojiAvatar4,
-    companyColor: "#F43F5E",
-  },
-];
 
 /**
  * TestimonialsSection
@@ -111,9 +30,72 @@ const testimonials = [
  * - Descriptive avatar alt text; duplicated track excluded from accessibility tree.
  */
 export const TestimonialsSection = memo(() => {
-  // Memoize testimonials key to avoid recalculation
-  const testimonialsKey = useMemo(() => testimonials.map((t) => t.name).join("-"), []);
+  const t = useTranslations("testimonials");
 
+  // Create an array of testimonials by accessing numbered keys
+  const testimonials: Array<{
+    name: string;
+    position: string;
+    company: string;
+    text: string;
+    avatar: string;
+  }> = [];
+
+  // Create an array of testimonials by accessing numbered keys
+  for (let i = 0; i < 5; i++) {
+    // We know we have exactly 5 testimonials (0-4)
+    try {
+      const nameKey = `items.${i}.name`;
+      const name = t(nameKey);
+      // Check if the translation was found (not the key itself)
+      if (name && !name.includes("testimonials.items.")) {
+        testimonials.push({
+          name,
+          position: t(`items.${i}.position`),
+          company: t(`items.${i}.company`),
+          text: t(`items.${i}.text`),
+          avatar: t(`items.${i}.avatar`),
+        });
+      } else {
+        break; // Stop when no more translations found
+      }
+    } catch {
+      // Stop when translation key doesn't exist
+      break;
+    }
+  }
+
+  // If no testimonials were loaded, use fallback
+  if (testimonials.length === 0) {
+    testimonials.push({
+      name: "Alex Thompson",
+      position: "Senior Product Manager",
+      company: "TechFlow Solutions",
+      text: "Working with Ahmed was a game-changer for our SaaS product launch. His technical expertise and attention to detail helped us deliver a robust, scalable solution that exceeded our expectations.",
+      avatar: "memojiAvatar1",
+    });
+  }
+
+  // Map avatar strings to actual imported images
+  const avatarMap = {
+    memojiAvatar1,
+    memojiAvatar2,
+    memojiAvatar3,
+    memojiAvatar4,
+    memojiAvatar5,
+  };
+
+  // Convert testimonials to include actual avatar images and colors
+  const processedTestimonials = testimonials.map((testimonial, index) => ({
+    ...testimonial,
+    avatar: avatarMap[testimonial.avatar as keyof typeof avatarMap] || memojiAvatar1,
+    companyColor: [
+      "#14B8A6", // emerald-500
+      "#F43F5E", // rose-500
+      "#EF4444", // red-500
+      "#06B6D4", // cyan-500
+    ][index % 4],
+  }));
   // Memoize star rating JSX to prevent re-renders
   const starRating = useMemo(
     () => (
@@ -145,57 +127,55 @@ export const TestimonialsSection = memo(() => {
         <ScrollAnimationWrapper animation="fadeIn" delay={300}>
           <div className="-my-4 mt-12 flex overflow-x-clip [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] py-4 lg:mt-24">
             <div className="flex flex-none animate-[move-left_45s_linear_infinite] gap-8 pr-8 will-change-transform hover:[animation-play-state:paused]">
-              {[0, 1].map((repeatIndex) => (
-                <Fragment key={`card-fragment-repeat-${repeatIndex}-${testimonialsKey}`}>
-                  {testimonials.map((testimonial) => {
-                    return (
-                      <Card
-                        key={`${testimonial.name}-${repeatIndex}`}
-                        className="max-w-xs p-6 transition duration-300 hover:-rotate-3 md:max-w-md md:p-8"
-                        aria-hidden={repeatIndex === 1}
-                      >
-                        {/* Header with Avatar and Company Badge */}
-                        <div className="mb-4 flex items-start justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="inline-flex size-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-700">
-                              <OptimizedImage
-                                src={testimonial.avatar}
-                                alt={`${testimonial.name}'s avatar`}
-                                width={48}
-                                height={48}
-                                className="max-h-full rounded-full"
-                              />
-                            </div>
-                            <div>
-                              <div className="font-semibold text-white">{testimonial.name}</div>
-                              <div className="text-xs text-white/60">{testimonial.position}</div>
-                            </div>
+              {[0, 1].map((repeat) => (
+                <Fragment key={repeat}>
+                  {processedTestimonials.map((testimonial) => (
+                    <Card
+                      key={`${testimonial.name}-${repeat}`}
+                      className="max-w-xs p-6 transition duration-300 hover:-rotate-3 md:max-w-md md:p-8"
+                      aria-hidden={repeat === 1}
+                    >
+                      {/* Header with Avatar and Company Badge */}
+                      <div className="mb-4 flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="inline-flex size-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-700">
+                            <OptimizedImage
+                              src={testimonial.avatar}
+                              alt={`${testimonial.name}'s avatar`}
+                              width={48}
+                              height={48}
+                              className="max-h-full rounded-full"
+                            />
                           </div>
-                          <div
-                            className="flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold text-white"
-                            style={{ backgroundColor: testimonial.companyColor }}
-                          >
-                            {testimonial.company.charAt(0)}
+                          <div>
+                            <div className="font-semibold text-white">{testimonial.name}</div>
+                            <div className="text-xs text-white/60">{testimonial.position}</div>
                           </div>
                         </div>
-
-                        {/* Company Name */}
-                        <div className="mb-4">
-                          <span className="text-sm font-medium text-white/80">
-                            {testimonial.company}
-                          </span>
+                        <div
+                          className="flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold text-white"
+                          style={{ backgroundColor: testimonial.companyColor }}
+                        >
+                          {testimonial.company.charAt(0)}
                         </div>
+                      </div>
 
-                        {/* Testimonial Text */}
-                        <p className="text-sm leading-relaxed text-white/90 md:text-base">
-                          {testimonial.text}
-                        </p>
+                      {/* Company Name */}
+                      <div className="mb-4">
+                        <span className="text-sm font-medium text-white/80">
+                          {testimonial.company}
+                        </span>
+                      </div>
 
-                        {/* Rating Stars */}
-                        {starRating}
-                      </Card>
-                    );
-                  })}
+                      {/* Testimonial Text */}
+                      <p className="text-sm leading-relaxed text-white/90 md:text-base">
+                        {testimonial.text}
+                      </p>
+
+                      {/* Rating Stars */}
+                      {starRating}
+                    </Card>
+                  ))}
                 </Fragment>
               ))}
             </div>

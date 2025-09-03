@@ -1,0 +1,183 @@
+{
+  "metadata": {
+    "title": "Muhammad Ahmed Shehzad - Backend-Entwickler & Full Stack Engineer",
+    "description": "Backend-Entwickler spezialisiert auf C#, .NET, TypeScript und skalierbare server-seitige Architekturen. Versiert in Full-Stack-Entwicklung mit React, Next.js und modernen Webtechnologien.",
+    "keywords": "Backend-Entwickler, Full Stack Engineer, C#, .NET, TypeScript, React, Next.js, Server-seitige Entwicklung, API-Entwicklung, Webentwickler, Software Engineer, Datenbankarchitektur",
+    "author": "Muhammad Ahmed Shehzad",
+    "openGraph": {
+      "title": "Muhammad Ahmed Shehzad - Backend-Entwickler & Full Stack Engineer",
+      "siteName": "Muhammad Ahmed Shehzad - Portfolio",
+      "imageAlt": "Muhammad Ahmed Shehzad - Full Stack Developer"
+    },
+    "twitter": {
+      "title": "Muhammad Ahmed Shehzad - Full Stack Developer",
+      "description": "Full Stack Developer spezialisiert auf TypeScript, React, Next.js, C#, .NET und moderne Webtechnologien."
+    }
+  },
+  "hero": {
+    "name": "Muhammad Ahmed Shehzad",
+    "availability": "Verfügbar für neue Projekte",
+    "description": "Ich bin ein Full Stack Developer mit einer Leidenschaft für die Entwicklung von Webanwendungen und -diensten.",
+    "buttons": {
+      "explore": "Meine Arbeiten erkunden",
+      "connect": "Lass uns vernetzen"
+    }
+  },
+  "about": {
+    "eyebrow": "Über mich",
+    "title": "Mein Weg als Entwickler",
+    "description": "Von der Neugier zur Expertise - entdecken Sie, was meine Leidenschaft für die Entwicklung außergewöhnlicher digitaler Erlebnisse antreibt.",
+    "personalIntroduction": {
+      "title": "Backend-Entwickler & Full Stack Technology-Enthusiast",
+      "intro": "Ich bin <strong>Muhammad Ahmed Shehzad</strong>, ein Backend-Entwickler, der sich auf die Entwicklung skalierbarer, leistungsorientierter server-seitiger Anwendungen und robuster Systemarchitekturen spezialisiert hat. Während meine Kernexpertise in der Backend-Entwicklung liegt, beherrsche ich den gesamten Stack - was es mir ermöglicht, umfassende Lösungen mit sauberer Architektur, Wartbarkeit und messbaren Geschäftsauswirkungen zu liefern.",
+      "journey": {
+        "title": "Die Reise, die mich geprägt hat",
+        "description": "Meine Reise in der Technologie begann, als ich als Teenager meine erste interaktive Webseite erstellte, fasziniert davon, wie ein paar Zeilen Code Ideen zum Leben erwecken konnten. Über die Jahre hinweg habe ich diese Neugier in professionelle Fähigkeiten verwandelt - und Lösungen für Startups, Unternehmen und alles dazwischen geliefert."
+      },
+      "drives": {
+        "title": "Was mich heute antreibt",
+        "description": "Ich glaube, dass großartige Software nicht nur um Funktionalität geht - es geht darum, Erlebnisse zu schaffen, die Benutzer lieben und auf die Unternehmen sich verlassen können. Ob es darum geht, die Leistung zu optimieren, robuste Architektur zu implementieren oder intuitive Benutzeroberflächen zu gestalten, ich gehe jedes Projekt mit derselben Leidenschaft an, die mich zum Start gebracht hat: die Aufregung, komplexe Probleme durch eleganten Code zu lösen."
+      },
+      "expertise": {
+        "title": "Meine Kernexpertise & Herangehensweise",
+        "description1": "Als <strong>Backend-Entwickler</strong> im Herzen liegt meine wahre Expertise in der Architektur robuster server-seitiger Lösungen, dem Design skalierbarer APIs und dem Aufbau zuverlässiger Datenarchitekturen. Während ich mit Frontend-Technologien wie React, TypeScript und Tailwind CSS versiert bin - sind sie Werkzeuge, mit denen ich effektiv arbeiten kann, anstatt meine primäre Spezialisierung zu sein.",
+        "description2": "Ich bin leidenschaftlich über die Nutzung von <strong>AI Assistant Programming</strong> als mächtiger Pair-Programming-Partner. Mit Tools wie <strong>GitHub Copilot</strong> und <strong>AWS CodeWhisperer</strong> kombiniere ich AI-Effizienz mit soliden Engineering-Prinzipien - beschleunige die Entwicklung während ich Code-Qualität und architektonische Integrität aufrechterhalte. Anstatt mich auf \"Vibe Coding\" zu verlassen, verwende ich diese AI-Tools mit tiefem Verständnis und Intentionalität."
+      }
+    },
+    "coreValues": {
+      "title": "Grundwerte",
+      "description": "Die Prinzipien, die meinen Ansatz zur Entwicklung und Zusammenarbeit prägen.",
+      "values": {
+        "quality": {
+          "title": "Qualität zuerst",
+          "description": "Sauberer, wartbarer Code"
+        },
+        "innovation": {
+          "title": "Innovation",
+          "description": "Täglich Grenzen erweitern"
+        },
+        "collaboration": {
+          "title": "Zusammenarbeit",
+          "description": "Teamerfolg über Solo-Gewinne"
+        },
+        "excellence": {
+          "title": "Exzellenz",
+          "description": "Erwartungen immer übertreffen"
+        },
+        "reliability": {
+          "title": "Zuverlässigkeit",
+          "description": "Beständige Lieferung, der Sie vertrauen können"
+        },
+        "growth": {
+          "title": "Wachstum",
+          "description": "Immer lernen, immer verbessern"
+        }
+      }
+    }
+  },
+  "projects": {
+    "eyebrow": "Echte Weltergebnisse",
+    "title": "Ausgewählte Projekte",
+    "description": "Hier sind einige meiner neuesten Projekte, die meine Fähigkeiten bei der Erstellung hochwertiger, benutzerfreundlicher Webanwendungen zeigen.",
+    "loading": "Projekte werden geladen...",
+    "error": "Projekte konnten nicht geladen werden",
+    "errorDescription": "Bitte versuchen Sie, die Seite zu aktualisieren"
+  },
+  "testimonials": {
+    "items": {
+      "0": {
+        "name": "Alex Thompson",
+        "position": "Senior Product Manager",
+        "company": "TechFlow Solutions",
+        "text": "Ahmeds Aufmerksamkeit für Details und Problemlösungsfähigkeiten sind außergewöhnlich. Er hat unser Projekt vor dem Zeitplan geliefert und alle Erwartungen übertroffen.",
+        "avatar": "memojiAvatar1"
+      },
+      "1": {
+        "name": "Maria Rodriguez",
+        "position": "Lead Designer",
+        "company": "CreativeCore",
+        "text": "Die Arbeit mit Ahmed war ein Vergnügen. Seine Fähigkeit, Design-Konzepte in pixelgenaue, responsive Benutzeroberflächen zu übersetzen, ist wirklich beeindruckend.",
+        "avatar": "memojiAvatar2"
+      },
+      "2": {
+        "name": "James Chen",
+        "position": "CTO",
+        "company": "InnovateLab",
+        "text": "Ahmed brachte sowohl technische Expertise als auch strategisches Denken in unser Team. Seine Lösungen sind nicht nur funktional, sondern auch skalierbar und wartbar.",
+        "avatar": "memojiAvatar3"
+      },
+      "3": {
+        "name": "Fatima Rahman",
+        "position": "Product Owner",
+        "company": "DataStream Inc",
+        "text": "Ahmeds Kommunikationsfähigkeiten sind ebenso beeindruckend wie seine technischen Fähigkeiten. Er hielt unser gesamtes Team während des Entwicklungsprozesses informiert.",
+        "avatar": "memojiAvatar4"
+      },
+      "4": {
+        "name": "David Kim",
+        "position": "Engineering Manager",
+        "company": "NextGen Software",
+        "text": "Die Qualität von Ahmeds Arbeit spricht für sich. Sauberer, gut dokumentierter Code, den unser gesamtes Team leicht verstehen und darauf aufbauen konnte.",
+        "avatar": "memojiAvatar5"
+      }
+    }
+  },
+  "contact": {
+    "title": "Lasst uns gemeinsam etwas Großartiges schaffen",
+    "description": "Bereit, Ihr Projekt zum Leben zu erwecken? Lass uns in Kontakt treten und besprechen, wie ich Ihnen helfen kann, Ihre Ziele zu erreichen.",
+    "button": "Kontaktieren Sie mich"
+  },
+  "footer": {
+    "links": [
+      {
+        "href": "#home",
+        "label": "Startseite"
+      },
+      {
+        "href": "#projects",
+        "label": "Projekte"
+      },
+      {
+        "href": "#about",
+        "label": "Über mich"
+      },
+      {
+        "href": "#contact",
+        "label": "Kontakt"
+      }
+    ],
+    "copyright": "© 2024 Muhammad Ahmed Shehzad. Alle Rechte vorbehalten."
+  },
+  "technologies": {
+    "words": {
+      "0": "React",
+      "1": "Redux",
+      "2": "TypeScript",
+      "3": "JavaScript",
+      "4": "Node.js",
+      "5": "Express.js",
+      "6": "Next.js",
+      "7": "C#",
+      "8": ".NET",
+      "9": "ASP.NET Core",
+      "10": "Entity Framework",
+      "11": "SQL Server",
+      "12": "PostgreSQL",
+      "13": "MongoDB",
+      "14": "Docker",
+      "15": "Kubernetes",
+      "16": "AWS",
+      "17": "Azure",
+      "18": "Git",
+      "19": "GitHub",
+      "20": "REST APIs",
+      "21": "GraphQL",
+      "22": "Mikroservices",
+      "23": "Clean Architecture",
+      "24": "Test-gesteuerte Entwicklung",
+      "25": "Domain Driven Design",
+      "26": "Command Query Responsibility Segregation",
+      "27": "DevOps"
+    }
+  }
+}

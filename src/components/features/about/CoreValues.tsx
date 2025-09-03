@@ -2,6 +2,7 @@ import SmileMemoji from "@/assets/images/memoji-smile.png";
 import { Card, CardHeader } from "@/components/ui";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { memo } from "react";
 import { MAP_CONFIG } from "@/shared/constants";
 
@@ -15,6 +16,8 @@ const DynamicMap = dynamic(
 );
 
 export const CoreValues = memo(() => {
+  const t = useTranslations("about.coreValues");
+
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-5 lg:grid-cols-3">
       {/* Core Values Card */}
@@ -25,11 +28,7 @@ export const CoreValues = memo(() => {
         className="flex h-[320px] flex-col p-0 md:col-span-3 lg:col-span-2"
       >
         <Card className="flex h-[320px] flex-col p-0 md:col-span-3 lg:col-span-2">
-          <CardHeader
-            className="px-6 py-6"
-            title="Core Values"
-            description="The principles that drive my approach to development and collaboration."
-          />
+          <CardHeader className="px-6 py-6" title={t("title")} description={t("description")} />
           <div className="flex-1 overflow-y-auto p-6">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {/* Quality First */}
@@ -37,8 +36,8 @@ export const CoreValues = memo(() => {
                 <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-300 to-sky-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>🎯</span>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-950">Quality First</div>
-                    <div className="text-xs text-gray-700">Clean, maintainable code</div>
+                    <div className="font-semibold text-gray-950">{t("values.quality.title")}</div>
+                    <div className="text-xs text-gray-700">{t("values.quality.description")}</div>
                   </div>
                 </div>
               </div>
@@ -48,8 +47,12 @@ export const CoreValues = memo(() => {
                 <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-purple-300 to-pink-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>🚀</span>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-950">Innovation</div>
-                    <div className="text-xs text-gray-700">Pushing boundaries daily</div>
+                    <div className="font-semibold text-gray-950">
+                      {t("values.innovation.title")}
+                    </div>
+                    <div className="text-xs text-gray-700">
+                      {t("values.innovation.description")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -59,8 +62,12 @@ export const CoreValues = memo(() => {
                 <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-orange-300 to-red-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>🤝</span>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-950">Collaboration</div>
-                    <div className="text-xs text-gray-700">Team success over solo wins</div>
+                    <div className="font-semibold text-gray-950">
+                      {t("values.collaboration.title")}
+                    </div>
+                    <div className="text-xs text-gray-700">
+                      {t("values.collaboration.description")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -70,8 +77,12 @@ export const CoreValues = memo(() => {
                 <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-yellow-300 to-amber-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>⭐</span>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-950">Excellence</div>
-                    <div className="text-xs text-gray-700">Exceeding expectations always</div>
+                    <div className="font-semibold text-gray-950">
+                      {t("values.excellence.title")}
+                    </div>
+                    <div className="text-xs text-gray-700">
+                      {t("values.excellence.description")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -81,8 +92,12 @@ export const CoreValues = memo(() => {
                 <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-300 to-violet-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>🛡️</span>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-950">Reliability</div>
-                    <div className="text-xs text-gray-700">Consistent delivery you can trust</div>
+                    <div className="font-semibold text-gray-950">
+                      {t("values.reliability.title")}
+                    </div>
+                    <div className="text-xs text-gray-700">
+                      {t("values.reliability.description")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -92,8 +107,8 @@ export const CoreValues = memo(() => {
                 <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-blue-300 to-cyan-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>📚</span>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-950">Growth</div>
-                    <div className="text-xs text-gray-700">Always learning, always improving</div>
+                    <div className="font-semibold text-gray-950">{t("values.growth.title")}</div>
+                    <div className="text-xs text-gray-700">{t("values.growth.description")}</div>
                   </div>
                 </div>
               </div>

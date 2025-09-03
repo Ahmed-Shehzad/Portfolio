@@ -5,6 +5,7 @@ import CheckCircleIcon from "@/assets/icons/check-circle.svg";
 import { Card, OptimizedImage, SectionHeader } from "@/components/ui";
 import { usePortfolioProjects } from "@/features/portfolio/hooks";
 import { ScrollAnimationWrapper } from "@/wrappers";
+import { useTranslations } from "next-intl";
 
 /**
  * ProjectsSection
@@ -27,6 +28,7 @@ import { ScrollAnimationWrapper } from "@/wrappers";
  */
 export const ProjectsSection = () => {
   const { data: portfolioProjects, isLoading, isError } = usePortfolioProjects();
+  const t = useTranslations("projects");
 
   if (isLoading) {
     return (
@@ -34,15 +36,15 @@ export const ProjectsSection = () => {
         <div className="container">
           <ScrollAnimationWrapper animation="fadeInUp">
             <SectionHeader
-              eyebrow="Real World Results"
-              title="Featured Projects"
-              description="Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications."
+              eyebrow={t("eyebrow")}
+              title={t("title")}
+              description={t("description")}
             />
           </ScrollAnimationWrapper>
           <div className="mt-10 flex items-center justify-center md:mt-20">
             <div className="text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-emerald-300 border-r-transparent" />
-              <p className="mt-4 text-white/60">Loading projects...</p>
+              <p className="mt-4 text-white/60">{t("loading")}</p>
             </div>
           </div>
         </div>
@@ -56,15 +58,15 @@ export const ProjectsSection = () => {
         <div className="container">
           <ScrollAnimationWrapper animation="fadeInUp">
             <SectionHeader
-              eyebrow="Real World Results"
-              title="Featured Projects"
-              description="Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications."
+              eyebrow={t("eyebrow")}
+              title={t("title")}
+              description={t("description")}
             />
           </ScrollAnimationWrapper>
           <div className="mt-10 flex items-center justify-center md:mt-20">
             <div className="text-center">
-              <p className="text-red-400">Failed to load projects</p>
-              <p className="mt-2 text-white/60">Please try refreshing the page</p>
+              <p className="text-red-400">{t("error")}</p>
+              <p className="mt-2 text-white/60">{t("errorDescription")}</p>
             </div>
           </div>
         </div>
@@ -76,11 +78,7 @@ export const ProjectsSection = () => {
     <section id="projects" className="pb-16 md:px-24 lg:py-24">
       <div className="container">
         <ScrollAnimationWrapper animation="fadeInUp">
-          <SectionHeader
-            eyebrow="Real World Results"
-            title="Featured Projects"
-            description="Here are some of my recent projects that showcase my skills in creating high-quality, user-friendly web applications."
-          />
+          <SectionHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
         </ScrollAnimationWrapper>
         <div className="mt-10 flex flex-col gap-20 md:mt-20">
           {portfolioProjects.map((project, projectIndex) => {

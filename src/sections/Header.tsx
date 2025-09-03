@@ -2,6 +2,7 @@
 
 import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
 import { env } from "@/config/env";
+import { LanguageSwitcher } from "@/components/ui";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
@@ -251,7 +252,8 @@ export const Header = () => {
       className="fixed top-0 z-10 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm"
       role="banner"
     >
-      <div className="flex w-full items-center justify-center px-4 pt-8 pb-4 md:px-24">
+      <div className="flex w-full items-center justify-between px-4 pt-8 pb-4 md:px-24">
+        <div /> {/* Spacer for balance */}
         <nav
           className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
           role="navigation"
@@ -266,6 +268,7 @@ export const Header = () => {
             />
           ))}
         </nav>
+        <LanguageSwitcher />
       </div>
     </header>
   );

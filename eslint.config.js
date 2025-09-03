@@ -112,6 +112,13 @@ const eslintConfig = [
           "no-console": "off", // Allow console in worker files
         },
       },
+      // Next.js font loaders require literal values - disable duplicate string rule for layout files
+      {
+        files: ["**/layout.tsx"],
+        rules: {
+          "sonarjs/no-duplicate-string": "off",
+        },
+      },
     ],
   }),
 ];
