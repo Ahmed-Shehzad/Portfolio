@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "next-intl";
 import { useCoverLetterContext } from "../contexts/CoverLetterContext";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const { data } = useCoverLetterContext();
+  const locale = useLocale();
 
   const handleDownload = async () => {
     try {
@@ -16,8 +18,8 @@ export function DownloadButton() {
       // Get the current protocol and domain
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
-      // Call the API to generate PDF with form data in request body
-      const response = await fetch(`${baseUrl}/api/cover-letter-pdf`, {
+      // Call the API to generate PDF with form data in request body (using locale-aware route)
+      const response = await fetch(`${baseUrl}/${locale}/api/cover-letter-pdf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

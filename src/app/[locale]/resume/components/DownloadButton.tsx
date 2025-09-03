@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "next-intl";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const locale = useLocale();
 
   const handleDownload = async () => {
     try {
@@ -14,8 +16,8 @@ export function DownloadButton() {
       // Get the current protocol and domain
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
-      // Call the API to generate PDF with proper headers
-      const response = await fetch(`${baseUrl}/api/resume-pdf`, {
+      // Call the API to generate PDF with proper headers (using locale-aware route)
+      const response = await fetch(`${baseUrl}/${locale}/api/resume-pdf`, {
         method: "GET",
         headers: {
           Accept: "application/pdf",

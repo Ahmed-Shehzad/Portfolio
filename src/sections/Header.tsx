@@ -4,6 +4,7 @@ import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible
 import { env } from "@/config/env";
 import { LanguageSwitcher } from "@/components/ui";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { useLocale } from "next-intl";
 import Link from "next/link";
 
 interface HeaderOption {
@@ -31,7 +32,8 @@ const SCROLL_OFFSET = 150;
 const HEADER_OFFSET = 100;
 const BOTTOM_THRESHOLD = 10;
 
-const headerOptions: HeaderOption[] = [
+// Base header options - will be enhanced with locale-aware URLs
+const baseHeaderOptions = [
   { title: "Home", href: "/", id: "home" },
   { title: "Projects", href: "#projects", id: "projects" },
   { title: "About", href: "#about", id: "about" },
@@ -45,6 +47,14 @@ const headerOptions: HeaderOption[] = [
     showInNavigation: env.isDevelopment, // Only show in nav during development
   },
 ];
+
+// Function to create locale-aware header options
+const createHeaderOptions = (locale: string): HeaderOption[] => {
+  return baseHeaderOptions.map((option) => ({
+    ...option,
+    href: option.isExternal ? `/${locale}${option.href}` : option.href, // Keep hash links as-is for smooth scrolling
+  }));
+};
 
 // Default header option for fallback scenarios
 const DEFAULT_HEADER_OPTION: HeaderOption = {
@@ -110,8 +120,13 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
  * - aria-current for active link; semantic nav landmark with role + label.
  */
 export const Header = () => {
+  const locale = useLocale();
+
+  // Create locale-aware header options
+  const headerOptions = useMemo(() => createHeaderOptions(locale), [locale]);
+
   const [activeOption, setActiveOption] = useState<HeaderOption>(
-    headerOptions[0] || DEFAULT_HEADER_OPTION
+    baseHeaderOptions[0] || DEFAULT_HEADER_OPTION
   );
   const [sectionElements, setSectionElements] = useState<SectionElement[]>([]);
 
@@ -142,10 +157,13 @@ export const Header = () => {
     updateElements();
     window.addEventListener("resize", updateElements);
     return () => window.removeEventListener("resize", updateElements);
-  }, []);
+  }, [headerOptions]);
 
   // Memoize contact section for bottom detection
-  const contactSection = useMemo(() => headerOptions.find((option) => option.id === "contact"), []);
+  const contactSection = useMemo(
+    () => headerOptions.find((option) => option.id === "contact"),
+    [headerOptions]
+  );
 
   // Create lookup map for O(1) section id to HeaderOption mapping
   const optionsMap = useMemo(() => {
@@ -154,12 +172,12 @@ export const Header = () => {
       .filter((option) => option.href.startsWith("#")) // Only hash-based sections
       .forEach((option) => map.set(option.id, option));
     return map;
-  }, []);
+  }, [headerOptions]);
 
   // Filter options for navigation display
   const navigationOptions = useMemo(() => {
     return headerOptions.filter((option) => option.showInNavigation !== false);
-  }, []);
+  }, [headerOptions]);
 
   // Optimized URL update function
   const updateURL = useCallback((section: HeaderOption) => {
@@ -205,7 +223,7 @@ export const Header = () => {
       updateURL(currentSection);
       setActiveOption(currentSection);
     }
-  }, [sectionElements, contactSection, updateURL, optionsMap]);
+  }, [sectionElements, contactSection, updateURL, optionsMap, headerOptions]);
 
   // Throttled scroll handler
   // Use bfcache-compatible scroll listener

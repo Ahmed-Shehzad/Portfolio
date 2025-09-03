@@ -561,13 +561,14 @@ async function closeBrowserSafely(browser: Awaited<ReturnType<typeof launchBrows
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, context: { params: Promise<{ locale: string }> }) {
   let browser: Awaited<ReturnType<typeof launchBrowser>> | undefined;
 
   try {
     const baseUrl = getBaseUrl(request);
+    const { locale } = await context.params;
     const formData = await parseFormData(request);
-    const coverLetterUrl = new URL("/cover-letter", baseUrl);
+    const coverLetterUrl = new URL(`/${locale}/cover-letter`, baseUrl);
 
     console.error(`Generating PDF for: ${coverLetterUrl.toString()}`);
     console.error(`Form data:`, formData);

@@ -48,6 +48,7 @@ async function launchBrowser() {
 }
 async function generateResumePDF(
   baseUrl: string,
+  locale: string,
   browser: Awaited<ReturnType<typeof launchBrowser>>
 ) {
   const page = await browser.newPage();
@@ -65,10 +66,10 @@ async function generateResumePDF(
   // Set viewport for consistent rendering
   await page.setViewport({ width: 1200, height: 800 });
 
-  console.error(`Navigating to: ${baseUrl}/resume`);
+  console.error(`Navigating to: ${baseUrl}/${locale}/resume`);
 
   // Navigate with timeout and wait for network idle
-  await page.goto(`${baseUrl}/resume`, {
+  await page.goto(`${baseUrl}/${locale}/resume`, {
     waitUntil: ["networkidle0", "domcontentloaded"],
     timeout: 60000, // Increased timeout for slow serverless starts
   });
@@ -522,12 +523,13 @@ function getBaseUrl(request: NextRequest): string {
   return `${protocol}://${host}`;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, context: { params: Promise<{ locale: string }> }) {
   let browser: Awaited<ReturnType<typeof launchBrowser>> | undefined;
 
   try {
     const baseUrl = getBaseUrl(request);
-    console.error(`Generating PDF for: ${baseUrl}/resume`);
+    const { locale } = await context.params;
+    console.error(`Generating PDF for: ${baseUrl}/${locale}/resume`);
 
     try {
       console.error("About to launch browser...");
@@ -545,7 +547,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      const pdf = await generateResumePDF(baseUrl, browser);
+      const pdf = await generateResumePDF(baseUrl, locale, browser);
 
       console.error(`PDF generated successfully, size: ${pdf.length} bytes`);
 
