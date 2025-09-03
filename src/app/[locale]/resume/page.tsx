@@ -1,4 +1,8 @@
-import { DownloadButton, ResumeSidebar, ResumeMainContent } from "./components";
+import {
+  DynamicDownloadButton,
+  DynamicResumeSidebar,
+  DynamicResumeContent,
+} from "@/lib/optimization/dynamic-imports";
 
 interface ResumePageProps {
   params: Promise<{ locale: string }>;
@@ -15,13 +19,13 @@ export default async function ResumePage({ params }: ResumePageProps) {
     >
       {/* Download Button - Hidden when printing */}
       <div className="mb-4 flex justify-center">
-        <DownloadButton />
+        <DynamicDownloadButton />
       </div>
 
       <div className="resume-container mx-auto w-[1000px] overflow-hidden rounded-xl bg-white shadow-2xl">
         <div className="resume-grid grid grid-cols-[380px_620px]">
-          <ResumeSidebar />
-          <ResumeMainContent />
+          <DynamicResumeSidebar />
+          <DynamicResumeContent />
         </div>
       </div>
     </div>

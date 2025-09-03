@@ -56,7 +56,6 @@ jobs:
             "vercel.json"
             "next.config.ts"
             ".audit-ci.json"
-            ".github/lighthouse/lighthouse-config.js"
             ".github/CICD_SETUP.md"
           )
 

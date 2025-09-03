@@ -10,7 +10,7 @@ import {
   CoreValues,
   CoreStrengths,
   BeyondWork,
-} from "@/components/features/about";
+} from "@/features/about";
 
 /**
  * AboutSection

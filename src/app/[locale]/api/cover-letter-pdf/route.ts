@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { featureLogger } from "@/shared/utils";
+
+const apiLogger = featureLogger("cover-letter-api");
 
 // Interface for cover letter form data
 interface CoverLetterFormData {
@@ -25,18 +28,18 @@ async function launchBrowser() {
   // Detect if we're running on Vercel
   const isVercel = process.env.VERCEL === "1" || !!process.env.VERCEL_ENV;
 
-  console.error(`Running on Vercel: ${isVercel}`);
-  console.error(`NODE_ENV: ${process.env.NODE_ENV}`);
+  apiLogger.debug(`Running on Vercel: ${isVercel}`);
+  apiLogger.debug(`NODE_ENV: ${process.env.NODE_ENV}`);
 
   if (isVercel) {
     // Production on Vercel: Use @sparticuz/chromium with puppeteer-core
-    console.error("Using @sparticuz/chromium for Vercel deployment");
+    apiLogger.info("Using @sparticuz/chromium for Vercel deployment");
 
     const chromium = await import("@sparticuz/chromium");
     const puppeteerCore = await import("puppeteer-core");
 
     const execPath = await chromium.default.executablePath();
-    console.error(`Chromium executable path: ${execPath}`);
+    apiLogger.debug(`Chromium executable path: ${execPath}`);
 
     return await puppeteerCore.default.launch({
       args: [...chromium.default.args, ...CHROME_ARGS],
@@ -45,7 +48,7 @@ async function launchBrowser() {
     });
   } else {
     // Local development: Use regular puppeteer
-    console.error("Using regular puppeteer for local development");
+    apiLogger.info("Using regular puppeteer for local development");
 
     const puppeteer = await import("puppeteer");
 
@@ -76,7 +79,7 @@ async function generateCoverLetterPDF(
   // Set viewport for consistent rendering
   await page.setViewport({ width: 1200, height: 800 });
 
-  console.error(`Navigating to: ${coverLetterUrl}`);
+  apiLogger.debug(`Navigating to: ${coverLetterUrl}`);
 
   // Navigate with timeout and wait for network idle
   await page.goto(coverLetterUrl, {
@@ -84,7 +87,7 @@ async function generateCoverLetterPDF(
     timeout: 60000,
   });
 
-  console.error("Page loaded, waiting for content...");
+  apiLogger.debug("Page loaded, waiting for content...");
 
   // Wait for the main content to load
   await page.waitForSelector("main", { timeout: 30000 });
@@ -97,7 +100,7 @@ async function generateCoverLetterPDF(
   // Wait a bit more for any lazy-loaded content
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  console.error("Content loaded, injecting form data...");
+  apiLogger.debug("Content loaded, injecting form data...");
 
   // Inject form data directly into the page using JavaScript
   const formDataString = JSON.stringify(formData);
@@ -124,14 +127,14 @@ async function generateCoverLetterPDF(
   // Wait a moment for React to process the data
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  console.error("Form data injected, generating PDF...");
+  apiLogger.debug("Form data injected, generating PDF...");
 
   // Add print styles to optimize cover letter for printing
   await page.addStyleTag({
     content: getCoverLetterPrintStyles(),
   });
 
-  console.error("Print styles added, generating PDF...");
+  apiLogger.debug("Print styles added, generating PDF...");
 
   // Generate PDF with single page optimization
   const pdf = await page.pdf({
@@ -149,7 +152,7 @@ async function generateCoverLetterPDF(
   });
 
   await page.close();
-  console.error("PDF generated successfully");
+  apiLogger.info("PDF generated successfully");
 
   return pdf;
 }
@@ -524,7 +527,7 @@ async function parseFormData(request: NextRequest): Promise<CoverLetterFormData>
       positionName: body.positionName || "Software Engineer", // Default value
     };
   } catch (parseError) {
-    console.error("Error parsing request body:", parseError);
+    apiLogger.warn("Error parsing request body", { error: parseError });
     return defaultFormData;
   }
 }
@@ -551,9 +554,9 @@ async function closeBrowserSafely(browser: Awaited<ReturnType<typeof launchBrows
   if (browser) {
     try {
       await browser.close();
-      console.error("Browser closed successfully");
+      apiLogger.debug("Browser closed successfully");
     } catch (closeError) {
-      console.error("Failed to close browser:", closeError);
+      apiLogger.error("Failed to close browser", closeError as Error);
     }
   }
 }
@@ -567,14 +570,19 @@ export async function POST(request: NextRequest, context: { params: Promise<{ lo
     const formData = await parseFormData(request);
     const coverLetterUrl = new URL(`/${locale}/cover-letter`, baseUrl);
 
-    console.error(`Generating PDF for: ${coverLetterUrl.toString()}`);
-    console.error(`Form data:`, formData);
+    apiLogger.info(`Generating PDF for: ${coverLetterUrl.toString()}`, {
+      locale,
+      formData: {
+        companyName: formData.companyName,
+        positionName: formData.positionName,
+      },
+    });
 
     // Launch browser
     try {
-      console.error("About to launch browser...");
+      apiLogger.debug("About to launch browser...");
       browser = await launchBrowser();
-      console.error("Browser launched successfully");
+      apiLogger.debug("Browser launched successfully");
     } catch (browserError) {
       const details = browserError instanceof Error ? browserError.message : String(browserError);
       return createErrorResponse("Browser launch failed", details);
@@ -589,7 +597,12 @@ export async function POST(request: NextRequest, context: { params: Promise<{ lo
       return createErrorResponse("Page navigation failed", details);
     }
   } catch (error) {
-    console.error("PDF generation error:", error);
+    // Use production-safe logger for error tracking
+    apiLogger.error(
+      "PDF generation failed",
+      error instanceof Error ? error : new Error(String(error))
+    );
+
     const errorStack =
       process.env.NODE_ENV === "development" && error instanceof Error ? error.stack : undefined;
 

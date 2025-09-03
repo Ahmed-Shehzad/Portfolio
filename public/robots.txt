@@ -7,6 +7,4 @@ Sitemap: https://ahmed-shehzad.github.io/Portfolio/sitemap.xml
 # Block access to sensitive files
 Disallow: /api/
 Disallow: /_next/
-Disallow: /lighthouse-*.json
 Disallow: /performance-analysis.js
-Disallow: /lighthouse-analysis.js

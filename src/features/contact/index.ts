@@ -17,6 +17,9 @@ export type {
   ContactSubmissionResult,
 } from "./types";
 
+// Components
+export { ContactModal } from "./components";
+
 // Constants
 export {
   SAFE_EMAIL_REGEX,

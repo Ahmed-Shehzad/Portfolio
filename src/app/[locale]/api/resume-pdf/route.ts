@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/shared/utils/production-logger";
+
+const apiLogger = logger.createComponentLogger("ResumeAPI");
 
 // Common Chrome arguments
 const CHROME_ARGS = [
@@ -16,18 +19,17 @@ async function launchBrowser() {
   // Detect if we're running on Vercel
   const isVercel = process.env.VERCEL === "1" || !!process.env.VERCEL_ENV;
 
-  console.error(`Running on Vercel: ${isVercel}`);
-  console.error(`NODE_ENV: ${process.env.NODE_ENV}`);
+  apiLogger.info("Launching browser", { isVercel, nodeEnv: process.env.NODE_ENV });
 
   if (isVercel) {
     // Production on Vercel: Use @sparticuz/chromium with puppeteer-core
-    console.error("Using @sparticuz/chromium for Vercel deployment");
+    apiLogger.info("Using @sparticuz/chromium for Vercel deployment");
 
     const chromium = await import("@sparticuz/chromium");
     const puppeteerCore = await import("puppeteer-core");
 
     const execPath = await chromium.default.executablePath();
-    console.error(`Chromium executable path: ${execPath}`);
+    apiLogger.debug("Chromium executable path obtained", { execPath });
 
     return await puppeteerCore.default.launch({
       args: [...chromium.default.args, ...CHROME_ARGS],
@@ -36,7 +38,7 @@ async function launchBrowser() {
     });
   } else {
     // Local development: Use regular puppeteer
-    console.error("Using regular puppeteer for local development");
+    apiLogger.info("Using regular puppeteer for local development");
 
     const puppeteer = await import("puppeteer");
 
@@ -66,7 +68,7 @@ async function generateResumePDF(
   // Set viewport for consistent rendering
   await page.setViewport({ width: 1200, height: 800 });
 
-  console.error(`Navigating to: ${baseUrl}/${locale}/resume`);
+  apiLogger.debug("Navigation in progress", { url: `${baseUrl}/${locale}/resume` });
 
   // Navigate with timeout and wait for network idle
   await page.goto(`${baseUrl}/${locale}/resume`, {
@@ -74,7 +76,7 @@ async function generateResumePDF(
     timeout: 60000, // Increased timeout for slow serverless starts
   });
 
-  console.error("Page loaded, waiting for content...");
+  apiLogger.debug("Page loaded, waiting for content");
 
   // Wait for the main content to load
   await page.waitForSelector("main", { timeout: 30000 });
@@ -87,14 +89,14 @@ async function generateResumePDF(
   // Wait a bit more for any lazy-loaded content
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  console.error("Content loaded, generating PDF...");
+  apiLogger.debug("Content loaded, generating PDF");
 
   // Add print styles to compress content to single page
   await page.addStyleTag({
     content: getResumePrintStyles(),
   });
 
-  console.error("Print styles added, generating PDF...");
+  apiLogger.debug("Print styles added, generating PDF");
 
   // Generate PDF with single page optimization
   const pdf = await page.pdf({
@@ -113,7 +115,7 @@ async function generateResumePDF(
   });
 
   await page.close();
-  console.error("PDF generated successfully");
+  apiLogger.info("PDF generated successfully");
 
   return pdf;
 }
@@ -529,14 +531,14 @@ export async function GET(request: NextRequest, context: { params: Promise<{ loc
   try {
     const baseUrl = getBaseUrl(request);
     const { locale } = await context.params;
-    console.error(`Generating PDF for: ${baseUrl}/${locale}/resume`);
+    apiLogger.info("Starting PDF generation", { url: `${baseUrl}/${locale}/resume` });
 
     try {
-      console.error("About to launch browser...");
+      apiLogger.debug("About to launch browser");
       browser = await launchBrowser();
-      console.error("Browser launched successfully");
+      apiLogger.info("Browser launched successfully");
     } catch (browserError) {
-      console.error("Browser launch failed:", browserError);
+      apiLogger.error("Browser launch failed");
       return NextResponse.json(
         {
           error: "Browser launch failed",
@@ -549,7 +551,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ loc
     try {
       const pdf = await generateResumePDF(baseUrl, locale, browser);
 
-      console.error(`PDF generated successfully, size: ${pdf.length} bytes`);
+      apiLogger.info("PDF generated successfully", { size: pdf.length });
 
       // Return PDF as response
       return new NextResponse(Buffer.from(pdf), {
@@ -561,7 +563,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ loc
         },
       });
     } catch (pageError) {
-      console.error("Page navigation/PDF generation failed:", pageError);
+      apiLogger.error("Page navigation/PDF generation failed");
       return NextResponse.json(
         {
           error: "Page navigation failed",
@@ -571,7 +573,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ loc
       );
     }
   } catch (error) {
-    console.error("PDF generation error:", error);
+    apiLogger.error("PDF generation error");
 
     const errorStack =
       process.env.NODE_ENV === "development" && error instanceof Error ? error.stack : undefined;
@@ -589,9 +591,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ loc
     if (browser) {
       try {
         await browser.close();
-        console.error("Browser closed successfully");
-      } catch (closeError) {
-        console.error("Failed to close browser:", closeError);
+        apiLogger.debug("Browser closed successfully");
+      } catch {
+        apiLogger.error("Failed to close browser");
       }
     }
   }

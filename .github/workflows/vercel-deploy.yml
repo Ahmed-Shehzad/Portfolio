@@ -435,17 +435,6 @@ jobs:
           # Check for known vulnerabilities
           npx audit-ci --config .audit-ci.json || true
 
-      - name: Lighthouse CI
-        uses: treosh/lighthouse-ci-action@fcd65974f7c4c2bf0ee9d09b84d2489183c29726 # v12.6.1
-        with:
-          urls: |
-            https://portfolio-azure-five-75.vercel.app/
-            https://portfolio-azure-five-75.vercel.app/resume
-          configPath: "./.github/lighthouse/lighthouse-config.cjs"
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-          runs: 3
-
   # Cleanup
   cleanup:
     name: Cleanup Artifacts

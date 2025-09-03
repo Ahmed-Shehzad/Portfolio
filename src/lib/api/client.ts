@@ -1,19 +1,21 @@
 /**
- * Axios-based API Client
+ * Fetch-based API Client
  *
- * Enhanced API client using Axios with comprehensive error handling,
- * interceptors, and bulletproof architecture patterns.
+ * Enhanced API client using native fetch to replace Axios,
+ * reducing bundle size while maintaining the same interface.
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { ENV_CONFIG } from "@/config";
 import type { ApiResponse } from "@/shared/types";
-import { secureLog } from "@/shared/utils/logging";
+import { logger } from "@/shared/utils/production-logger";
 
-// Constants to avoid duplication
+const apiLogger = logger.createComponentLogger("APIClient");
+
+// Constants
 const REQUEST_SUCCESSFUL_MESSAGE = "Request successful";
+const UNKNOWN_ERROR_MESSAGE = "Unknown error";
 
-// Enhanced API Error class
+// Enhanced API Error class (maintaining compatibility)
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -24,119 +26,154 @@ export class ApiError extends Error {
     super(message);
     this.name = "ApiError";
   }
-
-  static fromAxiosError(error: AxiosError): ApiError {
-    const responseData = error.response?.data as { message?: string } | undefined;
-    const message = responseData?.message ?? error.message ?? "API request failed";
-    const status = error.response?.status;
-    const code = error.code;
-    const data = error.response?.data;
-
-    return new ApiError(message, status, code, data);
-  }
 }
 
-// API Client configuration
-export interface ApiClientConfig {
-  baseURL: string;
-  timeout: number;
-  headers?: Record<string, string>;
-}
+// Simplified fetch client
+class SimpleFetchClient {
+  constructor(
+    private baseURL: string,
+    private timeout: number
+  ) {}
 
-/**
- * Creates an Axios instance with bulletproof configuration
- */
-const createAxiosInstance = (config: ApiClientConfig): AxiosInstance => {
-  const instance = axios.create({
-    baseURL: config.baseURL,
-    timeout: config.timeout,
-    headers: {
-      "Content-Type": "application/json",
-      ...config.headers,
-    },
-  });
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  private async request<T>(
+    method: string,
+    endpoint: string,
+    data?: unknown,
+    options: RequestInit = {}
+  ): Promise<{ data: T; status: number; statusText: string }> {
+    const url = `${this.baseURL}${endpoint}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
-  // Request interceptor for adding auth headers and logging
-  instance.interceptors.request.use(
-    (config) => {
+    try {
+      const headers: Record<string, string> = {
+        Accept: "application/json",
+        ...(options.headers as Record<string, string>),
+      };
+
       // Add auth token if available
-      if (typeof window !== "undefined") {
-        const token = localStorage.getItem("authToken");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+      const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const config: RequestInit = {
+        method,
+        headers,
+        signal: controller.signal,
+        ...options,
+      };
+
+      if (data && method !== "GET" && method !== "HEAD") {
+        if (data instanceof FormData) {
+          config.body = data;
+        } else {
+          config.body = JSON.stringify(data);
+          headers["Content-Type"] = "application/json";
         }
       }
 
-      // Log request in development
-      if (ENV_CONFIG.isDevelopment) {
-        secureLog.debug(`API Request: ${config.method?.toUpperCase()} ${config.url}`, {
-          params: config.params,
-          data: config.data,
-        });
+      apiLogger.debug("Making API request");
+
+      const response = await fetch(url, config);
+      clearTimeout(timeoutId);
+
+      // Handle 401 errors
+      if (response.status === 401) {
+        apiLogger.warn("Unauthorized request - clearing auth token");
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("authToken");
+          window.location.href = "/login";
+        }
+        throw new ApiError("Unauthorized - redirecting to login", 401);
       }
 
-      return config;
-    },
-    (error) => {
-      secureLog.error("API Request Error:", error.message || "Unknown error");
-      return Promise.reject(ApiError.fromAxiosError(error));
+      if (!response.ok) {
+        const errorMessage = `Request failed with status ${response.status}: ${response.statusText}`;
+        apiLogger.error("API request failed");
+        throw new ApiError(errorMessage, response.status);
+      }
+
+      const contentType = response.headers.get("content-type");
+      let responseData: T;
+
+      if (contentType?.includes("application/json")) {
+        responseData = await response.json();
+      } else if (contentType?.includes("text/")) {
+        responseData = (await response.text()) as T;
+      } else {
+        responseData = (await response.blob()) as T;
+      }
+
+      apiLogger.debug("API request successful");
+
+      return {
+        data: responseData,
+        status: response.status,
+        statusText: response.statusText,
+      };
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      if (error instanceof ApiError) {
+        throw error;
+      }
+
+      if (error instanceof DOMException && error.name === "AbortError") {
+        apiLogger.error("API request timeout");
+        throw new ApiError(`Request timeout after ${this.timeout}ms`, 408);
+      }
+
+      const errorMessage = error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE;
+      apiLogger.error("API request error");
+      throw new ApiError(errorMessage, 0);
     }
-  );
+  }
 
-  // Response interceptor for handling responses and errors
-  instance.interceptors.response.use(
-    (response: AxiosResponse) => {
-      // Log response in development
-      if (ENV_CONFIG.isDevelopment) {
-        secureLog.debug(`API Response: ${response.status} ${response.config.url}`, response.data);
-      }
+  async get<T>(endpoint: string, options?: RequestInit) {
+    return this.request<T>("GET", endpoint, undefined, options);
+  }
 
-      return response;
-    },
-    (error: AxiosError) => {
-      // Handle common error scenarios
-      if (error.response?.status === 401 && typeof window !== "undefined") {
-        // Handle unauthorized - clear auth and prevent further requests with stale tokens
-        localStorage.removeItem("authToken");
-        // Cancel all pending requests to prevent concurrent requests with invalid tokens
-        const controller = new AbortController();
-        controller.abort();
-        // Redirect to login immediately to prevent further API calls
-        window.location.href = "/login";
-        return Promise.reject(new Error("Unauthorized - redirecting to login"));
-      }
+  async post<T>(endpoint: string, data?: unknown, options?: RequestInit) {
+    return this.request<T>("POST", endpoint, data, options);
+  }
 
-      if (error.response && error.response.status >= 500) {
-        // Handle server errors - log as error since these are actual errors
-        secureLog.error("Server Error:", error.response?.data || "Unknown server error");
-      }
+  async put<T>(endpoint: string, data?: unknown, options?: RequestInit) {
+    return this.request<T>("PUT", endpoint, data, options);
+  }
 
-      if (error.code === "NETWORK_ERROR") {
-        // Handle network errors - log as error since these are actual errors
-        secureLog.error("Network Error:", error.message || "Unknown network error");
-      }
+  async patch<T>(endpoint: string, data?: unknown, options?: RequestInit) {
+    return this.request<T>("PATCH", endpoint, data, options);
+  }
 
-      return Promise.reject(ApiError.fromAxiosError(error));
-    }
-  );
-
-  return instance;
-};
+  async delete<T>(endpoint: string, options?: RequestInit) {
+    return this.request<T>("DELETE", endpoint, undefined, options);
+  }
+}
 
 // Create the main API client instance
-export const apiClient = createAxiosInstance({
-  baseURL: ENV_CONFIG.api.baseUrl || "http://localhost:3000/api",
-  timeout: ENV_CONFIG.api.timeout,
-});
+export const apiClient = new SimpleFetchClient(
+  ENV_CONFIG.api.baseUrl || "http://localhost:3000/api",
+  ENV_CONFIG.api.timeout
+);
 
 /**
- * Generic API methods with proper typing
+ * Generic API methods with proper typing (maintaining Axios interface)
  */
+function createApiErrorFromFetchError(error: unknown): ApiError {
+  if (error instanceof ApiError) {
+    return error;
+  }
+  const errorMessage = error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE;
+  return new ApiError(errorMessage);
+}
+
 export const api = {
   /**
    * GET request
    */
-  get: async <T = unknown>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+  get: async <T = unknown>(url: string, config?: RequestInit): Promise<ApiResponse<T>> => {
     try {
       const response = await apiClient.get<T>(url, config);
       return {
@@ -145,8 +182,7 @@ export const api = {
         message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
-      const apiError =
-        error instanceof ApiError ? error : ApiError.fromAxiosError(error as AxiosError);
+      const apiError = createApiErrorFromFetchError(error);
       return {
         success: false,
         error: apiError.message,
@@ -161,7 +197,7 @@ export const api = {
   post: async <T = unknown, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: RequestInit
   ): Promise<ApiResponse<T>> => {
     try {
       const response = await apiClient.post<T>(url, data, config);
@@ -171,8 +207,7 @@ export const api = {
         message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
-      const apiError =
-        error instanceof ApiError ? error : ApiError.fromAxiosError(error as AxiosError);
+      const apiError = createApiErrorFromFetchError(error);
       return {
         success: false,
         error: apiError.message,
@@ -187,7 +222,7 @@ export const api = {
   put: async <T = unknown, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: RequestInit
   ): Promise<ApiResponse<T>> => {
     try {
       const response = await apiClient.put<T>(url, data, config);
@@ -197,8 +232,7 @@ export const api = {
         message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
-      const apiError =
-        error instanceof ApiError ? error : ApiError.fromAxiosError(error as AxiosError);
+      const apiError = createApiErrorFromFetchError(error);
       return {
         success: false,
         error: apiError.message,
@@ -213,7 +247,7 @@ export const api = {
   patch: async <T = unknown, D = unknown>(
     url: string,
     data?: D,
-    config?: AxiosRequestConfig
+    config?: RequestInit
   ): Promise<ApiResponse<T>> => {
     try {
       const response = await apiClient.patch<T>(url, data, config);
@@ -223,8 +257,7 @@ export const api = {
         message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
-      const apiError =
-        error instanceof ApiError ? error : ApiError.fromAxiosError(error as AxiosError);
+      const apiError = createApiErrorFromFetchError(error);
       return {
         success: false,
         error: apiError.message,
@@ -236,10 +269,7 @@ export const api = {
   /**
    * DELETE request
    */
-  delete: async <T = unknown>(
-    url: string,
-    config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> => {
+  delete: async <T = unknown>(url: string, config?: RequestInit): Promise<ApiResponse<T>> => {
     try {
       const response = await apiClient.delete<T>(url, config);
       return {
@@ -248,8 +278,7 @@ export const api = {
         message: REQUEST_SUCCESSFUL_MESSAGE,
       };
     } catch (error) {
-      const apiError =
-        error instanceof ApiError ? error : ApiError.fromAxiosError(error as AxiosError);
+      const apiError = createApiErrorFromFetchError(error);
       return {
         success: false,
         error: apiError.message,
@@ -259,6 +288,15 @@ export const api = {
   },
 };
 
-// Export the raw axios instance for advanced use cases
-export { apiClient as axiosInstance };
-export type { AxiosRequestConfig, AxiosResponse, AxiosError };
+// Export the raw fetch instance for advanced use cases (maintaining compatibility)
+export { apiClient as fetchInstance };
+
+// Compatibility exports (so existing imports don't break)
+export type AxiosRequestConfig = RequestInit;
+export type AxiosResponse<T = unknown> = {
+  data: T;
+  status: number;
+  statusText: string;
+  headers: Headers;
+};
+export type AxiosError = ApiError;

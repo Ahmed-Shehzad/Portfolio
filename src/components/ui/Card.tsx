@@ -1,10 +1,10 @@
 "use client";
 
 import GrainImage from "@/assets/images/grain.jpg";
-import { ComponentPropsWithoutRef, FC } from "react";
+import { ComponentPropsWithoutRef, memo } from "react";
 import { twMerge } from "tailwind-merge";
 
-export const Card: FC<ComponentPropsWithoutRef<"div">> = (props) => {
+const CardComponent = (props: ComponentPropsWithoutRef<"div">) => {
   const { className, children, ...otherProps } = props;
   return (
     <div
@@ -24,3 +24,7 @@ export const Card: FC<ComponentPropsWithoutRef<"div">> = (props) => {
     </div>
   );
 };
+
+// Memoized version for performance optimization
+export const Card = memo(CardComponent);
+Card.displayName = "Card";

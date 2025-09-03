@@ -8,9 +8,10 @@
 export type {
   ProjectResult,
   PortfolioProject,
-  ProjectCardProps,
-  ProjectsListProps,
-  ProjectResultProps,
+  Project,
+  ProjectLink,
+  ProjectImage,
+  OptimizedProject,
 } from "./types";
 
 // Constants

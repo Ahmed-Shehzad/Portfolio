@@ -9,7 +9,7 @@
 
 import { useCallback } from "react";
 import { secureLog } from "@/shared/utils/logging";
-import type { Project } from "@/features/projects/types";
+import type { Project } from "@/features/portfolio/types";
 import type { Testimonial } from "@/features/testimonials/types";
 import { useWebWorker } from "./useWebWorker";
 import { UNKNOWN_ERROR_MESSAGE } from "./constants";

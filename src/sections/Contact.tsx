@@ -2,7 +2,7 @@
 
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import GrainImage from "@/assets/images/grain.jpg";
-import { ContactModal } from "@/components/features";
+import { DynamicContactModal } from "@/lib/optimization/dynamic-imports";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -63,7 +63,7 @@ export const ContactSection = () => {
         </ScrollAnimationWrapper>
       </div>
 
-      <ContactModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <DynamicContactModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

@@ -1,14 +1,17 @@
 // Utility functions extracted from worker for unit testing.
-// Keep constants mirrored; if updated in worker, reflect here or refactor worker to import.
+import { PERFORMANCE_CONSTANTS } from "@/shared/constants/performance";
 
-export const EASING_THRESHOLD = 0.5;
-export const EASING_IN_COEFF = 4;
-export const EASING_OUT_BASE = 2;
-export const EASING_OUT_EXP = 3;
-export const PERF_FCP_LIMIT = 1800;
-export const PERF_LCP_LIMIT = 2500;
-export const PERF_DCL_LIMIT = 1500;
-export const SLOW_RESOURCE_LIMIT = 1000;
+// Re-export constants for backward compatibility
+export const {
+  EASING_THRESHOLD,
+  EASING_IN_COEFF,
+  EASING_OUT_BASE,
+  EASING_OUT_EXP,
+  PERF_FCP_LIMIT,
+  PERF_LCP_LIMIT,
+  PERF_DCL_LIMIT,
+  SLOW_RESOURCE_LIMIT,
+} = PERFORMANCE_CONSTANTS;
 
 export function easeInOutCubic(t: number) {
   return t < EASING_THRESHOLD
