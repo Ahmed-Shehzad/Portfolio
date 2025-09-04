@@ -154,9 +154,9 @@ jobs:
 
           # Check if critical files exist
           CRITICAL_FILES=(
-            "src/app/page.tsx"
-            "src/app/resume/page.tsx"
-            "src/app/api/resume-pdf/route.ts"
+            "src/app/[locale]/page.tsx"
+            "src/app/[locale]/resume/page.tsx"
+            "src/app/[locale]/api/resume-pdf/route.ts"
             "vercel.json"
             "next.config.ts"
           )
@@ -183,7 +183,7 @@ jobs:
           fi
 
           # Check PDF route implementation
-          if grep -q "generatePDF\|puppeteer" src/app/api/resume-pdf/route.ts; then
+          if grep -q "generatePDF\|puppeteer" "src/app/[locale]/api/resume-pdf/route.ts"; then
             echo "✅ PDF generation route properly implemented"
           else
             echo "❌ PDF generation route incomplete"

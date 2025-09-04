@@ -47,12 +47,12 @@ const validateContactForm = (data: ContactFormData): { isValid: boolean; errors:
 // Create email transporter
 const createTransporter = () => {
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
+    host: process.env["SMTP_HOST"] || "smtp.gmail.com",
+    port: parseInt(process.env["SMTP_PORT"] || "587"),
+    secure: process.env["SMTP_SECURE"] === "true", // true for 465, false for other ports
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: process.env["SMTP_USER"],
+      pass: process.env["SMTP_PASS"],
     },
   });
 };
@@ -63,8 +63,8 @@ const sendContactEmail = async (formData: ContactFormData): Promise<void> => {
 
   // Email to you (the recipient)
   const mailOptions = {
-    from: `"${formData.name}" <${process.env.SMTP_USER}>`, // sender address
-    to: process.env.CONTACT_EMAIL || process.env.SMTP_USER, // your email address
+    from: `"${formData.name}" <${process.env["SMTP_USER"]}>`, // sender address
+    to: process.env["CONTACT_EMAIL"] || process.env["SMTP_USER"], // your email address
     subject: `Portfolio Contact: ${formData.subject}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ContactSu
     }
 
     // Check if required environment variables are set
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    if (!process.env["SMTP_USER"] || !process.env["SMTP_PASS"]) {
       console.error("SMTP credentials not configured");
       return NextResponse.json(
         {
