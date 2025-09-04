@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
@@ -21,26 +21,14 @@
     "sourceMap": false,
     "composite": false,
     "incremental": true,
-    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.ci.tsbuildinfo",
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.user-code.tsbuildinfo",
     "listFiles": false,
     "listEmittedFiles": false,
     "diagnostics": true,
     "extendedDiagnostics": false,
     "types": ["vitest/globals"]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "global.d.ts",
-    "images.d.ts",
-    "svg.d.ts",
-    "image-types.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/types/**/*.d.ts"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts"],
   "exclude": [
     "node_modules",
     ".next",
@@ -50,8 +38,6 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "node_modules/@types/jest/index.d.ts",
-    "node_modules/vitest/globals.d.ts"
+    "**/*.spec.tsx"
   ]
 }

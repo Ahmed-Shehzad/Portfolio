@@ -38,7 +38,7 @@ class Logger {
   private shouldLog(level: LogLevel): boolean {
     // Don't log anything in test environment unless explicitly enabled
     if (this.isTest) {
-      return process.env.ENABLE_TEST_LOGGING === "true";
+      return process.env["ENABLE_TEST_LOGGING"] === "true";
     }
 
     // In production, only log warnings and errors

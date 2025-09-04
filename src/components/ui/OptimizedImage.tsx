@@ -15,11 +15,11 @@ const extractSrc = (source: unknown): string => {
   if (!source || typeof source !== "object") return "";
 
   const obj = source as Record<string, unknown>;
-  if (obj.src) return convertToString(obj.src);
-  if (obj.default) {
-    if (typeof obj.default === "string") return obj.default;
-    if (obj.default && typeof obj.default === "object" && "src" in obj.default) {
-      return convertToString((obj.default as { src: unknown }).src);
+  if (obj["src"]) return convertToString(obj["src"]);
+  if (obj["default"]) {
+    if (typeof obj["default"] === "string") return obj["default"];
+    if (obj["default"] && typeof obj["default"] === "object" && "src" in obj["default"]) {
+      return convertToString((obj["default"] as { src: unknown }).src);
     }
   }
   return "";

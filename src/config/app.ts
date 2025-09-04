@@ -71,13 +71,13 @@ export const ENV_CONFIG = {
 
   // API endpoints (if needed)
   api: {
-    baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "",
+    baseUrl: process.env["NEXT_PUBLIC_API_URL"] ?? "",
     timeout: 10000,
   },
 
   // Analytics (if enabled)
   analytics: {
-    googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID,
-    hotjarId: process.env.NEXT_PUBLIC_HOTJAR_ID,
+    googleAnalyticsId: process.env["NEXT_PUBLIC_GA_ID"],
+    hotjarId: process.env["NEXT_PUBLIC_HOTJAR_ID"],
   },
 } as const;

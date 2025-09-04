@@ -17,12 +17,12 @@ export const validateTestimonial = (testimonial: unknown): testimonial is Testim
   const t = testimonial as Record<string, unknown>;
 
   return (
-    typeof t.name === "string" &&
-    typeof t.text === "string" &&
-    typeof t.position === "string" &&
-    typeof t.company === "string" &&
-    t.name.length > 0 &&
-    t.text.length > 0
+    typeof t["name"] === "string" &&
+    typeof t["text"] === "string" &&
+    typeof t["position"] === "string" &&
+    typeof t["company"] === "string" &&
+    String(t["name"]).length > 0 &&
+    String(t["text"]).length > 0
   );
 };
 

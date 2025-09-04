@@ -17,7 +17,7 @@ const CHROME_ARGS = [
 
 async function launchBrowser() {
   // Detect if we're running on Vercel
-  const isVercel = process.env.VERCEL === "1" || !!process.env.VERCEL_ENV;
+  const isVercel = process.env["VERCEL"] === "1" || !!process.env["VERCEL_ENV"];
 
   apiLogger.info("Launching browser", { isVercel, nodeEnv: process.env.NODE_ENV });
 
