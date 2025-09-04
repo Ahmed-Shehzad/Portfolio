@@ -1,6 +1,7 @@
 "use client";
 
 import { FC, useEffect } from "react";
+import { logger } from "@/shared/utils";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -14,7 +15,7 @@ interface ErrorProps {
 const AppError: FC<ErrorProps> = ({ error, reset }) => {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("Application error:", error);
+    logger.error("Application error", error, { digest: error.digest });
   }, [error]);
 
   return (

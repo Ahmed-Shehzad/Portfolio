@@ -4,6 +4,7 @@ import { localeConfig, type Locale } from "@/i18n/config";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { logger } from "@/shared/utils";
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -37,7 +38,7 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
 
       // Debug logging
       if (process.env.NODE_ENV === "development") {
-        console.warn("Language Switch Debug:", {
+        logger.debug("Language Switch Debug", {
           hookLocale: locale,
           pathLocale,
           currentLocale,
@@ -58,7 +59,7 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
       // Reset toggle state after navigation
       setTimeout(() => setIsToggling(false), 500);
     } catch (error) {
-      console.error("Language switch error:", error);
+      logger.error("Language switch error", error as Error);
       setIsToggling(false);
     }
   };

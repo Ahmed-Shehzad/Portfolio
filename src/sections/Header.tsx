@@ -4,6 +4,7 @@ import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { LanguageSwitcher } from "@/components/ui";
 import { env } from "@/config/env";
+import { logger } from "@/shared/utils";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -281,7 +282,7 @@ export const Header = () => {
       } catch (error) {
         // Handle scrolling errors gracefully
         if (process.env.NODE_ENV === "development") {
-          console.warn(`Failed to scroll to section ${option.id}:`, error);
+          logger.warn(`Failed to scroll to section ${option.id}`, { error: error as Error });
         }
       }
     },

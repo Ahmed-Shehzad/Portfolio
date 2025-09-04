@@ -2,6 +2,7 @@
 
 import { Component, ErrorInfo, ReactNode } from "react";
 import type { BaseComponentProps } from "@/shared/types";
+import { logger } from "@/shared/utils";
 
 // ASCII character codes for log sanitization
 const ASCII_CARRIAGE_RETURN = 13;
@@ -68,10 +69,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     // Log the sanitized error to console in development or error reporting service in production
     if (process.env.NODE_ENV === "development") {
-      console.error("ErrorBoundary caught an error:", {
-        message: safeErrorMessage,
-        stack: safeErrorStack,
-        componentStack: safeComponentStack,
+      logger.error("ErrorBoundary caught an error", error, {
+        safeMessage: safeErrorMessage,
+        safeStack: safeErrorStack,
+        safeComponentStack,
       });
     }
 

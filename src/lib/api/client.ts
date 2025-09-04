@@ -31,8 +31,8 @@ export class ApiError extends Error {
 // Simplified fetch client
 class SimpleFetchClient {
   constructor(
-    private baseURL: string,
-    private timeout: number
+    private readonly baseURL: string,
+    private readonly timeout: number
   ) {}
 
   // eslint-disable-next-line sonarjs/cognitive-complexity

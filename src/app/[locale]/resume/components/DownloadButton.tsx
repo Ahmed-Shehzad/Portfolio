@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { logger } from "@/shared/utils";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export function DownloadButton() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("PDF generation error:", error);
+      logger.error("PDF generation error", error as Error);
       setError(error instanceof Error ? error.message : t("error.failed"));
     } finally {
       setIsGenerating(false);

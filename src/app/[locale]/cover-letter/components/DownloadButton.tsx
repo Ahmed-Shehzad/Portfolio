@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale } from "next-intl";
 import { useCoverLetterContext } from "../contexts/CoverLetterContext";
+import { logger } from "@/shared/utils";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +55,7 @@ export function DownloadButton() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("PDF generation error:", error);
+      logger.error("PDF generation error", error as Error);
       setError(error instanceof Error ? error.message : "Failed to generate PDF");
     } finally {
       setIsGenerating(false);

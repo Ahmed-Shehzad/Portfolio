@@ -7,6 +7,7 @@
 "use client";
 
 import { ErrorBoundary } from "./ErrorBoundary";
+import { logger } from "@/shared/utils";
 import type { ReactNode } from "react";
 
 interface FeatureErrorBoundaryProps {
@@ -18,7 +19,7 @@ export const FeatureErrorBoundary = ({ children, featureName }: FeatureErrorBoun
   return (
     <ErrorBoundary
       onError={(error) => {
-        console.error(`Error in ${featureName} feature:`, error);
+        logger.error(`Error in ${featureName} feature`, error);
       }}
       fallback={
         <div className="flex min-h-[200px] items-center justify-center rounded-lg border border-yellow-200 bg-yellow-50 p-8">

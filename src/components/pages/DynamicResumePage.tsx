@@ -22,8 +22,8 @@ const ResumePageComponent = dynamic(() => import("@/app/[locale]/resume/page"), 
         {/* Skeleton for content */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
+            {Array.from({ length: 4 }, (_, i) => `content-skeleton-${i}`).map((key) => (
+              <div key={key} className="animate-pulse">
                 <div className="mb-3 h-6 w-32 rounded bg-gray-700" />
                 <div className="space-y-2">
                   <div className="h-4 w-full rounded bg-gray-800" />
@@ -35,8 +35,8 @@ const ResumePageComponent = dynamic(() => import("@/app/[locale]/resume/page"), 
           </div>
 
           <div className="space-y-6">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
+            {Array.from({ length: 3 }, (_, i) => `sidebar-skeleton-${i}`).map((key) => (
+              <div key={key} className="animate-pulse">
                 <div className="mb-3 h-5 w-24 rounded bg-gray-700" />
                 <div className="space-y-1">
                   <div className="h-3 w-full rounded bg-gray-800" />

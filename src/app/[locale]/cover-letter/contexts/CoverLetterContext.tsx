@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from "react";
+import { logger } from "@/shared/utils";
 
 interface CoverLetterData {
   companyName: string;
@@ -35,19 +36,19 @@ export function CoverLetterProvider({ children }: { children: ReactNode }) {
     if (pdfData) {
       try {
         const parsedData = JSON.parse(pdfData);
-        console.error("Loading data from localStorage for PDF:", parsedData);
+        logger.debug("Loading data from localStorage for PDF", { parsedData });
         setData((prev) => ({ ...prev, ...parsedData }));
         // Clear the data after loading
         localStorage.removeItem("coverLetterPDFData");
         return;
       } catch (e) {
-        console.error("Error parsing PDF data from localStorage:", e);
+        logger.error("Error parsing PDF data from localStorage", e as Error);
       }
     }
 
     // Listen for custom event from PDF generation
     const handleCoverLetterData = (event: CustomEvent) => {
-      console.error("Received cover letter data from PDF generation:", event.detail);
+      logger.debug("Received cover letter data from PDF generation", { detail: event.detail });
       setData((prev) => ({ ...prev, ...event.detail }));
     };
 
@@ -70,7 +71,7 @@ export function CoverLetterProvider({ children }: { children: ReactNode }) {
     if (urlPositionName) urlData.positionName = urlPositionName;
 
     if (Object.keys(urlData).length > 0) {
-      console.error("Loading data from URL parameters:", urlData);
+      logger.debug("Loading data from URL parameters", { urlData });
       setData((prev) => ({ ...prev, ...urlData }));
     }
 
