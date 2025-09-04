@@ -5,13 +5,11 @@
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { submitContactForm } from "@/lib/api/contact";
 import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/config";
 import { secureLog } from "@/shared/utils/logging";
 import type { ContactFormData, ContactSubmissionResult } from "../types";
-
-// Constants to avoid magic numbers
-const FORM_SUBMISSION_DELAY = 1500;
 
 /**
  * Hook for submitting contact form using React Query mutation
@@ -26,25 +24,8 @@ export const useSubmitContactForm = (options?: {
     mutationKey: ["contact", "submit"],
 
     mutationFn: async (formData: ContactFormData): Promise<ContactSubmissionResult> => {
-      // For now, simulate API call
-      // In a real app, this would call the actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, FORM_SUBMISSION_DELAY));
-
-      // In development, you can manually trigger errors by modifying this
-      // No random failures to avoid SonarQube security warnings
-
-      return {
-        success: true,
-        message: "Thank you for your message! I'll get back to you soon.",
-        data: formData,
-      };
-
-      // Actual implementation would be:
-      // const response = await api.post<ContactSubmissionResult>('/contact', formData);
-      // if (!response.success) {
-      //   throw new Error(response.error || 'Failed to submit contact form');
-      // }
-      // return response.data!;
+      // Use the actual API function
+      return await submitContactForm(formData);
     },
 
     onSuccess: (data, variables) => {

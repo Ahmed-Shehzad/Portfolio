@@ -7,33 +7,28 @@
 import type { ContactFormData, ContactSubmissionResult } from "@/features/contact";
 import { secureLog } from "@/shared/utils/logging";
 
-// Mock delay constant
-const MOCK_API_DELAY_MS = 1000;
-
 /**
- * Submits contact form data
+ * Submits contact form data to the API endpoint
  */
 export const submitContactForm = async (
   data: ContactFormData
 ): Promise<ContactSubmissionResult> => {
   try {
-    // For now, this is a mock implementation
-    // Replace with actual API endpoint when backend is available
-    await new Promise((resolve) => setTimeout(resolve, MOCK_API_DELAY_MS));
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-    // Mock success response
-    return {
-      success: true,
-      message: "Thank you for your message! I'll get back to you soon.",
-      data,
-    };
+    const result: ContactSubmissionResult = await response.json();
 
-    // Actual implementation would use the Axios client:
-    // const response = await api.post<ContactSubmissionResult>(
-    //   '/api/contact',
-    //   data
-    // );
-    // return response.data;
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to submit contact form");
+    }
+
+    return result;
   } catch (error) {
     secureLog.error(
       "Contact form submission error:",
