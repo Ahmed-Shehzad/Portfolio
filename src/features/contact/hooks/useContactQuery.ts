@@ -5,6 +5,7 @@
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocale } from "next-intl";
 import { submitContactForm } from "@/lib/api/contact";
 import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/query/config";
@@ -19,13 +20,14 @@ export const useSubmitContactForm = (options?: {
   onError?: (error: Error) => void;
 }) => {
   const queryClient = useQueryClient();
+  const locale = useLocale();
 
   return useMutation({
-    mutationKey: ["contact", "submit"],
+    mutationKey: ["contact", "submit", locale],
 
     mutationFn: async (formData: ContactFormData): Promise<ContactSubmissionResult> => {
-      // Use the actual API function
-      return await submitContactForm(formData);
+      // Use the actual API function with locale tracking
+      return await submitContactForm(formData, locale);
     },
 
     onSuccess: (data, variables) => {

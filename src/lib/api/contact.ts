@@ -8,13 +8,14 @@ import type { ContactFormData, ContactSubmissionResult } from "@/features/contac
 import { secureLog } from "@/shared/utils/logging";
 
 /**
- * Submits contact form data to the API endpoint
+ * Submits contact form data to the API endpoint with locale tracking
  */
 export const submitContactForm = async (
-  data: ContactFormData
+  data: ContactFormData,
+  locale: string = "en"
 ): Promise<ContactSubmissionResult> => {
   try {
-    const response = await fetch("/api/contact", {
+    const response = await fetch(`/${locale}/api/contact`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

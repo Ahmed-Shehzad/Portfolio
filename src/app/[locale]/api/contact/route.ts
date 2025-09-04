@@ -96,14 +96,31 @@ const sendContactEmail = async (formData: ContactFormData): Promise<void> => {
   await transporter.sendMail(mailOptions);
 };
 
-export async function POST(request: NextRequest): Promise<NextResponse<ContactSubmissionResult>> {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ locale: string }> }
+): Promise<NextResponse<ContactSubmissionResult>> {
   try {
+    // Extract locale from URL parameters
+    const { locale } = await params;
+
     // Parse request body
     const body: ContactFormData = await request.json();
+
+    // Log the contact form submission with locale information
+    console.warn(`Contact form submission from locale: ${locale}`, {
+      locale,
+      hasName: !!body.name,
+      hasEmail: !!body.email,
+      hasSubject: !!body.subject,
+      hasMessage: !!body.message,
+      timestamp: new Date().toISOString(),
+    });
 
     // Validate form data
     const validation = validateContactForm(body);
     if (!validation.isValid) {
+      console.warn(`Validation failed for locale ${locale}:`, validation.errors);
       return NextResponse.json(
         {
           success: false,
@@ -127,6 +144,15 @@ export async function POST(request: NextRequest): Promise<NextResponse<ContactSu
 
     // Send email
     await sendContactEmail(body);
+
+    // Log successful submission
+    console.warn(`Contact form successfully submitted from locale: ${locale}`, {
+      locale,
+      name: body.name,
+      email: body.email,
+      subject: body.subject,
+      timestamp: new Date().toISOString(),
+    });
 
     // Return success response
     return NextResponse.json({
