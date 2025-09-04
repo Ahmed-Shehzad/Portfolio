@@ -1,12 +1,17 @@
 "use client";
 
 import { useCoverLetterContext } from "../contexts/CoverLetterContext";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export function CoverLetterContent() {
   const { data, updateData } = useCoverLetterContext();
-  const { specificReason, salaryExpectations, expectedJoiningDate, positionName } = data;
+  const { specificReason, salaryExpectations, expectedJoiningDate, positionName, companyName } =
+    data;
   const t = useTranslations("coverLetter");
+  const locale = useLocale();
+
+  // Provide locale-specific fallbacks
+  const companyFallback = locale === "de" ? "Ihrem Unternehmen" : "your company";
 
   return (
     <section className="cover-letter-content">
@@ -36,7 +41,12 @@ export function CoverLetterContent() {
         <div className="text-md space-y-4 leading-relaxed text-gray-700">
           <p>{t("greeting")}</p>
 
-          <p>{t("content.opening", { positionName })}</p>
+          <p>
+            {t("content.opening", {
+              positionName: positionName || "Software Engineer",
+              companyName: companyName || companyFallback,
+            })}
+          </p>
 
           <p>{t("content.experience1")}</p>
 
@@ -48,7 +58,8 @@ export function CoverLetterContent() {
 
           <div className="space-y-3">
             <p>
-              {t("content.interest")} {specificReason || t("content.interestPlaceholder")}
+              {t("content.interest", { companyName: companyName || companyFallback })}{" "}
+              {specificReason || t("content.interestPlaceholder")}
               {t("content.value")}
             </p>
 
