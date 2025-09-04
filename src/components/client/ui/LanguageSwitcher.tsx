@@ -72,53 +72,57 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
   const targetLocaleConfig = localeConfig[targetLocale];
 
   return (
-    <button
-      onClick={handleLocaleToggle}
-      disabled={isToggling}
-      className={`group relative flex items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:border-white/20 hover:bg-white/10 focus:ring-2 focus:ring-emerald-500/50 focus:outline-none disabled:opacity-50 ${className}`}
-      aria-label={`Switch to ${targetLocaleConfig.name}`}
-      title={`Switch to ${targetLocaleConfig.name}`}
+    <div
+      className={`rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur ${className}`}
     >
-      {/* Current Language */}
-      <div className="flex items-center gap-2">
-        <span className="text-base">{currentLocaleConfig.flag}</span>
-        <span className="hidden sm:block">{currentLocaleConfig.name}</span>
-        <span className="sm:hidden">{displayLocale.toUpperCase()}</span>
-      </div>
-
-      {/* Toggle Arrow with Animation */}
-      <div className="relative">
-        <svg
-          className={`h-4 w-4 transition-transform duration-300 ${
-            isToggling ? "scale-110 rotate-180" : "group-hover:translate-x-0.5"
-          }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
-      </div>
-
-      {/* Target Language */}
-      <div className="flex items-center gap-2 opacity-60 transition-opacity duration-200 group-hover:opacity-100">
-        <span className="text-base">{targetLocaleConfig.flag}</span>
-        <span className="hidden sm:block">{targetLocaleConfig.name}</span>
-        <span className="sm:hidden">{targetLocale.toUpperCase()}</span>
-      </div>
-
-      {/* Loading Indicator */}
-      {isToggling && (
-        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/5 backdrop-blur-sm">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-500/20 border-t-emerald-500" />
+      <button
+        onClick={handleLocaleToggle}
+        disabled={isToggling}
+        className="group relative flex items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-white/10 focus:ring-2 focus:ring-white/50 focus:outline-none disabled:opacity-50"
+        aria-label={`Switch to ${targetLocaleConfig.name}`}
+        title={`Switch to ${targetLocaleConfig.name}`}
+      >
+        {/* Current Language - Highlighted with Header Style */}
+        <div className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-gray-900 transition-colors duration-200 hover:bg-white/90">
+          <span className="text-base">{currentLocaleConfig.flag}</span>
+          <span className="hidden font-semibold sm:block">{currentLocaleConfig.name}</span>
+          <span className="font-semibold sm:hidden">{displayLocale.toUpperCase()}</span>
         </div>
-      )}
-    </button>
+
+        {/* Toggle Arrow with Animation */}
+        <div className="relative">
+          <svg
+            className={`h-4 w-4 transition-transform duration-300 ${
+              isToggling ? "scale-110 rotate-180" : "group-hover:translate-x-0.5"
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
+          </svg>
+        </div>
+
+        {/* Target Language - Subdued */}
+        <div className="flex items-center gap-2 rounded-full px-3 py-1.5 text-white transition-colors duration-200 hover:bg-white/20">
+          <span className="text-base transition-all duration-200">{targetLocaleConfig.flag}</span>
+          <span className="hidden font-medium sm:block">{targetLocaleConfig.name}</span>
+          <span className="font-medium sm:hidden">{targetLocale.toUpperCase()}</span>
+        </div>
+
+        {/* Loading Indicator */}
+        {isToggling && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white/5 backdrop-blur-sm">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+          </div>
+        )}
+      </button>
+    </div>
   );
 };
 
