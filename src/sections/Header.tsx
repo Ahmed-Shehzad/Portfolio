@@ -2,7 +2,7 @@
 
 import { useBfcacheCompatibleScrollListener } from "@/hooks/useBfcacheCompatible";
 import { useScreenSize } from "@/hooks/useScreenSize";
-import { LanguageSwitcher } from "@/components/ui";
+import { LanguageSwitcher } from "@/components";
 import { env } from "@/config/env";
 import { logger } from "@/shared/utils";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";

@@ -1,5 +1,5 @@
 import SmileMemoji from "@/assets/images/memoji-smile.png";
-import { Card, CardHeader } from "@/components/ui";
+import { Card, CardHeader } from "@/components";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";

@@ -5,8 +5,7 @@ import SparkleIcon from "@/assets/icons/sparkle.svg";
 import StarIcon from "@/assets/icons/star.svg";
 import GrainImage from "@/assets/images/grain.jpg";
 import PortraitImage from "@/assets/images/me.jpg";
-import { HeroOrbit } from "@/components/layout";
-import { OptimizedImage } from "@/components/ui";
+import { HeroOrbit, OptimizedImage } from "@/components";
 import { useTranslations } from "next-intl";
 import { memo, useCallback } from "react";
 

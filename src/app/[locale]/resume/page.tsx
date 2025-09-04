@@ -1,6 +1,7 @@
-import { DynamicDownloadButton, DynamicResumeContent } from "@/lib/optimization/dynamic-imports";
+import { DynamicResumeContent } from "@/lib/optimization/dynamic-imports";
+import { DownloadButton } from "./components/DownloadButton";
 import { ResumeSidebar } from "./components/ResumeSidebar";
-import { LanguageSwitcher } from "@/components/ui";
+import { LanguageSwitcher } from "@/components";
 
 interface ResumePageProps {
   params: Promise<{ locale: string }>;
@@ -21,7 +22,7 @@ export default async function ResumePage({ params }: ResumePageProps) {
           <LanguageSwitcher />
         </div>
         <div className="flex flex-1 justify-center">
-          <DynamicDownloadButton />
+          <DownloadButton />
         </div>
         <div className="flex-1" />
       </div>

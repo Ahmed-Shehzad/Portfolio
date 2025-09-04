@@ -1,5 +1,5 @@
 import BookImage from "@/assets/images/book-cover.png";
-import { Card, CardHeader, OptimizedImage } from "@/components/ui";
+import { Card, CardHeader, OptimizedImage } from "@/components";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import dynamic from "next/dynamic";
 import { memo } from "react";

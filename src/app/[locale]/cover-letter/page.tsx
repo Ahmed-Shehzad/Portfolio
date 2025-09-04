@@ -1,7 +1,7 @@
 import { DownloadButton, CoverLetterMainContent } from "./components";
 import { Sidebar } from "./components/Sidebar";
 import { CoverLetterProvider } from "./contexts/CoverLetterContext";
-import { LanguageSwitcher } from "@/components/ui";
+import { LanguageSwitcher } from "@/components";
 
 interface CoverLetterPageProps {
   params: Promise<{ locale: string }>;

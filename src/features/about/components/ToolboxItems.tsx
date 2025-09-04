@@ -1,6 +1,6 @@
 "use client";
 
-import { TechIcon } from "@/components/ui";
+import { TechIcon } from "@/components";
 import React, { FC, Fragment } from "react";
 import { twMerge } from "tailwind-merge";
 import type { ToolboxItem } from "@/shared/types";

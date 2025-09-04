@@ -1,4 +1,4 @@
-// UI Components Exports
+// Client UI Components Exports
 export { Card } from "./Card";
 export { CardHeader } from "./CardHeader";
 export { LanguageSwitcher } from "./LanguageSwitcher";

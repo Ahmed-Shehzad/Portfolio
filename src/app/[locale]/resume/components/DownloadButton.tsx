@@ -2,13 +2,19 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { logger } from "@/shared/utils";
 
 export function DownloadButton() {
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const locale = useLocale();
+  const pathname = usePathname();
   const t = useTranslations("resume.downloadButton");
+
+  // Get current locale from pathname as backup (same pattern as LanguageSwitcher)
+  const pathLocale = pathname.split("/")[1];
+  const currentLocale = pathLocale === "de" || pathLocale === "en" ? pathLocale : locale;
 
   const handleDownload = async () => {
     try {
@@ -19,7 +25,7 @@ export function DownloadButton() {
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
       // Call the API to generate PDF with proper headers (using locale-aware route)
-      const response = await fetch(`${baseUrl}/${locale}/api/resume-pdf`, {
+      const response = await fetch(`${baseUrl}/${currentLocale}/api/resume-pdf`, {
         method: "GET",
         headers: {
           Accept: "application/pdf",
@@ -40,7 +46,7 @@ export function DownloadButton() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${locale}/resume.pdf`;
+      link.download = `${currentLocale}-resume.pdf`;
       document.body.appendChild(link);
       link.click();
 

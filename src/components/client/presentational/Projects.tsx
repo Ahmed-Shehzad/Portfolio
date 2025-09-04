@@ -3,48 +3,57 @@
 import ArrowUpRightIcon from "@/assets/icons/arrow-up-right.svg";
 import CheckCircleIcon from "@/assets/icons/check-circle.svg";
 import { Card, OptimizedImage, SectionHeader } from "@/components";
-import { usePortfolioProjects } from "@/features/portfolio/hooks";
 import { ScrollAnimationWrapper } from "@/wrappers";
-import { useTranslations } from "next-intl";
+import { FC } from "react";
+import type { PortfolioProject } from "@/features/portfolio/types";
+
+interface ProjectsProps {
+  /** Translated strings for the projects section */
+  translations: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    loading: string;
+    error: string;
+    errorDescription: string;
+  };
+  /** Loading state */
+  isLoading: boolean;
+  /** Error state */
+  isError: boolean;
+  /** Projects data */
+  projects: PortfolioProject[] | null;
+}
 
 /**
- * ProjectsSection
+ * Projects Component
  *
- * Sticky stacked showcase of selected projects emphasizing measurable results
- * and optimized visual previews.
+ * Pure presentational component that renders the projects section UI.
+ * Contains no business logic or data fetching.
  *
- * Behaviors:
- * - Incremental sticky offset (index-based) yields layered scroll illusion.
- * - Staggered reveal (ScrollAnimationWrapper) enhances perceived performance.
- * - Only the first image uses priority to conserve bandwidth.
- * - Uses React Query for data fetching with proper loading and error states.
- *
- * Performance:
- * - React Query handles caching and background updates.
- * - OptimizedImage manages quality and optional blur placeholder.
- *
- * Accessibility:
- * - Semantic list structure for result bullets; external links secured with rel attributes.
+ * Responsibilities:
+ * - Render projects layout with different states (loading, error, success)
+ * - Display project cards with proper styling and animations
+ * - Handle responsive design and accessibility
+ * - Provide visual feedback for different states
  */
-export const ProjectsSection = () => {
-  const { data: portfolioProjects, isLoading, isError } = usePortfolioProjects();
-  const t = useTranslations("projects");
-
+export const Projects: FC<ProjectsProps> = ({ translations, isLoading, isError, projects }) => {
+  // Loading state
   if (isLoading) {
     return (
       <section id="projects" className="pb-16 md:px-24 lg:py-24">
         <div className="container">
           <ScrollAnimationWrapper animation="fadeInUp">
             <SectionHeader
-              eyebrow={t("eyebrow")}
-              title={t("title")}
-              description={t("description")}
+              eyebrow={translations.eyebrow}
+              title={translations.title}
+              description={translations.description}
             />
           </ScrollAnimationWrapper>
           <div className="mt-10 flex items-center justify-center md:mt-20">
             <div className="text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-emerald-300 border-r-transparent" />
-              <p className="mt-4 text-white/60">{t("loading")}</p>
+              <p className="mt-4 text-white/60">{translations.loading}</p>
             </div>
           </div>
         </div>
@@ -52,21 +61,22 @@ export const ProjectsSection = () => {
     );
   }
 
-  if (isError || !portfolioProjects) {
+  // Error state
+  if (isError || !projects) {
     return (
       <section id="projects" className="pb-16 md:px-24 lg:py-24">
         <div className="container">
           <ScrollAnimationWrapper animation="fadeInUp">
             <SectionHeader
-              eyebrow={t("eyebrow")}
-              title={t("title")}
-              description={t("description")}
+              eyebrow={translations.eyebrow}
+              title={translations.title}
+              description={translations.description}
             />
           </ScrollAnimationWrapper>
           <div className="mt-10 flex items-center justify-center md:mt-20">
             <div className="text-center">
-              <p className="text-red-400">{t("error")}</p>
-              <p className="mt-2 text-white/60">{t("errorDescription")}</p>
+              <p className="text-red-400">{translations.error}</p>
+              <p className="mt-2 text-white/60">{translations.errorDescription}</p>
             </div>
           </div>
         </div>
@@ -74,14 +84,19 @@ export const ProjectsSection = () => {
     );
   }
 
+  // Success state with projects
   return (
     <section id="projects" className="pb-16 md:px-24 lg:py-24">
       <div className="container">
         <ScrollAnimationWrapper animation="fadeInUp">
-          <SectionHeader eyebrow={t("eyebrow")} title={t("title")} description={t("description")} />
+          <SectionHeader
+            eyebrow={translations.eyebrow}
+            title={translations.title}
+            description={translations.description}
+          />
         </ScrollAnimationWrapper>
         <div className="mt-10 flex flex-col gap-20 md:mt-20">
-          {portfolioProjects.map((project, projectIndex) => {
+          {projects.map((project, projectIndex) => {
             const stickyOffset = `calc(64px + ${projectIndex * 40}px)`;
 
             return (

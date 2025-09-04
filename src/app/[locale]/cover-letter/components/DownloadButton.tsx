@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLocale } from "next-intl";
+import { usePathname } from "next/navigation";
 import { useCoverLetterContext } from "../contexts/CoverLetterContext";
 import { logger } from "@/shared/utils";
 
@@ -10,6 +11,11 @@ export function DownloadButton() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { data } = useCoverLetterContext();
   const locale = useLocale();
+  const pathname = usePathname();
+
+  // Get current locale from pathname as backup (same pattern as LanguageSwitcher)
+  const pathLocale = pathname.split("/")[1];
+  const currentLocale = pathLocale === "de" || pathLocale === "en" ? pathLocale : locale;
 
   const handleDownload = async () => {
     try {
@@ -20,7 +26,7 @@ export function DownloadButton() {
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
 
       // Call the API to generate PDF with form data in request body (using locale-aware route)
-      const response = await fetch(`${baseUrl}/${locale}/api/cover-letter-pdf`, {
+      const response = await fetch(`${baseUrl}/${currentLocale}/api/cover-letter-pdf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +53,7 @@ export function DownloadButton() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${locale}/cover-letter.pdf`;
+      link.download = `${currentLocale}-cover-letter.pdf`;
       document.body.appendChild(link);
       link.click();
 

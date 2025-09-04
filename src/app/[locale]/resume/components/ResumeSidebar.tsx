@@ -1,4 +1,4 @@
-import { ProfileImage, ContactDetails, Links } from "@/components/shared";
+import { ProfileImage, ContactDetails, Links } from "@/components";
 import { Skills } from "./Skills";
 import { Languages } from "./Languages";
 

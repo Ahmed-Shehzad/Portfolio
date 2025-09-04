@@ -3,7 +3,7 @@ import memojiAvatar2 from "@/assets/images/memoji-avatar-2.png";
 import memojiAvatar3 from "@/assets/images/memoji-avatar-3.png";
 import memojiAvatar4 from "@/assets/images/memoji-avatar-4.png";
 import memojiAvatar5 from "@/assets/images/memoji-avatar-5.png";
-import { Card, OptimizedImage, SectionHeader } from "@/components/ui";
+import { Card, OptimizedImage, SectionHeader } from "@/components";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import { useTranslations } from "next-intl";
 import { Fragment, memo, useMemo } from "react";

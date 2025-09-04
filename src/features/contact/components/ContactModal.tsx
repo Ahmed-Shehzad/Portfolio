@@ -1,7 +1,7 @@
 "use client";
 
 import GrainImage from "@/assets/images/grain.jpg";
-import { Modal } from "@/components/ui";
+import { Modal } from "@/components";
 import { useSubmitContactForm } from "@/features/contact/hooks";
 import { useBfcacheCompatibleTimeout } from "@/hooks/useBfcacheCompatible";
 import { secureLog } from "@/shared/utils/logging";

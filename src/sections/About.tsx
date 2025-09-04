@@ -1,6 +1,6 @@
 "use client";
 
-import { SectionHeader } from "@/components/ui";
+import { SectionHeader } from "@/components";
 import { ScrollAnimationWrapper } from "@/wrappers";
 import { useTranslations } from "next-intl";
 import { memo } from "react";
