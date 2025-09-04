@@ -283,28 +283,34 @@ jobs:
         run: |
           echo "🧪 Testing critical endpoints..."
 
-          # Test main page
+          # Test main page (should redirect to locale)
           curl -f http://localhost:3000/ -o /dev/null
           echo "✅ Main page loads"
 
-          # Test resume page
-          curl -f http://localhost:3000/resume -o /dev/null
-          echo "✅ Resume page loads"
+          # Test English locale pages
+          curl -f http://localhost:3000/en -o /dev/null
+          echo "✅ English home page loads"
 
-          # Test robots.txt
-          curl -f http://localhost:3000/api/robots -o /dev/null
+          curl -f http://localhost:3000/en/resume -o /dev/null
+          echo "✅ English resume page loads"
+
+          # Test German locale pages
+          curl -f http://localhost:3000/de -o /dev/null
+          echo "✅ German home page loads"
+
+          # Test locale-specific API endpoints
+          curl -f http://localhost:3000/en/api/robots -o /dev/null
           echo "✅ Robots API responds"
 
-          # Test sitemap
-          curl -f http://localhost:3000/api/sitemap -o /dev/null
+          curl -f http://localhost:3000/en/api/sitemap -o /dev/null
           echo "✅ Sitemap API responds"
 
       - name: Test PDF generation
         run: |
           echo "📄 Testing PDF generation..."
 
-          # Test PDF endpoint
-          response=$(curl -s -w "%{http_code}" http://localhost:3000/api/resume-pdf -o test.pdf)
+          # Test locale-specific PDF endpoint
+          response=$(curl -s -w "%{http_code}" http://localhost:3000/en/api/resume-pdf -o test.pdf)
 
           if [ "$response" = "200" ] && [ -f test.pdf ] && [ -s test.pdf ]; then
             echo "✅ PDF generation successful"
