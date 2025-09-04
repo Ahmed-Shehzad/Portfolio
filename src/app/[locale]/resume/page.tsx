@@ -1,8 +1,6 @@
-import {
-  DynamicDownloadButton,
-  DynamicResumeSidebar,
-  DynamicResumeContent,
-} from "@/lib/optimization/dynamic-imports";
+import { DynamicDownloadButton, DynamicResumeContent } from "@/lib/optimization/dynamic-imports";
+import { ResumeSidebar } from "./components/ResumeSidebar";
+import { LanguageSwitcher } from "@/components/ui";
 
 interface ResumePageProps {
   params: Promise<{ locale: string }>;
@@ -10,21 +8,27 @@ interface ResumePageProps {
 
 export default async function ResumePage({ params }: ResumePageProps) {
   // Await params to ensure proper locale handling
-  await params;
+  const { locale } = await params;
 
   return (
     <div
       className="min-h-screen overflow-x-auto bg-gradient-to-b from-slate-900 to-slate-950 p-6"
       style={{ minWidth: "1024px" }}
     >
-      {/* Download Button - Hidden when printing */}
-      <div className="mb-4 flex justify-center">
-        <DynamicDownloadButton />
+      {/* Language Switcher and Download Button - Hidden when printing */}
+      <div className="mb-4 flex items-center justify-between print:hidden">
+        <div className="flex-1">
+          <LanguageSwitcher />
+        </div>
+        <div className="flex flex-1 justify-center">
+          <DynamicDownloadButton />
+        </div>
+        <div className="flex-1" />
       </div>
 
       <div className="resume-container mx-auto w-[1000px] overflow-hidden rounded-xl bg-white shadow-2xl">
         <div className="resume-grid grid grid-cols-[380px_620px]">
-          <DynamicResumeSidebar />
+          <ResumeSidebar locale={locale} />
           <DynamicResumeContent />
         </div>
       </div>

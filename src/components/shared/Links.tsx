@@ -10,10 +10,19 @@ interface LinkItem {
   external?: boolean;
 }
 
-const linksData: LinkItem[] = [
+interface LinksProps {
+  locale: string;
+}
+
+// Ensure we always use a valid locale
+const normalizeLocale = (locale: string): string => {
+  return locale === "de" || locale === "en" ? locale : "en";
+};
+
+const getLinksData = (locale: string): LinkItem[] => [
   {
     icon: WebsiteIcon,
-    href: "/",
+    href: `/${locale}`,
     label: "Portfolio",
     external: false,
   },
@@ -44,7 +53,10 @@ function LinkItem({ icon: Icon, href, label, external }: Readonly<LinkItem>) {
   );
 }
 
-export function Links() {
+export function Links({ locale }: Readonly<LinksProps>) {
+  const normalizedLocale = normalizeLocale(locale);
+  const linksData = getLinksData(normalizedLocale);
+
   return (
     <>
       <h4 className="mt-6 flex items-center gap-2 font-semibold text-green-500">
