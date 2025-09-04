@@ -272,45 +272,121 @@ jobs:
 
       - name: Start application for testing
         run: |
+          echo "🚀 Starting Next.js server..."
           npm run start &
           echo $! > .pid
 
-          # Wait for server to be ready
-          timeout 30 bash -c 'until curl -s http://localhost:3000 > /dev/null; do sleep 1; done'
+          # Give server time to start
+          sleep 5
+
+          # Wait for server to be ready with better error handling
+          echo "⏳ Waiting for server to be ready..."
+          RETRY_COUNT=0
+          MAX_RETRIES=30
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if curl -s http://localhost:3000 > /dev/null 2>&1; then
+              echo "✅ Server is ready!"
+              break
+            fi
+
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            echo "Attempt $RETRY_COUNT/$MAX_RETRIES - Server not ready yet, waiting..."
+            sleep 2
+          done
+
+          if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+            echo "❌ Server failed to start within timeout"
+            echo "📊 Checking if process is running..."
+            if [ -f .pid ]; then
+              PID=$(cat .pid)
+              if ps -p $PID > /dev/null; then
+                echo "Process $PID is running but not responding"
+              else
+                echo "Process $PID is not running"
+              fi
+            fi
+            exit 1
+          fi
         continue-on-error: false
 
       - name: Test critical endpoints
         run: |
           echo "🧪 Testing critical endpoints..."
 
-          # Test main page
-          curl -f http://localhost:3000/ -o /dev/null
-          echo "✅ Main page loads"
+          # Test main page (should redirect to locale)
+          echo "Testing main page..."
+          if curl -f http://localhost:3000/ -o /dev/null 2>/dev/null; then
+            echo "✅ Main page loads"
+          else
+            echo "❌ Main page failed"
+            exit 1
+          fi
 
-          # Test resume page
-          curl -f http://localhost:3000/resume -o /dev/null
-          echo "✅ Resume page loads"
+          # Test English locale pages
+          echo "Testing English home page..."
+          if curl -f http://localhost:3000/en -o /dev/null 2>/dev/null; then
+            echo "✅ English home page loads"
+          else
+            echo "❌ English home page failed"
+            exit 1
+          fi
 
-          # Test robots.txt
-          curl -f http://localhost:3000/api/robots -o /dev/null
-          echo "✅ Robots API responds"
+          echo "Testing English resume page..."
+          if curl -f http://localhost:3000/en/resume -o /dev/null 2>/dev/null; then
+            echo "✅ English resume page loads"
+          else
+            echo "❌ English resume page failed"
+            exit 1
+          fi
 
-          # Test sitemap
-          curl -f http://localhost:3000/api/sitemap -o /dev/null
-          echo "✅ Sitemap API responds"
+          # Test German locale pages
+          echo "Testing German home page..."
+          if curl -f http://localhost:3000/de -o /dev/null 2>/dev/null; then
+            echo "✅ German home page loads"
+          else
+            echo "❌ German home page failed"
+            exit 1
+          fi
+
+          # Test locale-specific API endpoints
+          echo "Testing robots API..."
+          if curl -f http://localhost:3000/en/api/robots -o /dev/null 2>/dev/null; then
+            echo "✅ Robots API responds"
+          else
+            echo "❌ Robots API failed"
+            exit 1
+          fi
+
+          echo "Testing sitemap API..."
+          if curl -f http://localhost:3000/en/api/sitemap -o /dev/null 2>/dev/null; then
+            echo "✅ Sitemap API responds"
+          else
+            echo "❌ Sitemap API failed"
+            exit 1
+          fi
 
       - name: Test PDF generation
         run: |
           echo "📄 Testing PDF generation..."
 
-          # Test PDF endpoint
-          response=$(curl -s -w "%{http_code}" http://localhost:3000/api/resume-pdf -o test.pdf)
+          # Test locale-specific PDF endpoint with timeout
+          echo "Making request to PDF endpoint..."
+          response=$(timeout 60 curl -s -w "%{http_code}" http://localhost:3000/en/api/resume-pdf -o test.pdf 2>/dev/null || echo "timeout")
 
-          if [ "$response" = "200" ] && [ -f test.pdf ] && [ -s test.pdf ]; then
+          if [ "$response" = "timeout" ]; then
+            echo "❌ PDF generation timed out (>60s)"
+            exit 1
+          elif [ "$response" = "200" ] && [ -f test.pdf ] && [ -s test.pdf ]; then
             echo "✅ PDF generation successful"
             echo "📊 PDF size: $(wc -c < test.pdf) bytes"
           else
             echo "❌ PDF generation failed (HTTP: $response)"
+            if [ -f test.pdf ]; then
+              echo "📄 PDF file size: $(wc -c < test.pdf) bytes"
+            else
+              echo "📄 No PDF file created"
+            fi
             exit 1
           fi
 
