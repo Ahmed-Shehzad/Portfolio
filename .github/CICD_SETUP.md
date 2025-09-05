@@ -1,232 +1,498 @@
 # CI/CD Setup Guide
 
-This document outlines the complete CI/CD pipeline configuration for the portfolio application.
+This document provides a comprehensive guide for setting up and maintaining the CI/CD pipeline for the Portfolio project using GitHub Actions.
 
-## Overview
+## 🎯 Overview
 
-The CI/CD pipeline provides:
+The CI/CD pipeline is designed to ensure code quality, run automated tests, and deploy the application with confidence. It includes multiple stages of validation, testing, and deployment automation.
 
-- ✅ **Quality Gates**: TypeScript validation, linting, testing
-- 🚀 **Automated Deployments**: Preview on PRs, production on main
-- 🔒 **Security**: Audit checks, dependency scanning
-- 📊 **Monitoring**: Performance tracking, error reporting
+## 🏗️ Pipeline Architecture
 
-## Required Secrets
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Code Quality  │    │   Build & Test  │    │   Deployment    │
+│                 │    │                 │    │                 │
+│ • Linting       │───▶│ • TypeScript    │───▶│ • Preview       │
+│ • Formatting    │    │ • Unit Tests    │    │ • Production    │
+│ • Type Check    │    │ • Integration   │    │ • Notifications │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
 
-Configure these secrets in your GitHub repository settings (`Settings > Secrets and variables > Actions`):
+## 📁 Workflow Structure
 
-### Vercel Integration
+```
+.github/
+├── workflows/
+│   ├── ci.yml              # Main CI pipeline
+│   ├── cd.yml              # Deployment pipeline
+│   ├── quality-gate.yml    # Code quality checks
+│   └── dependency-check.yml # Security scanning
+├── ISSUE_TEMPLATE/
+├── PULL_REQUEST_TEMPLATE.md
+└── CICD_SETUP.md          # This document
+```
+
+## 🔧 Workflow Configuration
+
+### Main CI Pipeline (`ci.yml`)
+
+```yaml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run formatting check
+        run: npm run format:check
+
+      - name: TypeScript check
+        run: npm run check
+
+  test:
+    runs-on: ubuntu-latest
+    needs: quality-check
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [quality-check, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: .next/
+```
+
+### Deployment Pipeline (`cd.yml`)
+
+```yaml
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    environment: preview
+    steps:
+      - name: Deploy to Vercel Preview
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: deploy-preview
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Deploy to Vercel Production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          vercel-args: "--prod"
+```
+
+## 🔐 Environment Setup
+
+### Required Secrets
+
+Configure the following secrets in your GitHub repository:
+
+#### Vercel Deployment
 
 ```bash
-VERCEL_TOKEN=your_vercel_token_here
-VERCEL_ORG_ID=your_vercel_org_id_here
-VERCEL_PROJECT_ID=your_vercel_project_id_here
+VERCEL_TOKEN          # Vercel API token
+ORG_ID               # Vercel organization ID
+PROJECT_ID           # Vercel project ID
 ```
 
-### Getting Vercel Secrets
-
-1. Visit [Vercel Dashboard](https://vercel.com/dashboard)
-2. Create a new token: `Settings > Tokens > Create Token`
-3. Get Organization ID: `Settings > General > Organization ID`
-4. Get Project ID: `Project Settings > General > Project ID`
-
-## Workflow Files
-
-### 1. Main Deployment (`vercel-deploy.yml`)
-
-- **Triggers**: Push to main/develop, PRs to main
-- **Quality Gates**: Lint, type-check, test, build
-- **Deployments**: Preview for PRs, production for main
-- **Security**: Audit checks, dependency scanning
-
-### 2. Setup Validation (`validate-setup.yml`)
-
-- **Triggers**: Manual dispatch, daily schedule
-- **Purpose**: Validates CI/CD configuration
-- **Checks**: Workflow files, configs, documentation
-
-### 3. Branch Protection (`branch-protection.yml`)
-
-- **Purpose**: Enforces quality standards
-- **Requirements**: All checks must pass before merge
-
-### 4. Dependency Updates (`dependency-updates.yml`)
-
-- **Purpose**: Automated security updates
-- **Schedule**: Weekly dependency checks
-
-## Quality Gate System
-
-### Two-Phase TypeScript Validation
-
-#### Phase 1: User Code (Blocking)
-
-- **Config**: `tsconfig.user-code.json`
-- **Purpose**: Validates your application code only
-- **Rules**: Strict TypeScript with enhanced checks
-- **Behavior**: Blocks deployment if errors found
-
-#### Phase 2: Full Project (Informational)
-
-- **Config**: `tsconfig.ci.json`
-- **Purpose**: Analyzes entire project including dependencies
-- **Rules**: Full project scan
-- **Behavior**: Reports issues but doesn't block deployment
-
-### Script Location
+#### Email Service (if using)
 
 ```bash
-./scripts/type-check-quality-gate.sh
+SMTP_USER            # Email service username
+SMTP_PASS            # Email service password
+SMTP_HOST            # SMTP server host
+SMTP_PORT            # SMTP server port
 ```
 
-### NPM Scripts
+#### Optional Services
 
-```json
-{
-  "type-check": "Standard TypeScript check",
-  "type-check:ci": "CI-optimized with diagnostics",
-  "type-check:strict": "Enhanced strict checking",
-  "type-check:quality-gate": "Two-phase quality gate"
-}
+```bash
+CODECOV_TOKEN        # Code coverage reporting
+SLACK_WEBHOOK        # Slack notifications
+DISCORD_WEBHOOK      # Discord notifications
 ```
 
-## Configuration Files
+### Environment Variables
 
-### Core Configurations
+Configure environment-specific variables:
 
-- `vercel.json`: Deployment and runtime configuration
-- `next.config.ts`: Next.js build configuration
-- `tsconfig.json`: Base TypeScript configuration
-- `tsconfig.user-code.json`: User code validation
-- `tsconfig.ci.json`: Full project analysis
+#### Development
 
-### Security & Quality
+```env
+NODE_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-- `.audit-ci.json`: Security vulnerability scanning
-- `eslint.config.js`: Code quality rules
-- `prettier.config.js`: Code formatting
+#### Preview
 
-## Deployment Flow
+```env
+NODE_ENV=preview
+NEXT_PUBLIC_APP_URL=https://portfolio-preview.vercel.app
+```
 
-### Pull Request Flow
+#### Production
 
-1. **Quality Gates Run**: TypeScript, linting, testing
-2. **Security Checks**: Audit, dependency scan
-3. **Preview Deployment**: Vercel preview URL
-4. **Status Checks**: All must pass for merge
+```env
+NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://portfolio.vercel.app
+```
 
-### Main Branch Flow
+## ⚙️ Quality Gates
 
-1. **Quality Gates**: Same as PR checks
-2. **Production Build**: Optimized build process
-3. **Production Deployment**: Live site update
-4. **Performance Monitoring**: Lighthouse, metrics
+### Code Quality Checks
 
-## Branch Protection Rules
+1. **ESLint**: Code linting with custom rules
+2. **Prettier**: Code formatting enforcement
+3. **TypeScript**: Type checking and compilation
+4. **Husky**: Pre-commit hooks validation
 
-Configure in GitHub: `Settings > Branches > Add rule`
+### Test Coverage Requirements
 
-### Required Settings
+```yaml
+coverage:
+  minimum: 80%
+  threshold:
+    statements: 80
+    branches: 75
+    functions: 80
+    lines: 80
+```
 
-- Branch name pattern: `main`
-- Require a pull request before merging: ✅
-- Require status checks to pass before merging: ✅
-- Required status checks:
-  - `Quality Gates`
-  - `security-audit`
-  - `dependency-check`
-- Require branches to be up to date before merging: ✅
-- Include administrators: ✅
+### Performance Budgets
 
-## Monitoring & Alerts
+```yaml
+performance:
+  budgets:
+    - path: "/**"
+      maximumFileSizeBudget: 170kb
+      maximumWarning: 150kb
+```
 
-### GitHub Actions
+## 🚀 Deployment Strategy
 
-- Workflow notifications on failures
-- Artifact uploads for debugging
-- Performance metrics collection
+### Branch Protection Rules
 
-### Vercel Integration
+```yaml
+main:
+  required_status_checks:
+    - "quality-check"
+    - "test"
+    - "build"
+  enforce_admins: true
+  required_pull_request_reviews:
+    required_approving_review_count: 1
+    dismiss_stale_reviews: true
+```
 
-- Deployment status updates
-- Performance monitoring
-- Error tracking and alerts
+### Deployment Environments
 
-## Troubleshooting
+1. **Development**: Local development server
+2. **Preview**: Automatic preview deployments for PRs
+3. **Production**: Main branch automatic deployment
+
+### Rollback Strategy
+
+```yaml
+rollback:
+  triggers:
+    - Failed health checks
+    - Performance degradation
+    - User-reported issues
+  methods:
+    - Automatic Vercel rollback
+    - Manual intervention
+    - Feature flag toggles
+```
+
+## 📊 Monitoring & Notifications
+
+### Build Status Monitoring
+
+```yaml
+notifications:
+  slack:
+    channels:
+      - "#deployments"
+      - "#alerts"
+  email:
+    recipients:
+      - "dev-team@company.com"
+  discord:
+    webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+```
+
+### Performance Monitoring
+
+```yaml
+monitoring:
+  tools:
+    - Vercel Analytics
+    - Core Web Vitals
+    - Lighthouse CI
+  alerts:
+    - Performance regression
+    - Build failures
+    - Deployment issues
+```
+
+## 🔧 Local Development Setup
+
+### Prerequisites
+
+```bash
+# Required tools
+node >= 18.0.0
+npm >= 9.0.0
+git >= 2.30.0
+```
+
+### Setup Commands
+
+```bash
+# Clone repository
+git clone https://github.com/Ahmed-Shehzad/Portfolio.git
+cd Portfolio
+
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.example .env.local
+
+# Install git hooks
+npm run prepare
+
+# Start development server
+npm run dev
+```
+
+### Testing Workflows Locally
+
+```bash
+# Install act (GitHub Actions local runner)
+brew install act
+
+# Run CI workflow locally
+act -j quality-check
+
+# Run with specific environment
+act -j quality-check --env-file .env.local
+```
+
+## 🛠️ Troubleshooting
 
 ### Common Issues
 
-#### Quality Gate Failures
+#### Build Failures
 
 ```bash
-# Check specific errors
-npm run type-check:quality-gate
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
 
-# View detailed logs
-cat reports/typescript-report.txt
+# Check Node.js version
+node --version
+npm --version
 ```
 
-#### Deployment Failures
-
-1. Check GitHub Actions logs
-2. Verify Vercel secrets are set
-3. Ensure all quality gates pass
-
-#### Security Audit Failures
+#### Deployment Issues
 
 ```bash
-# Run local audit
-npm audit
+# Check Vercel configuration
+npx vercel --debug
 
-# Fix automatically
-npm audit fix
+# Validate environment variables
+npx vercel env ls
 ```
 
-## Local Testing
-
-### Test Quality Gates
+#### Test Failures
 
 ```bash
-# Run full quality check
-npm run check
+# Run tests in watch mode
+npm run test:watch
 
-# Test deployment build
-npm run build
+# Generate coverage report
+npm run test:coverage
 ```
 
-### Test Workflows Locally
+### Debug Commands
 
 ```bash
-# Install act (GitHub Actions runner)
-curl -q https://raw.githubusercontent.com/nektos/act/master/install.sh | bash
+# Check workflow syntax
+act --list
 
-# Dry run workflows
-./bin/act --dry-run
+# Validate GitHub Actions
+gh workflow list
+
+# Check deployment status
+npx vercel ls
 ```
 
-## Maintenance
+## 📚 Best Practices
+
+### Commit Messages
+
+```
+feat: add new feature
+fix: resolve bug
+docs: update documentation
+style: format code
+refactor: restructure code
+test: add tests
+chore: update dependencies
+```
+
+### Branch Naming
+
+```
+feature/feature-name
+bugfix/issue-description
+hotfix/critical-fix
+release/version-number
+```
+
+### Pull Request Guidelines
+
+1. Clear description of changes
+2. Reference related issues
+3. Include screenshots for UI changes
+4. Ensure all checks pass
+5. Request appropriate reviewers
+
+## 🔄 Maintenance
 
 ### Regular Tasks
 
-- Weekly dependency updates (automated)
-- Monthly security audit review
-- Quarterly workflow optimization
+#### Weekly
 
-### Updates Required
+- [ ] Review dependency updates
+- [ ] Check security alerts
+- [ ] Monitor performance metrics
+- [ ] Review failed builds
 
-- Update action versions in workflows
-- Review and update security configurations
-- Monitor performance metrics trends
+#### Monthly
+
+- [ ] Update workflow dependencies
+- [ ] Review and update secrets
+- [ ] Performance audit
+- [ ] Security scan review
+
+#### Quarterly
+
+- [ ] Workflow optimization review
+- [ ] Tool and service evaluation
+- [ ] Documentation updates
+- [ ] Team training updates
+
+### Dependency Management
+
+```yaml
+dependabot:
+  version: 2
+  updates:
+    - package-ecosystem: "npm"
+      directory: "/"
+      schedule:
+        interval: "weekly"
+      open-pull-requests-limit: 10
+```
+
+## 📖 Additional Resources
+
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Vercel Deployment Guide](https://vercel.com/docs)
+- [Next.js Deployment](https://nextjs.org/docs/deployment)
+- [TypeScript Configuration](https://www.typescriptlang.org/docs/)
+- [ESLint Configuration](https://eslint.org/docs/user-guide/configuring)
+
+## 🆘 Support
+
+For CI/CD issues and questions:
+
+1. Check this documentation
+2. Review GitHub Actions logs
+3. Check Vercel deployment logs
+4. Create an issue in the repository
+5. Contact the development team
 
 ---
 
-## Quick Setup Checklist
-
-- [ ] Configure GitHub secrets (Vercel tokens)
-- [ ] Set up branch protection rules
-- [ ] Test quality gate locally
-- [ ] Create first PR to test preview deployment
-- [ ] Merge to main for production deployment
-- [ ] Monitor deployment dashboard
-
-**Status**: ✅ CI/CD Pipeline Ready for Production
+_Last updated: September 2025_
