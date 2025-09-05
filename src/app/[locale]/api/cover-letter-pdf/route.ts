@@ -382,21 +382,21 @@ function getCoverLetterPrintStyles(): string {
       article h6 {
         display: block !important;
         visibility: visible !important;
-        margin-bottom: 0.2rem !important;
+        margin-bottom: 0rem !important;
       }
 
       /* List items inside articles - vertical spacing and line height */
       article ul {
         display: block !important;
         visibility: visible !important;
-        margin: 0.2rem 0 !important;
+        margin: 0rem !important;
       }
 
       article ul > li {
         display: list-item !important;
         visibility: visible !important;
         margin-bottom: 0.15rem !important;
-        line-height: 1.3 !important;
+        line-height: 1.1 !important;
         list-style: disc !important; /* Ensure bullet points show */
         margin-left: 1rem !important; /* Indent for bullets */
       }

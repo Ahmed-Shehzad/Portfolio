@@ -304,21 +304,21 @@ function getResumePrintStyles(): string {
       visibility: visible !important;
       font-size: inherit !important; /* Inherit readable font size */
       color: black !important; /* Ensure text is visible */
-      margin-bottom: 0.2rem !important;
+      margin-bottom: 0rem !important;
     }
 
     /* List items inside articles - vertical spacing and line height */
     article ul {
       display: block !important;
       visibility: visible !important;
-      margin: 0.2rem 0 !important;
+      margin: 0rem !important;
     }
 
     article ul > li {
       display: list-item !important;
       visibility: visible !important;
       margin-bottom: 0.25rem !important;
-      line-height: 1.3 !important;
+      line-height: 1.1 !important;
       font-size: inherit !important;
       color: black !important;
       list-style: disc !important; /* Ensure bullet points show */

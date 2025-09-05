@@ -39,6 +39,7 @@ export function DownloadButton() {
           specificReason: data.specificReason || "",
           salaryExpectations: data.salaryExpectations || "",
           expectedJoiningDate: data.expectedJoiningDate || "",
+          positionName: data.positionName || "Software Engineer",
         }),
       });
       if (!response.ok) {
