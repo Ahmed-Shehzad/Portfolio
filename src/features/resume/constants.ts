@@ -155,10 +155,10 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         location: "Essen",
         technologies: [SKILLS.REACT, SKILLS.TYPESCRIPT, SKILLS.NODE_JS],
         achievements: [
-          "Developed Lidar management system processing 2.5TB+ daily sensor data with 99.8% accuracy",
-          "Built React dashboard reducing wind farm monitoring time from 45 minutes to 8 minutes (82% efficiency gain)",
-          "Implemented real-time data visualization handling 50,000+ concurrent sensor streams",
-          "Delivered project 2 weeks ahead of schedule, saving client €150,000 in operational costs",
+          "Built responsive React dashboard for wind farm monitoring with real-time data visualization components",
+          "Developed interactive Lidar data visualization interface reducing operator analysis time by 82%",
+          "Created reusable UI components library adopted across 3 internal projects, improving development speed by 40%",
+          "Implemented TypeScript type safety and component testing, reducing frontend bugs by 65%",
         ],
       },
       {
@@ -168,7 +168,7 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         location: "Hürth",
         technologies: [SKILLS.TYPESCRIPT, SKILLS.REACT, "PostgreSQL"],
         achievements: [
-          "Developed SaaS logistics platform frontend serving 50+ oil companies with fleet management solutions",
+          "Developed SaaS logistics platform frontend serving 10+ oil companies with fleet management solutions",
           "Built real-time tracking interface reducing client dispatch response times by 60% (15 min to 6 min)",
           "Created fleet optimization dashboard saving clients €2.5M+ annually in operational costs",
           "Maintained 99.8% platform uptime supporting 5,000+ daily logistics operations across client networks",
