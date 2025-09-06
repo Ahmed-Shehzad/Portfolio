@@ -1,2 +1,4 @@
 // Server Pages Components Exports
-export { DynamicResumePage } from "./DynamicResumePage";
+// Currently no server page components exported
+
+export {}; // Make this file a module

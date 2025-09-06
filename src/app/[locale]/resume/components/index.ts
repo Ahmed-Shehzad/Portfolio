@@ -1,9 +1,0 @@
-export { Skills } from "./Skills";
-export { Languages } from "./Languages";
-export { ResumeSidebar } from "./ResumeSidebar";
-export { EmploymentHistory } from "./EmploymentHistory";
-export { Profile } from "./Profile";
-export { Education } from "./Education";
-export { ResumeHeader } from "./ResumeHeader";
-export { ResumeMainContent } from "./ResumeMainContent";
-export { DownloadButton } from "./DownloadButton";
