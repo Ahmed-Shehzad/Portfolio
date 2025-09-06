@@ -53,6 +53,28 @@
     @page {
       size: A4;
       margin: 2cm;
+      /* Remove browser headers and footers except page numbers */
+      @top-left {
+        content: "";
+      }
+      @top-center {
+        content: "";
+      }
+      @top-right {
+        content: "";
+      }
+      @bottom-left {
+        content: "";
+      }
+      @bottom-center {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: "Inter", sans-serif;
+        font-size: 10px;
+        color: #6b7280;
+      }
+      @bottom-right {
+        content: "";
+      }
     }
 
     * {
@@ -63,6 +85,7 @@
     body {
       background: white !important;
       color: black !important;
+      counter-reset: page;
     }
 
     .ats-resume {
@@ -162,6 +185,15 @@
 
     .ats-section-title {
       margin-bottom: 1rem !important;
+    }
+
+    /* Additional page counter setup for better browser support */
+    /* Hide print footer on screen */
+    @media screen {
+      .print-footer,
+      .print-footer-visible {
+        display: none !important;
+      }
     }
   }
 
