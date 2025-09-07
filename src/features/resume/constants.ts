@@ -32,6 +32,7 @@ const SKILLS = {
   GIT: "Git",
   DOCKER: "Docker",
   AZURE: "Azure",
+  AWS: "AWS",
   AWS_AMPLIFY: "AWS Amplify",
 } as const;
 
@@ -70,6 +71,7 @@ const CICD_PIPELINES = "CI/CD Pipelines" as const;
 const AZURE_DEVOPS = "Azure DevOps" as const;
 const AGILE_SCRUM = "Agile/Scrum" as const;
 const ENTITY_FRAMEWORK_CORE = "Entity Framework Core" as const;
+const EVENT_DRIVEN_ARCHITECTURE = "Event-Driven Architecture" as const;
 
 const ATS_RESUME_KEYWORD = "ATS resume" as const;
 
@@ -124,7 +126,7 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         "ESLint/Prettier",
         AZURE_DEVOPS,
       ],
-      tools: ["VS Code", "Chrome DevTools", "Storybook", "npm/yarn/pnpm", "Figma", AGILE_SCRUM],
+      tools: ["VS Code", "Chrome DevTools", "Storybook", "npm/yarn/pnpm", AGILE_SCRUM],
     },
     experience: [
       {
@@ -275,36 +277,26 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         SKILLS.CSHARP,
         ".NET Web API",
         ENTITY_FRAMEWORK_CORE,
-        SKILLS.SQL_SERVER,
         "RESTful APIs",
         "GraphQL",
       ],
       architecture: [
         "CQRS",
         "Domain-Driven Design",
-        "Event-Driven Architecture",
+        EVENT_DRIVEN_ARCHITECTURE,
         "Microservices Architecture",
         "Modular Monolith",
         "Clean Architecture",
-        "Hexagonal Architecture",
       ],
       cloud: [
-        "Azure",
-        "Azure DevOps",
-        "Docker",
-        "Kubernetes",
-        "Azure Functions",
+        AZURE_DEVOPS,
         "Azure Service Bus",
         "Application Insights",
+        "AWS Cloud Watch",
+        "AWS Lambda",
+        "AWS Step Functions",
       ],
-      databases: [
-        SKILLS.SQL_SERVER,
-        "Redis",
-        ENTITY_FRAMEWORK_CORE,
-        "Database Design",
-        "Query Optimization",
-        "Data Migrations",
-      ],
+      databases: [SKILLS.SQL_SERVER, SKILLS.POSTGRESQL, "Redis"],
       testing: [
         "xUnit",
         "Test Containers",
@@ -323,12 +315,8 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         "Visual Studio",
         "JetBrains Rider",
         "VS Code",
-        "Postman",
-        "Swagger",
-        "Git/GitHub",
-        "Azure Portal",
-        "SQL Server Management Studio",
-        "Redis CLI",
+        "RabbitMQ",
+        "Apache Kafka",
         AGILE_SCRUM,
       ],
     },
@@ -352,7 +340,7 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         company: COMPANIES.SUSTAYN_GMBH,
         duration: DURATIONS.SUSTAYN_GMBH,
         location: "Essen",
-        technologies: [SKILLS.DOTNET, SKILLS.CSHARP, SKILLS.SQL_SERVER, SKILLS.AZURE],
+        technologies: [SKILLS.DOTNET, SKILLS.CSHARP, SKILLS.SQL_SERVER, SKILLS.AWS],
         achievements: [
           "Architected and developed scalable backend APIs in C# and .NET 5 to support an employee engagement platform used by 5,000+ users, increasing participation from 23% to 67%",
           "Implemented gamification logic and event-driven features on the server side, contributing to a 3x increase in learning module completion rates",
@@ -438,7 +426,7 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
           SKILLS.DOTNET,
           SKILLS.CSHARP,
           SKILLS.SQL_SERVER,
-          SKILLS.AZURE,
+          SKILLS.AWS,
           ENTITY_FRAMEWORK_CORE,
           "Redis",
         ],
@@ -506,25 +494,27 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
       ],
       databases: [
         SKILLS.SQL_SERVER,
+        SKILLS.POSTGRESQL,
         "Redis",
-        "Database Design",
         "Query Optimization",
-        ENTITY_FRAMEWORK_CORE,
+        "Relational Databases",
+        "NoSQL",
       ],
       architecture: [
         "Microservices Architecture",
         "CQRS",
         "Domain-Driven Design",
-        "Event-Driven Architecture",
+        EVENT_DRIVEN_ARCHITECTURE,
         "Clean Architecture",
         "API-First Design",
       ],
       cloud: [
-        "Azure",
         AZURE_DEVOPS,
-        "Docker",
-        "Azure Functions",
         "Application Insights",
+        "Azure Service Bus",
+        "AWS Lambda",
+        "AWS Step Functions",
+        "AWS Cloud Watch",
         CICD_PIPELINES,
       ],
       testing: [
@@ -540,9 +530,8 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
         "VS Code",
         "Chrome DevTools",
         "Postman",
+        "Docker",
         "Git/GitHub",
-        "Azure Portal",
-        "SQL Server Management Studio",
         AGILE_SCRUM,
       ],
     },
@@ -652,7 +641,7 @@ export const RESUME_CONFIGS: Record<(typeof RESUME_TYPES)[number], ResumeConfig>
           "Built full-stack solution processing €2M+ company sustainability investments",
           "Developed React dashboard with .NET Core backend supporting 12,000+ employees",
           "Implemented real-time leaderboards and challenge system with 95% engagement",
-          "Created Azure-hosted microservices architecture with auto-scaling capabilities",
+          "Created AWS-hosted microservices architecture with auto-scaling capabilities",
         ],
       },
       {

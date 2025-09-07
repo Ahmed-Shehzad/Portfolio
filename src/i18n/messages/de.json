@@ -238,11 +238,12 @@
     "common": {
       "name": "Muhammad Ahmed Shehzad",
       "contact": {
-        "email": "muhammadahmedshehzad@gmail.com",
-        "phone": "+49 176 34935938",
-        "location": "Mainz, Deutschland",
-        "linkedin": "linkedin.com/in/muhammadahmedshehzad",
-        "website": "muhammadahmedshehzad.com"
+        "email": "ahmedshehzad786@gmail.com",
+        "phone": "+49 176 233 78 452",
+        "location": "Wiesbaden, Deutschland",
+        "linkedin": "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989",
+        "website": "https://portfolio-azure-five-75.vercel.app",
+        "Github": "https://github.com/Ahmed-Shehzad"
       },
       "sections": {
         "summary": "ZUSAMMENFASSUNG",
@@ -260,9 +261,9 @@
     },
     "configs": {
       "frontend": {
-        "title": "Senior Frontend-Entwickler",
-        "description": "Ergebnisorientierter Senior Frontend-Entwickler mit 5+ Jahren Erfahrung in der Bereitstellung skalierbarer React.js-Anwendungen. Nachgewiesene Erfolgsbilanz: 40% Leistungsverbesserungen, 25.000+ Benutzerplattformen, 99,2% Verfügbarkeit. Experte in TypeScript, Next.js und modernen CI/CD-Praktiken in Gesundheitswesen, Fintech und Unternehmenssektoren.",
-        "summary": "Senior Frontend-Entwickler spezialisiert auf React-Ökosystem und moderne Webtechnologien. Bereitstellung hochperformanter Anwendungen für 25.000+ Benutzer mit 99,2% Verfügbarkeit. Experte in Komponentenarchitektur, State Management und CI/CD-Optimierung. Nachgewiesene Fähigkeit, Ladezeiten um 70% zu reduzieren und Benutzerengagement um 45% zu verbessern."
+        "title": "Frontend-Entwickler",
+        "description": "Ergebnisorientierter Frontend-Entwickler mit 5+ Jahren Erfahrung in der Bereitstellung skalierbarer React.js-Anwendungen. Nachgewiesene Erfolgsbilanz: 40% Leistungsverbesserungen, 25.000+ Benutzerplattformen, 99,2% Verfügbarkeit. Experte in TypeScript, Next.js und modernen CI/CD-Praktiken in Gesundheitswesen, Fintech und Unternehmenssektoren.",
+        "summary": "Frontend-Entwickler spezialisiert auf React-Ökosystem und moderne Webtechnologien. Bereitstellung hochperformanter Anwendungen für 25.000+ Benutzer mit 99,2% Verfügbarkeit. Experte in Komponentenarchitektur, State Management und CI/CD-Optimierung. Nachgewiesene Fähigkeit, Ladezeiten um 70% zu reduzieren und Benutzerengagement um 45% zu verbessern."
       },
       "backend": {
         "title": "Backend Software-Ingenieur",
@@ -289,7 +290,7 @@
       }
     },
     "companies": {
-      "verbund_pflegehilfe": "Verbund Pflegehilfe e.V.",
+      "verbund_pflegehilfe": "Verbund Pflegehilfe",
       "sustayn_gmbh": "Sustayn GmbH",
       "fpt_software": "FPT Software",
       "sodefa_gmbh": "SODEFA GmbH Co. & KG",

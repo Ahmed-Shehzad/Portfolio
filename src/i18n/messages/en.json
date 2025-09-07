@@ -238,11 +238,12 @@
     "common": {
       "name": "Muhammad Ahmed Shehzad",
       "contact": {
-        "email": "muhammadahmedshehzad@gmail.com",
-        "phone": "+49 176 34935938",
-        "location": "Mainz, Germany",
-        "linkedin": "linkedin.com/in/muhammadahmedshehzad",
-        "website": "muhammadahmedshehzad.com"
+        "email": "ahmedshehzad786@gmail.com",
+        "phone": "+49 176 233 78 452",
+        "location": "Wiesbaden, Germany",
+        "linkedin": "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989",
+        "website": "https://portfolio-azure-five-75.vercel.app",
+        "Github": "https://github.com/Ahmed-Shehzad"
       },
       "sections": {
         "summary": "SUMMARY",
@@ -260,9 +261,9 @@
     },
     "configs": {
       "frontend": {
-        "title": "Senior Frontend Developer",
-        "description": "Results-driven Senior Frontend Developer with 5+ years delivering scalable React.js applications. Proven track record: 40% performance improvements, 25,000+ user platforms, 99.2% uptime. Expert in TypeScript, Next.js, and modern CI/CD practices across healthcare, fintech, and enterprise sectors.",
-        "summary": "Senior Frontend Developer specializing in React ecosystem and modern web technologies. Delivered high-performance applications serving 25,000+ users with 99.2% uptime. Expert in component architecture, state management, and CI/CD optimization. Proven ability to reduce load times by 70% and improve user engagement by 45%."
+        "title": "Frontend Developer",
+        "description": "Results-driven Frontend Developer with 5+ years delivering scalable React.js applications. Proven track record: 40% performance improvements, 25,000+ user platforms, 99.2% uptime. Expert in TypeScript, Next.js, and modern CI/CD practices across healthcare, fintech, and enterprise sectors.",
+        "summary": "Frontend Developer specializing in React ecosystem and modern web technologies. Delivered high-performance applications serving 25,000+ users with 99.2% uptime. Expert in component architecture, state management, and CI/CD optimization. Proven ability to reduce load times by 70% and improve user engagement by 45%."
       },
       "backend": {
         "title": "Backend Software Engineer",
@@ -289,7 +290,7 @@
       }
     },
     "companies": {
-      "verbund_pflegehilfe": "Verbund Pflegehilfe e.V.",
+      "verbund_pflegehilfe": "Verbund Pflegehilfe",
       "sustayn_gmbh": "Sustayn GmbH",
       "fpt_software": "FPT Software",
       "sodefa_gmbh": "SODEFA GmbH Co. & KG",
