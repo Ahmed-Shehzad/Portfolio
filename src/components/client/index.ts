@@ -7,3 +7,6 @@ export * from "./presentational";
 // Dynamic components (require client-side rendering)
 export { DynamicHeader } from "./DynamicHeader";
 export { DynamicContactModal } from "./DynamicContactModal";
+
+// Cover Letter Components
+export { ATSCoverLetterClient } from "./ATSCoverLetterClient";

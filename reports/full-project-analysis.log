@@ -1,0 +1,20 @@
+node_modules/@testing-library/jest-dom/types/jest.d.ts(1,23): error TS2688: Cannot find type definition file for 'jest'.
+node_modules/react-leaflet/lib/LayersControl.d.ts(9,29): error TS2307: Cannot find module '@react-leaflet/core/lib/context' or its corresponding type declarations.
+node_modules/react-leaflet/lib/LayersControl.d.ts(18,33): error TS2307: Cannot find module '@react-leaflet/core/lib/context' or its corresponding type declarations.
+node_modules/react-leaflet/lib/LayersControl.d.ts(30,33): error TS2307: Cannot find module '@react-leaflet/core/lib/context' or its corresponding type declarations.
+node_modules/react-leaflet/lib/SVGOverlay.d.ts(11,29): error TS2307: Cannot find module '@react-leaflet/core/lib/context' or its corresponding type declarations.
+src/types/jest-dom.d.ts(8,13): error TS2428: All declarations of 'Assertion' must have identical type parameters.
+Files:             1445
+Lines:           315745
+Identifiers:     300943
+Symbols:         269035
+Types:            20435
+Instantiations:   46973
+Memory used:    378156K
+I/O read:         0.03s
+I/O write:        0.00s
+Parse time:       0.62s
+Bind time:        0.20s
+Check time:       0.68s
+Emit time:        0.08s
+Total time:       1.58s

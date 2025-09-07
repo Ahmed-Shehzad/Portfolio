@@ -180,258 +180,46 @@
       "27": "DevOps"
     }
   },
-  "resume": {
-    "header": {
-      "name": "Muhammad Ahmed Shehzad",
-      "title": "Software-Ingenieur"
-    },
-    "downloadButton": {
-      "download": "PDF herunterladen",
-      "generating": "PDF wird generiert...",
-      "error": {
-        "title": "PDF-Generierungsfehler",
-        "failed": "PDF-Generierung fehlgeschlagen",
-        "close": "Schließen"
-      },
-      "ariaLabel": {
-        "generating": "PDF wird generiert...",
-        "download": "Lebenslauf herunterladen"
-      }
-    },
-    "profile": {
-      "title": "Profil",
-      "description": "Ich bin ein Softwareentwickler mit über 5 Jahren Erfahrung in der Entwicklung von Webanwendungen. Mir macht sowohl die Frontend- als auch die Backend-Entwicklung Spaß, und ich habe eine Leidenschaft für das Schreiben von sauberem, wartbarem Code. Ich habe mit verschiedenen Technologien gearbeitet und lerne gerne neue, um interessante Probleme zu lösen."
-    },
-    "employment": {
-      "title": "Berufserfahrung",
-      "jobTitles": {
-        "softwareEngineer": "Software Engineer",
-        "softwareDeveloper": "Softwareentwickler"
-      },
-      "jobs": {
-        "0": {
-          "title": "Software Engineer",
-          "company": "Verbund Pflegehilfe",
-          "period": "Jul 2023 – Heute",
-          "location": "Mainz",
-          "responsibilities": {
-            "0": "Entwicklung und Wartung einer Plattform, die pflegebedürftige Menschen mit lokalen Gesundheitsdienstleistern verbindet",
-            "1": "Aufbau eines CRM-Systems, das täglich von unserem Beraterteam zur Verwaltung von Kundenbeziehungen und Fortschrittsverfolgung genutzt wird",
-            "2": "Entwicklung eines automatisierten Anrufsystems mit der Twilio API, das unserem Team hilft, Kunden effizienter zu erreichen"
-          }
-        },
-        "1": {
-          "title": "Softwareentwickler",
-          "company": "Sustayn GmbH",
-          "period": "Feb 2022 – Jul 2023",
-          "location": "Essen",
-          "responsibilities": {
-            "0": "Aufbau einer Mitarbeiterengagement-Plattform mit Fokus auf Lernen und Entwicklung für Firmenkunden",
-            "1": "Hinzufügung von Gamification-Features wie Herausforderungen und Wissensaustausch, um das Lernen ansprechender zu gestalten",
-            "2": "Arbeit an Belohnungssystemen, die Mitarbeiter ermutigten, aktiver an Firmenprogrammen teilzunehmen"
-          }
-        },
-        "2": {
-          "title": "Software Engineer",
-          "company": "FPT Software",
-          "period": "Sep 2021 – Nov 2021",
-          "location": "Essen",
-          "responsibilities": {
-            "0": "Arbeit an einem Lidar-Management-System für RWE, das große Mengen von Windenergie-Sensordaten verarbeitet",
-            "1": "Aufbau mehrerer REST-APIs mit .NET und C# für Datenverarbeitung und -verwaltung",
-            "2": "Entwicklung von React-Frontend-Anwendungen mit Fokus auf Leistung und Benutzererfahrung",
-            "3": "Optimierung der Systemleistung durch Verbesserung des API-Designs und der Datenbankabfragen"
-          }
-        },
-        "3": {
-          "title": "Softwareentwickler",
-          "company": "SODEFA GmbH Co. & KG",
-          "period": "Aug 2019 – Sep 2021",
-          "location": "Hürth",
-          "responsibilities": {
-            "0": "Entwicklung eines Heizöl-Preisrechners, den Kunden für genaue Preisangebote nutzen",
-            "1": "Aufbau eines Online-Bestellsystems, das den Kundenbestellprozess optimierte",
-            "2": "Entwicklung von Logistiktools, die dem Unternehmen halfen, ihre Lieferflotte zu verwalten und Kosten zu reduzieren"
-          }
-        },
-        "4": {
-          "title": "Softwareentwickler",
-          "company": "Cybersoft North America Inc.",
-          "period": "Apr 2018 – Okt 2018",
-          "location": "Lahore",
-          "responsibilities": {
-            "0": "Entwicklung von Digital Signage-Anwendungen mit .NET und C# für Content-Management und -Anzeige",
-            "1": "Implementierung von Echtzeitkommunikation mit SignalR für Live-Content-Updates auf Displays",
-            "2": "Erstellung benutzerdefinierter Steuerelemente im CMS für die Verwaltung von Digital Signage-Anwendungen, die in Banken, Restaurants und auf Werbetafeln eingesetzt wurden",
-            "3": "Zusammenarbeit mit Kunden zur Anpassung digitaler Displays entsprechend ihren Branding- und Content-Anforderungen"
-          }
-        },
-        "5": {
-          "title": "Software Engineer",
-          "company": "Six Logics",
-          "period": "Nov 2016 – Apr 2018",
-          "location": "Lahore",
-          "responsibilities": {
-            "0": "Arbeit an Live-Sportergebnisfunktionen für 365Scores, eine beliebte Sport-App",
-            "1": "Aufbau personalisierter Content-Feeds, die Benutzern ihre Lieblingsteams und -spieler zeigen",
-            "2": "Erstellung von Tools für Content-Publisher zur Integration unserer Sportdaten in ihre Plattformen"
-          }
-        }
-      }
-    },
-    "skills": {
-      "title": "Fähigkeiten",
-      "categories": {
-        "0": {
-          "title": "Backend (5+ Jahre)",
-          "skills": {
-            "0": {
-              "skill": "C#",
-              "level": "4",
-              "years": "4+ Jahre"
-            },
-            "1": {
-              "skill": ".NET",
-              "level": "5",
-              "years": "5+ Jahre"
-            },
-            "2": {
-              "skill": "RESTful APIs",
-              "level": "5",
-              "years": "5+ Jahre"
-            },
-            "3": {
-              "skill": "GraphQL",
-              "level": "3",
-              "years": "2+ Jahre"
-            }
-          }
-        },
-        "1": {
-          "title": "Frontend (3+ Jahre)",
-          "skills": {
-            "0": {
-              "skill": "TypeScript",
-              "level": "5",
-              "years": "3+ Jahre"
-            },
-            "1": {
-              "skill": "ReactJS",
-              "level": "3",
-              "years": "2+ Jahre"
-            },
-            "2": {
-              "skill": "Tailwind",
-              "level": "5",
-              "years": "2+ Jahre"
-            }
-          }
-        },
-        "2": {
-          "title": "Tools & DevOps (3+ Jahre)",
-          "skills": {
-            "0": {
-              "skill": "Docker",
-              "level": "3",
-              "years": "2+ Jahre"
-            },
-            "1": {
-              "skill": "Node.js",
-              "level": "3",
-              "years": "2+ Jahre"
-            },
-            "2": {
-              "skill": "Python",
-              "level": "3",
-              "years": "2+ Jahre"
-            }
-          }
-        },
-        "3": {
-          "title": "Datenbanken (4+ Jahre)",
-          "skills": {
-            "0": {
-              "skill": "MS SQL Server",
-              "level": "4",
-              "years": "4+ Jahre"
-            },
-            "1": {
-              "skill": "PostgreSQL",
-              "level": "3",
-              "years": "2+ Jahre"
-            },
-            "2": {
-              "skill": "MongoDB",
-              "level": "3",
-              "years": "2+ Jahre"
-            }
-          }
-        },
-        "4": {
-          "title": "Architektur & Praktiken (3+ Jahre)",
-          "skills": {
-            "0": {
-              "skill": "Command Query Responsibility Segregation",
-              "level": "4",
-              "years": "3+ Jahre"
-            },
-            "1": {
-              "skill": "Domain-Driven Design",
-              "level": "3",
-              "years": "2+ Jahre"
-            },
-            "2": {
-              "skill": "Test-Driven Development",
-              "level": "3",
-              "years": "2+ Jahre"
-            },
-            "3": {
-              "skill": "Clean Architecture",
-              "level": "4",
-              "years": "3+ Jahre"
-            }
-          }
-        }
-      },
-      "levelDescriptions": {
-        "1": "Anfänger",
-        "2": "Novize",
-        "3": "Fortgeschritten",
-        "4": "Erfahren",
-        "5": "Experte"
-      }
-    },
-    "education": {
-      "title": "Ausbildung",
-      "institution": "University of South Asia",
-      "degree": "Bachelor of Science in Informatik",
-      "period": "Sep 2012 – Sep 2017",
-      "location": "Lahore"
-    },
-    "languages": {
-      "title": "Sprachen",
-      "items": {
-        "0": { "language": "Englisch", "level": "4" },
-        "1": { "language": "Deutsch", "level": "3" }
-      },
-      "levelDescriptions": {
-        "1": "Anfänger",
-        "2": "Novize",
-        "3": "Fortgeschritten",
-        "4": "Erfahren",
-        "5": "Experte"
-      }
-    }
-  },
   "coverLetter": {
+    "common": {
+      "name": "Muhammad Ahmed Shehzad",
+      "contact": {
+        "email": "ahmedshehzad786@gmail.com",
+        "phone": "+49 233 78 452",
+        "linkedin": "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989",
+        "location": "Wiesbaden, Deutschland",
+        "website": "https://portfolio-azure-five-75.vercel.app",
+        "Github": "https://github.com/Ahmed-Shehzad"
+      }
+    },
+    "metadata": {
+      "title": "Professionelles Anschreiben für {type} Position",
+      "description": "ATS-optimiertes Anschreiben für {type} Entwickler-Rolle"
+    },
     "subject": "Bewerbung für die Position als {positionName}",
     "greeting": "Sehr geehrte Damen und Herren,",
+    "frontend": {
+      "opening": "ich schreibe Ihnen, um mein starkes Interesse an der {positionName}-Position bei {companyName} zu bekunden. Mit über 5 Jahren Berufserfahrung in der Full-Stack-Entwicklung und Frontend-Spezialisierung freue ich mich auf die Möglichkeit, zu Ihrem Team beizutragen und außergewöhnliche Benutzererfahrungen zu schaffen.",
+      "experience1": "Während meiner Laufbahn habe ich mich auf die Entwicklung intuitiver, responsiver Benutzeroberflächen mit React, TypeScript und modernen Webtechnologien spezialisiert. Derzeit bei Verbund Pflegehilfe entwickle und warte ich Frontend-Komponenten für eine Gesundheitsplattform und erstelle benutzerfreundliche Oberflächen, die Patienten mit lokalen Anbietern verbinden. Ich baute ein intuitives Dashboard mit Echtzeit-Updates und responsivem Design, das die Benutzerinteraktion erheblich verbesserte. Zuvor bei Sustayn GmbH entwickelte ich das Frontend für eine Mitarbeiterengagement-Plattform mit interaktiven Gamification-Features und Belohnungssystemen, die die Teilnahme um 40% steigerten.",
+      "experience2": "Meine Frontend-Erfahrung erstreckt sich über verschiedene Branchen und anspruchsvolle UI/UX-Projekte. Bei FPT Software erstellte ich Dashboards für ein Lidar-Management-System für RWE und baute Datenvisualisierungs-Komponenten, die komplexe Windenergie-Daten zugänglich und umsetzbar machten. Während meiner Zeit bei SODEFA GmbH entwickelte ich kundenorientierte Tools, einschließlich eines Heizöl-Preisrechners mit Echtzeit-Updates und einer intuitiven Logistikmanagement-Oberfläche. Bei Cybersoft North America baute ich responsive Digital Signage-Anwendungen mit Echtzeit-Content-Updates mit SignalR und sorgte für nahtlose Benutzererfahrungen in Banken und Restaurants.",
+      "technical": "Meine technische Expertise konzentriert sich auf moderne Frontend-Entwicklung mit Kenntnissen in React, TypeScript, Next.js und responsiven Design-Prinzipien. Bei Six Logics trug ich zum 365Scores Frontend bei und baute Live-Score-Komponenten und personalisierte Content-Feeds mit optimaler Leistung. Ich habe eine Leidenschaft für die Erstellung zugänglicher, performanter Benutzeroberflächen und die Implementierung von Design-Systemen, die effektiv mit Teams und Produkten skalieren.",
+      "unique": "Was mich auszeichnet, ist meine kombinierte Frontend-Spezialisierung mit Full-Stack-Verständnis. Von Gesundheitsplattform-Oberflächen und Mitarbeiterengagement-Dashboards bis hin zu Windenergie-Datenvisualisierung, Digital Signage-Anwendungen, Logistiktools und Sportdaten-Displays habe ich erfolgreich benutzerzentrierte Lösungen in verschiedenen Bereichen geliefert. Diese Breite der Erfahrung gibt mir einzigartige Einblicke in Benutzerbedürfnisse branchenübergreifend und die Fähigkeit, Oberflächen zu erstellen, die sowohl schön als auch funktional sind."
+    },
+    "backend": {
+      "opening": "ich schreibe Ihnen, um mein starkes Interesse an der {positionName}-Position bei {companyName} zu bekunden. Mit über 5 Jahren Berufserfahrung in der Backend-Entwicklung und Systemarchitektur freue ich mich auf die Möglichkeit, zu Ihrem Team beizutragen und robuste, skalierbare Lösungen zu entwickeln.",
+      "experience1": "Während meiner Laufbahn habe ich mich auf die Entwicklung robuster, skalierbarer Backend-Systeme mit C#, .NET und Cloud-Technologien spezialisiert. Derzeit bei Verbund Pflegehilfe entwerfe und warte ich die Backend-Infrastruktur für eine Gesundheitsplattform, baute ein umfassendes CRM-System mit komplexer Geschäftslogik und erstellte ein automatisiertes Anrufsystem mit der Twilio API, das täglich tausende Interaktionen verarbeitet. Zuvor bei Sustayn GmbH entwickelte ich das Backend für eine Mitarbeiterengagement-Plattform mit Echtzeit-Datenverarbeitung und Belohnungsberechnungsalgorithmen, die die Systemleistung erheblich verbesserten.",
+      "experience2": "Meine Backend-Erfahrung erstreckt sich über verschiedene Branchen und anspruchsvolle technische Projekte. Bei FPT Software baute ich das Kern-Backend für ein Lidar-Management-System für RWE, verarbeitete große Mengen von Windenergie-Sensordaten mit hochperformanten APIs und Echtzeit-Datenpipelines. Während meiner Zeit bei SODEFA GmbH entwickelte ich Backend-Services für Preisalgorithmen und Logistikmanagementsysteme mit komplexen Geschäftsregeln und Drittanbieter-Integrationen. Bei Cybersoft North America baute ich skalierbare Backend-Services für Digital Signage-Anwendungen mit Echtzeit-Content-Verteilung mit SignalR und Microservices-Architektur.",
+      "technical": "Meine technische Expertise umfasst Backend-Architektur, API-Design, Datenbankoptimierung und Cloud-Deployment. Bei Six Logics arbeitete ich an 365Scores Backend-Systemen, baute hochperformante APIs für Live-Sportdaten und implementierte Caching-Strategien für Millionen von Benutzern. Ich habe eine Leidenschaft für Clean Architecture, Domain-Driven Design und den Aufbau von Systemen, die effizient skalieren und dabei Codequalität und Zuverlässigkeit beibehalten.",
+      "unique": "Was mich auszeichnet, ist mein tiefes Verständnis für Backend-Architektur kombiniert mit Geschäftsbereichsexpertise. Von Gesundheitsdatenverarbeitung und Mitarbeiterengagement-Algorithmen bis hin zu Windenergie-Datenmanagement, Echtzeit-Signage-Systemen, Logistikoptimierung und Sportdaten-APIs habe ich erfolgreich Lösungen für komplexe Bereiche architektiert. Diese Erfahrung gibt mir die Fähigkeit, Geschäftsanforderungen schnell zu verstehen und sie in robuste, wartbare Backend-Systeme zu übersetzen."
+    },
+    "fullstack": {
+      "opening": "ich schreibe Ihnen, um mein starkes Interesse an der {positionName}-Position bei {companyName} zu bekunden. Mit über 5 Jahren Berufserfahrung in der Full-Stack-Entwicklung freue ich mich auf die Möglichkeit, zu Ihrem Team beizutragen und End-to-End-Lösungen zu liefern, die robuste Backend-Architektur mit außergewöhnlichen Benutzererfahrungen kombinieren.",
+      "experience1": "Während meiner Laufbahn habe ich mich auf die Entwicklung vollständiger Webanwendungen mit C#, .NET, React und TypeScript spezialisiert. Derzeit bei Verbund Pflegehilfe entwickle und warte ich die Full-Stack-Architektur für eine Gesundheitsplattform, kombiniere Backend-APIs mit responsiven Frontend-Oberflächen, baute ein umfassendes CRM-System mit intuitiver Benutzererfahrung und erstellte ein automatisiertes Anrufsystem, das Frontend-Steuerungen nahtlos mit Backend-Verarbeitung integriert. Zuvor bei Sustayn GmbH baute ich eine Mitarbeiterengagement-Plattform von Grund auf und entwickelte sowohl die Gamification-Backend-Logik als auch interaktive Frontend-Komponenten, die die Benutzerteilnahme erheblich steigerten.",
+      "experience2": "Meine Full-Stack-Erfahrung erstreckt sich über verschiedene Branchen und umfassende technische Projekte. Bei FPT Software arbeitete ich an einem vollständigen Lidar-Management-System für RWE und baute sowohl das Datenverarbeitungs-Backend als auch das Visualisierungs-Frontend für Windenergie-Management. Während meiner Zeit bei SODEFA GmbH erstellte ich End-to-End-Lösungen, einschließlich eines Heizöl-Preisrechners und Logistikmanagementsystems, und behandelte alles von Datenbankdesign bis zur Benutzeroberfläche. Bei Cybersoft North America entwickelte ich vollständige Digital Signage-Anwendungen mit Echtzeit-Backend-Verarbeitung und responsiven Frontend-Displays, die in mehreren Veranstaltungsorten eingesetzt wurden.",
+      "technical": "Mein technisches Skillset umfasst den kompletten Entwicklungsstack mit Expertise in C#/.NET für Backend-Services, React/TypeScript für Frontend-Entwicklung und modernen Entwicklungspraktiken einschließlich Clean Architecture und Domain-Driven Design. Bei Six Logics trug ich zur 365Scores Full-Stack-Entwicklung bei und baute sowohl Live-Score-APIs als auch interaktive Benutzeroberflächen. Ich habe eine Leidenschaft für die Erstellung kohärenter Lösungen, bei denen Backend-Effizienz und Frontend-Benutzerfreundlichkeit nahtlos zusammenarbeiten.",
+      "unique": "Was mich auszeichnet, ist meine Fähigkeit, das vollständige Bild zu sehen - von Datenbankdesign bis zur Benutzererfahrung. Von Gesundheitsplattformen und Mitarbeiterengagement-Systemen bis hin zu Windenergie-Management, Digital Signage, Logistiktools und Sportanwendungen habe ich erfolgreich umfassende Lösungen in verschiedenen Bereichen geliefert. Diese ganzheitliche Erfahrung ermöglicht es mir, informierte architektonische Entscheidungen zu treffen, die sowohl technische Leistung als auch Benutzerzufriedenheit im gesamten Anwendungsstack optimieren."
+    },
     "content": {
-      "opening": "ich schreibe Ihnen, um mein starkes Interesse an der {positionName}-Position bei {companyName} zu bekunden. Mit über 5 Jahren Berufserfahrung in der Backend-Entwicklung und Full-Stack-Engineering freue ich mich auf die Möglichkeit, zu Ihrem Team beizutragen und innovative Lösungen voranzutreiben.",
-      "experience1": "Während meiner Laufbahn habe ich mich auf die Entwicklung robuster, skalierbarer Anwendungen mit C#, .NET und modernen Webtechnologien spezialisiert. Derzeit bei Verbund Pflegehilfe entwickle und warte ich eine Gesundheitsplattform, die Patienten mit lokalen Anbietern verbindet, habe ein umfassendes CRM-System aufgebaut und ein automatisiertes Anrufsystem mit der Twilio API erstellt. Zuvor bei Sustayn GmbH habe ich eine Mitarbeiterengagement-Plattform mit Gamification-Features und Belohnungssystemen entwickelt, die die Teilnahme der Mitarbeiter an Firmenlernprogrammen erheblich steigerten.",
-      "experience2": "Meine Erfahrung erstreckt sich über verschiedene Branchen und anspruchsvolle technische Projekte. Bei FPT Software arbeitete ich an einem Lidar-Management-System für RWE, verarbeitete große Mengen von Windenergie-Sensordaten und baute hochperformante REST-APIs auf. Während meiner Zeit bei SODEFA GmbH erstellte ich kundenorientierte Tools, einschließlich eines Heizöl-Preisrechners und eines Logistikmanagementsystems, das Abläufe optimierte und Echtzei-Transparenz bot. Früher in meiner Laufbahn bei Cybersoft North America entwickelte ich Digital Signage-Anwendungen mit Echtzeit-Content-Updates mit SignalR, die in Banken und Restaurants eingesetzt wurden.",
-      "technical": "Mein technisches Skillset umfasst sowohl Backend- als auch Frontend-Entwicklung mit Kenntnissen in TypeScript, React und modernen Entwicklungspraktiken einschließlich Clean Architecture, Domain-Driven Design und CQRS-Patterns. Bei Six Logics trug ich zu 365Scores bei, einer beliebten Sport-App, und entwickelte Live-Score-Features und personalisierte Content-Feeds. Ich habe eine besondere Leidenschaft für das Schreiben wartbaren, testbaren Codes und die Implementierung von Lösungen, die effektiv mit dem Geschäftswachstum skalieren.",
-      "unique": "Was mich auszeichnet, ist mein Engagement für kontinuierliches Lernen und meine nachgewiesene Erfolgsbilanz in verschiedenen Branchen. Von Gesundheitsplattformen und Mitarbeiterengagement-Systemen bis hin zu Windenergie-Datenmanagement, Digital Signage-Anwendungen, Logistiktools und Sportdatenplattformen habe ich erfolgreich Lösungen in verschiedenen Bereichen geliefert. Diese Breite der Erfahrung hat mir eine einzigartige Perspektive auf Software-Engineering-Herausforderungen und die Anpassungsfähigkeit gegeben, neue Geschäftsanforderungen schnell zu verstehen und effektive Lösungen zu liefern.",
       "interest": "Ich bin besonders von {companyName} angezogen wegen",
       "interestPlaceholder": "[spezifischer Grund wird hier angezeigt, wenn ausgefüllt]",
       "value": ". Ich glaube, dass meine Erfahrung in der Entwicklung benutzerorientierter Anwendungen in Kombination mit meinem starken technischen Fundament und kollaborativen Ansatz mich zu einer wertvollen Ergänzung für Ihr Team machen würde.",
@@ -458,6 +246,102 @@
       "expectedJoiningDate": "Gewünschtes Eintrittsdatum:",
       "expectedJoiningDatePlaceholder": "z.B. sofort, 2 Wochen Kündigungsfrist, Januar 2025",
       "joiningDateHelp": "Optional: Wird im Schlussabsatz aufgenommen, wenn ausgefüllt."
+    }
+  },
+  "resume": {
+    "metadata": {
+      "frontend": {
+        "title": "Frontend-Entwickler Lebenslauf | Muhammad Ahmed Shehzad",
+        "description": "Spezialisierter Frontend-Entwickler Lebenslauf mit React, TypeScript und modernen Webentwicklungsfähigkeiten. ATS-optimiertes Format mit PDF-Download.",
+        "keywords": "Frontend-Entwickler,React-Entwickler,TypeScript,Next.js,Webentwicklung,UI/UX,Responsive Design,ATS Lebenslauf"
+      },
+      "backend": {
+        "title": "Backend-Entwickler Lebenslauf | Muhammad Ahmed Shehzad",
+        "description": "Spezialisierter Backend-Entwickler Lebenslauf mit .NET, C# und Cloud-Architekturfähigkeiten. ATS-optimiertes Format mit PDF-Download.",
+        "keywords": "Backend-Entwickler,.NET-Entwickler,C# Entwickler,Software-Ingenieur,Cloud-Architektur,Microservices,API-Entwicklung,ATS Lebenslauf"
+      },
+      "fullstack": {
+        "title": "Full-Stack-Entwickler Lebenslauf | Muhammad Ahmed Shehzad",
+        "description": "Erfahrener Full-Stack-Entwickler Lebenslauf mit React.js und .NET Core Fähigkeiten. ATS-optimiertes Format mit PDF-Download.",
+        "keywords": "Full-Stack-Entwickler,React-Entwickler,.NET-Entwickler,TypeScript,Software-Ingenieur,Webentwicklung,Vollstack-Ingenieur,ATS Lebenslauf"
+      }
+    },
+    "common": {
+      "name": "Muhammad Ahmed Shehzad",
+      "contact": {
+        "email": "ahmedshehzad786@gmail.com",
+        "phone": "+49 176 233 78 452",
+        "location": "Wiesbaden, Deutschland",
+        "linkedin": "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989",
+        "website": "https://portfolio-azure-five-75.vercel.app",
+        "Github": "https://github.com/Ahmed-Shehzad"
+      },
+      "sections": {
+        "summary": "ZUSAMMENFASSUNG",
+        "skills": "FÄHIGKEITEN",
+        "experience": "BERUFSERFAHRUNG",
+        "projects": "PROJEKTE",
+        "languages": "SPRACHEN"
+      },
+      "languages": {
+        "english": "Englisch: Fließend",
+        "german": "Deutsch: Mittelstufe",
+        "urdu": "Urdu: Muttersprache",
+        "punjabi": "Punjabi: Konversation"
+      }
+    },
+    "configs": {
+      "frontend": {
+        "title": "Frontend-Entwickler",
+        "description": "Ergebnisorientierter Frontend-Entwickler mit 5+ Jahren Erfahrung in der Bereitstellung skalierbarer React.js-Anwendungen. Nachgewiesene Erfolgsbilanz: 40% Leistungsverbesserungen, 25.000+ Benutzerplattformen, 99,2% Verfügbarkeit. Experte in TypeScript, Next.js und modernen CI/CD-Praktiken in Gesundheitswesen, Fintech und Unternehmenssektoren.",
+        "summary": "Frontend-Entwickler spezialisiert auf React-Ökosystem und moderne Webtechnologien. Bereitstellung hochperformanter Anwendungen für 25.000+ Benutzer mit 99,2% Verfügbarkeit. Experte in Komponentenarchitektur, State Management und CI/CD-Optimierung. Nachgewiesene Fähigkeit, Ladezeiten um 70% zu reduzieren und Benutzerengagement um 45% zu verbessern."
+      },
+      "backend": {
+        "title": "Backend Software-Ingenieur",
+        "description": "Senior Backend-Ingenieur mit 5+ Jahren Erfahrung im Aufbau skalierbarer .NET/C#-Anwendungen. Bereitgestellte Unternehmenslösungen für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Experte in CQRS, DDD, Microservices und Cloud-nativen Architekturen in Gesundheitswesen, Energie und Logistiksektoren.",
+        "summary": "Backend Software-Ingenieur spezialisiert auf .NET-Ökosystem und Cloud-native Architekturen. Architektierte Systeme für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Experte in CQRS, Domain-Driven Design und Event-Driven Architecture. Nachgewiesene Erfolgsbilanz bei der Reduzierung von API-Antwortzeiten um 82% und Systemfehlern um 65%."
+      },
+      "fullstack": {
+        "title": "Full-Stack Software-Ingenieur",
+        "description": "Full-Stack Software-Ingenieur mit Expertise in React.js Frontend und .NET Core Backend-Entwicklung. Architektierte komplette Lösungen für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Nachgewiesene Erfolgsbilanz bei der Bereitstellung von CI/CD-Pipelines, die Deployment-Zeit um 85% reduzieren und Systemleistung um 70% verbessern.",
+        "summary": "Full-Stack Software-Ingenieur mit Expertise in React.js Frontend und .NET Core Backend-Entwicklung. Architektierte komplette Lösungen für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Nachgewiesene Erfolgsbilanz bei der Bereitstellung von CI/CD-Pipelines, die Deployment-Zeit um 85% reduzieren und Systemleistung um 70% verbessern."
+      }
+    },
+    "skills": {
+      "categories": {
+        "frontend": "Frontend",
+        "backend": "Backend",
+        "development": "Entwicklung",
+        "testing": "Testing",
+        "devops": "DevOps",
+        "cloud": "Cloud",
+        "databases": "Datenbanken",
+        "architecture": "Architektur",
+        "tools": "Tools"
+      }
+    },
+    "companies": {
+      "verbund_pflegehilfe": "Verbund Pflegehilfe",
+      "sustayn_gmbh": "Sustayn GmbH",
+      "fpt_software": "FPT Software",
+      "sodefa_gmbh": "SODEFA GmbH Co. & KG",
+      "cybersoft_north_america": "Cybersoft North America Inc.",
+      "six_logics": "Six Logics"
+    },
+    "positions": {
+      "senior_software_engineer": "Senior Software-Ingenieur",
+      "software_engineer": "Software-Ingenieur",
+      "frontend_developer": "Frontend-Entwickler",
+      "software_developer": "Software-Entwickler",
+      "full_stack_developer": "Full-Stack-Entwickler"
+    },
+    "durations": {
+      "verbund_pflegehilfe": "Juli 2023 – Heute",
+      "sustayn_gmbh": "Februar 2022 – Juli 2023",
+      "fpt_software": "September 2021 – November 2021 (Vertrag)",
+      "sodefa_gmbh": "August 2019 – September 2021",
+      "cybersoft_north_america": "April 2018 – Oktober 2018",
+      "six_logics": "November 2016 – April 2018"
     }
   }
 }

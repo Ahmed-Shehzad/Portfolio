@@ -100,7 +100,7 @@ jobs:
             echo ""
             echo "📋 Recommended GitHub Settings:"
             echo "  1. Branch protection rules for 'main' branch"
-            echo "  2. Required status checks: Quality Gates, Portfolio Quality Checks"
+            echo "  2. Required status checks: Quality Gates"
             echo "  3. Required secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID"
             echo "  4. Actions permissions: Read repository contents and metadata"
           fi

@@ -1,0 +1,51 @@
+/*
+ * Print-optimized styles for Cover Letter
+ */
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .ats-cover-letter {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .cover-letter-content {
+    padding: 0.5in !important;
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Hide navigation and other UI elements */
+  nav,
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure proper page breaks */
+  .cover-letter-body {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  ul,
+  li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

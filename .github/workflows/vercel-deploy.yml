@@ -58,11 +58,19 @@ jobs:
           echo "🔧 Enhanced TypeScript Quality Gate"
           echo "===================================="
 
+          # Ensure script is executable
+          chmod +x ./scripts/type-check-quality-gate.sh
+
+          # Create reports directory if it doesn't exist
+          mkdir -p reports
+
           # Run comprehensive type checking with detailed diagnostics
           npm run type-check:quality-gate
 
-          # Upload type checking report as artifact
+          # Show summary of generated reports
           echo "📊 Type checking completed with detailed diagnostics"
+          echo "📁 Generated reports:"
+          ls -la reports/ || echo "No reports directory found"
 
       - name: Upload TypeScript Reports
         if: always() # Upload reports even if type checking fails
@@ -70,7 +78,7 @@ jobs:
         with:
           name: typescript-reports
           path: |
-            reports/typescript-report.txt
+            reports/
             node_modules/.cache/tsconfig.ci.tsbuildinfo
           retention-days: 7
 

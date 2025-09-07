@@ -106,29 +106,6 @@ jobs:
             exit 1
           fi
 
-      - name: Validate commit messages
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          BASE_REF: ${{ github.base_ref }}
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
-          echo "📝 Validating commit messages..."
-
-          # Get commits in this PR
-          if [ "$EVENT_NAME" = "pull_request" ]; then
-            COMMITS=$(git log --pretty=format:"%s" "origin/$BASE_REF..$HEAD_REF")
-          else
-            COMMITS=$(git log --pretty=format:"%s" -n 5)  # Last 5 commits for manual runs
-          fi
-
-          echo "$COMMITS" | while read -r commit_msg; do
-            if [[ "$commit_msg" =~ ^(feat|fix|docs|style|refactor|perf|test|chore|ci)(\(.+\))?: .+ ]]; then
-              echo "✅ Valid: $commit_msg"
-            else
-              echo "⚠️ Non-conventional: $commit_msg"
-            fi
-          done
-
   # Code quality checks specific to portfolio project
   portfolio-quality:
     name: Portfolio Quality Checks
@@ -148,28 +125,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check portfolio-specific requirements
-        run: |
-          echo "🎨 Checking portfolio-specific requirements..."
-
-          # Check if critical files exist
-          CRITICAL_FILES=(
-            "src/app/[locale]/page.tsx"
-            "src/app/[locale]/resume/page.tsx"
-            "src/app/[locale]/api/resume-pdf/route.ts"
-            "vercel.json"
-            "next.config.ts"
-          )
-
-          for file in "${CRITICAL_FILES[@]}"; do
-            if [ -f "$file" ]; then
-              echo "✅ Found: $file"
-            else
-              echo "❌ Missing: $file"
-              exit 1
-            fi
-          done
-
       - name: Validate resume PDF endpoint
         run: |
           echo "📄 Validating PDF generation setup..."
@@ -183,10 +138,26 @@ jobs:
           fi
 
           # Check PDF route implementation
-          if grep -q "generatePDF\|puppeteer" "src/app/[locale]/api/resume-pdf/route.ts"; then
+          if [ -f "src/app/[locale]/api/resume-pdf/[type]/route.ts" ] && grep -q "generateSpecializedResumePDF\|puppeteer" "src/app/[locale]/api/resume-pdf/[type]/route.ts"; then
             echo "✅ PDF generation route properly implemented"
           else
             echo "❌ PDF generation route incomplete"
+            exit 1
+          fi
+
+          # Check ATSResume component exists
+          if [ -f "src/components/server/ATSResume.tsx" ]; then
+            echo "✅ ATSResume component found"
+          else
+            echo "❌ ATSResume component missing"
+            exit 1
+          fi
+
+          # Check resume configurations
+          if [ -f "src/features/resume/constants.ts" ] && grep -q "RESUME_CONFIGS\|RESUME_TYPES" "src/features/resume/constants.ts"; then
+            echo "✅ Resume configurations found"
+          else
+            echo "❌ Resume configurations missing"
             exit 1
           fi
 
@@ -333,12 +304,23 @@ jobs:
           fi
 
           echo "Testing English resume page..."
-          if curl -f http://localhost:3000/en/resume -o /dev/null 2>/dev/null; then
-            echo "✅ English resume page loads"
+          if curl -f http://localhost:3000/en/resumes -o /dev/null 2>/dev/null; then
+            echo "✅ English resume selection page loads"
           else
-            echo "❌ English resume page failed"
+            echo "❌ English resume selection page failed"
             exit 1
           fi
+
+          echo "Testing specific resume types..."
+          for resume_type in frontend backend fullstack; do
+            echo "Testing $resume_type resume..."
+            if curl -f http://localhost:3000/en/resume/$resume_type -o /dev/null 2>/dev/null; then
+              echo "✅ English $resume_type resume page loads"
+            else
+              echo "❌ English $resume_type resume page failed"
+              exit 1
+            fi
+          done
 
           # Test German locale pages
           echo "Testing German home page..."
@@ -370,25 +352,27 @@ jobs:
         run: |
           echo "📄 Testing PDF generation..."
 
-          # Test locale-specific PDF endpoint with timeout
-          echo "Making request to PDF endpoint..."
-          response=$(timeout 60 curl -s -w "%{http_code}" http://localhost:3000/en/api/resume-pdf -o test.pdf 2>/dev/null || echo "timeout")
+          # Test PDF generation for different resume types
+          for resume_type in frontend backend fullstack; do
+            echo "Testing $resume_type PDF generation..."
+            response=$(timeout 60 curl -s -w "%{http_code}" http://localhost:3000/en/api/resume-pdf/$resume_type -o test-$resume_type.pdf 2>/dev/null || echo "timeout")
 
-          if [ "$response" = "timeout" ]; then
-            echo "❌ PDF generation timed out (>60s)"
-            exit 1
-          elif [ "$response" = "200" ] && [ -f test.pdf ] && [ -s test.pdf ]; then
-            echo "✅ PDF generation successful"
-            echo "📊 PDF size: $(wc -c < test.pdf) bytes"
-          else
-            echo "❌ PDF generation failed (HTTP: $response)"
-            if [ -f test.pdf ]; then
-              echo "📄 PDF file size: $(wc -c < test.pdf) bytes"
+            if [ "$response" = "timeout" ]; then
+              echo "❌ $resume_type PDF generation timed out (>60s)"
+              exit 1
+            elif [ "$response" = "200" ] && [ -f test-$resume_type.pdf ] && [ -s test-$resume_type.pdf ]; then
+              echo "✅ $resume_type PDF generation successful"
+              echo "📊 $resume_type PDF size: $(wc -c < test-$resume_type.pdf) bytes"
             else
-              echo "📄 No PDF file created"
+              echo "❌ $resume_type PDF generation failed (HTTP: $response)"
+              if [ -f test-$resume_type.pdf ]; then
+                echo "📄 $resume_type PDF file size: $(wc -c < test-$resume_type.pdf) bytes"
+              else
+                echo "📄 No $resume_type PDF file created"
+              fi
+              exit 1
             fi
-            exit 1
-          fi
+          done
 
       - name: Cleanup
         if: always()
@@ -397,7 +381,7 @@ jobs:
             kill $(cat .pid) || true
             rm .pid
           fi
-          rm -f test.pdf
+          rm -f test-*.pdf
 
   # Security and vulnerability scanning
   security-scan:
