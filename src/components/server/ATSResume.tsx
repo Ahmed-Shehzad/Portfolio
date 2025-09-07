@@ -120,7 +120,12 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
               <div>
                 <h3 className="mb-3 text-lg font-semibold text-gray-800">Programming Languages</h3>
                 <ul className="space-y-2 text-sm text-gray-700">
-                  {config.skills.primary.map((skill) => (
+                  {(
+                    config.skills.primary ||
+                    config.skills.frontend ||
+                    config.skills.backend ||
+                    []
+                  ).map((skill) => (
                     <li key={skill} className="flex items-start">
                       <span className="mt-1 mr-2 h-1 w-1 rounded-full bg-gray-600" />
                       <span>{skill}</span>
@@ -132,7 +137,12 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
               <div>
                 <h3 className="mb-3 text-lg font-semibold text-gray-800">Frontend Technologies</h3>
                 <ul className="space-y-2 text-sm text-gray-700">
-                  {config.skills.secondary.map((skill) => (
+                  {(
+                    config.skills.secondary ||
+                    config.skills.development ||
+                    config.skills.testing ||
+                    []
+                  ).map((skill) => (
                     <li key={skill} className="flex items-start">
                       <span className="mt-1 mr-2 h-1 w-1 rounded-full bg-gray-600" />
                       <span>{skill}</span>
@@ -144,7 +154,7 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
               <div>
                 <h3 className="mb-3 text-lg font-semibold text-gray-800">Development Tools</h3>
                 <ul className="space-y-2 text-sm text-gray-700">
-                  {config.skills.tools.map((tool) => (
+                  {(config.skills.tools || config.skills.devops || []).map((tool) => (
                     <li key={tool} className="flex items-start">
                       <span className="mt-1 mr-2 h-1 w-1 rounded-full bg-gray-600" />
                       <span>{tool}</span>

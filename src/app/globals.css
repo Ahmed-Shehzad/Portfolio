@@ -168,8 +168,16 @@
     /* Maintain grid layouts but make them print-friendly */
     .skills-grid {
       display: grid !important;
-      grid-template-columns: 1fr 1fr 1fr !important;
       gap: 1rem !important;
+    }
+
+    /* Support both 3-column and 4-column layouts for skills */
+    .skills-grid.lg\:grid-cols-3 {
+      grid-template-columns: 1fr 1fr 1fr !important;
+    }
+
+    .skills-grid.lg\:grid-cols-4 {
+      grid-template-columns: 1fr 1fr 1fr 1fr !important;
     }
 
     .languages-grid {

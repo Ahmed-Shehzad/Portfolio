@@ -93,14 +93,22 @@ export default async function ResumeSelectionPage({ params }: ResumeSelectionPag
                       <div>
                         <h3 className="mb-2 font-semibold text-gray-800">Key Skills:</h3>
                         <div className="flex flex-wrap gap-2">
-                          {config.skills.primary.slice(0, 4).map((skill) => (
-                            <span
-                              key={skill}
-                              className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
-                            >
-                              {skill}
-                            </span>
-                          ))}
+                          {(
+                            config.skills.primary ||
+                            config.skills.frontend ||
+                            config.skills.backend ||
+                            Object.values(config.skills).find((arr) => Array.isArray(arr)) ||
+                            []
+                          )
+                            .slice(0, 4)
+                            .map((skill) => (
+                              <span
+                                key={skill}
+                                className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
+                              >
+                                {skill}
+                              </span>
+                            ))}
                         </div>
                       </div>
 

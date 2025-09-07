@@ -8,10 +8,19 @@ export interface ResumeConfig {
   type: ResumeType;
   title: string;
   description: string;
+  summary?: string;
   skills: {
-    primary: string[];
-    secondary: string[];
-    tools: string[];
+    primary?: string[];
+    secondary?: string[];
+    tools?: string[];
+    frontend?: string[];
+    backend?: string[];
+    development?: string[];
+    testing?: string[];
+    devops?: string[];
+    cloud?: string[];
+    databases?: string[];
+    architecture?: string[];
   };
   experience: ExperienceItem[];
   projects: ProjectItem[];
