@@ -42,9 +42,9 @@ const baseHeaderOptions = [
   { title: "Contact", href: "#contact", id: "contact" },
   { title: "Resume", href: "/resumes", id: "resumes", isExternal: true },
   {
-    title: "Cover Letter",
-    href: "/cover-letter",
-    id: "cover-letter",
+    title: "Cover Letters",
+    href: "/cover-letters",
+    id: "cover-letters",
     isExternal: true,
     showInNavigation: env.isDevelopment, // Only show in nav during development
   },

@@ -18,6 +18,12 @@ interface ATSResumeProps {
  */
 export async function ATSResume({ config, locale }: ATSResumeProps) {
   const t = await getTranslations({ locale, namespace: "resume" });
+
+  // Contact information constants for better maintainability
+  const contactEmail = t("common.contact.email");
+  const contactPhone = t("common.contact.phone");
+  const contactPhoneHref = contactPhone.replace(/\s/g, "");
+
   return (
     <div className="w-full">
       {/* Resume Container */}
@@ -30,63 +36,106 @@ export async function ATSResume({ config, locale }: ATSResumeProps) {
             </h1>
             <h2 className="mb-4 text-xl font-medium text-gray-700">{config.title}</h2>
 
-            <div className="contact-info grid grid-cols-1 gap-2 text-sm text-gray-600 md:grid-cols-2">
+            <footer
+              className="contact-info grid grid-cols-1 gap-2 text-sm text-gray-600 not-italic md:grid-cols-2"
+              aria-label="Contact information"
+            >
               <div className="space-y-1">
                 <div className="flex items-center">
-                  <span className="mr-2 font-medium">Email:</span>
+                  <span className="mr-2 font-medium" id="email-label">
+                    Email:
+                  </span>
                   <a
-                    href={`mailto:${t("common.contact.email")}`}
-                    className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
+                    href={`mailto:${contactEmail}`}
+                    className="rounded-sm text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
+                    aria-labelledby="email-label"
+                    aria-describedby="email-description"
+                    title={`Send email to ${contactEmail}`}
                   >
-                    {t("common.contact.email")}
+                    {contactEmail}
                   </a>
+                  <span id="email-description" className="sr-only">
+                    Primary email address for professional contact
+                  </span>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 font-medium">Phone:</span>
+                  <span className="mr-2 font-medium" id="phone-label">
+                    Phone:
+                  </span>
                   <a
-                    href={`tel:${t("common.contact.phone").replace(/\s/g, "")}`}
-                    className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
+                    href={`tel:${contactPhoneHref}`}
+                    className="rounded-sm text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
+                    aria-labelledby="phone-label"
+                    aria-describedby="phone-description"
+                    title={`Call ${contactPhone}`}
                   >
-                    {t("common.contact.phone")}
+                    {contactPhone}
                   </a>
+                  <span id="phone-description" className="sr-only">
+                    Primary phone number for professional contact
+                  </span>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 font-medium">Location:</span>
+                  <span className="mr-2 font-medium" id="location-label">
+                    Location:
+                  </span>
                   <a
                     href="https://maps.google.com/?q=Wiesbaden,Germany"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
+                    className="rounded-sm text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
+                    aria-labelledby="location-label"
+                    aria-describedby="location-description"
+                    title="View location on Google Maps (opens in new tab)"
                   >
                     {t("common.contact.location")}
                   </a>
+                  <span id="location-description" className="sr-only">
+                    Current professional location - opens Google Maps in new tab
+                  </span>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center">
-                  <span className="mr-2 font-medium">LinkedIn:</span>
+                  <span className="mr-2 font-medium" id="linkedin-label">
+                    LinkedIn:
+                  </span>
                   <a
                     href={`https://${t("common.contact.linkedin")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="break-all text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
+                    className="rounded-sm break-all text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
+                    aria-labelledby="linkedin-label"
+                    aria-describedby="linkedin-description"
+                    title="Visit LinkedIn profile (opens in new tab)"
                   >
                     {t("common.contact.linkedin")}
                   </a>
+                  <span id="linkedin-description" className="sr-only">
+                    Professional LinkedIn profile - opens in new tab
+                  </span>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 font-medium">Website:</span>
+                  <span className="mr-2 font-medium" id="website-label">
+                    Website:
+                  </span>
                   <a
                     href={`https://${t("common.contact.website")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
+                    className="rounded-sm text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
+                    aria-labelledby="website-label"
+                    aria-describedby="website-description"
+                    title="Visit personal website (opens in new tab)"
                   >
                     {t("common.contact.website")}
                   </a>
+                  <span id="website-description" className="sr-only">
+                    Personal portfolio website - opens in new tab
+                  </span>
                 </div>
               </div>
-            </div>
+            </footer>
           </header>
 
           {/* Professional Summary */}

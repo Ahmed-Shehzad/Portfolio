@@ -23,6 +23,7 @@
     "format:fix": "prettier --write --list-different .",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "check": "npm run format:check && npm run lint && npm run type-check",
+    "validate": "npm run type-check:quality-gate && npm run type-check && npm run format:check && npm run lint && npm run build",
     "fix": "npm run format:fix && npm run lint:fix",
     "docs:validate": "./scripts/validate-docs.sh",
     "docs:lint": "./scripts/lint-docs.sh",

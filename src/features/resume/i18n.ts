@@ -49,10 +49,18 @@ export async function getLocalizedResumeConfig(
 export async function getLocalizedResumeMetadata(type: ResumeType, locale: string) {
   const t = await getTranslations({ locale, namespace: "resume" });
 
+  // Get keywords from translation - could be string or array
+  const keywordsValue = t(`metadata.${type}.keywords`);
+
+  // Handle both string (comma-separated) and array formats
+  const keywords = Array.isArray(keywordsValue)
+    ? keywordsValue
+    : keywordsValue.split(",").map((keyword) => keyword.trim());
+
   return {
     title: t(`metadata.${type}.title`),
     description: t(`metadata.${type}.description`),
-    keywords: t(`metadata.${type}.keywords`).split(","),
+    keywords,
   };
 }
 

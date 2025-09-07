@@ -48,6 +48,36 @@
     color: rgb(209 213 219); /* gray-300 for better contrast */
   }
 
+  /* Screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Ensure focus indicators are visible */
+  .focus\:ring-2:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode support for contact links */
+  @media (prefers-contrast: high) {
+    .text-blue-600 {
+      color: #0000ff !important;
+    }
+
+    .text-blue-600:hover {
+      color: #000080 !important;
+    }
+  }
+
   /* ATS Resume Print Styles - Multi-page with consistent design */
   @media print {
     @page {
@@ -78,14 +108,22 @@
     }
 
     * {
+      /* Webkit browsers (Chrome, Safari) */
       -webkit-print-color-adjust: exact !important;
+      /* Standard property */
       print-color-adjust: exact !important;
+      /* IE/Edge fallback */
+      -ms-print-color-adjust: exact !important;
     }
 
     body {
       background: white !important;
       color: black !important;
       counter-reset: page;
+      /* Ensure consistent font rendering across browsers */
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      text-rendering: optimizeSpeed !important;
     }
 
     .ats-resume {
@@ -100,23 +138,44 @@
       padding: 0 !important;
     }
 
-    /* Print page breaks */
+    /* Print page breaks with vendor prefixes */
     .print-page-break-before {
+      /* Standard properties */
       page-break-before: always !important;
       break-before: page !important;
+      /* Webkit browsers */
+      -webkit-column-break-before: always !important;
+      /* Firefox/IE */
+      -moz-page-break-before: always !important;
+      -ms-page-break-before: always !important;
     }
 
     .print-page-break-after {
+      /* Standard properties */
       page-break-after: always !important;
       break-after: page !important;
+      /* Webkit browsers */
+      -webkit-column-break-after: always !important;
+      /* Firefox/IE */
+      -moz-page-break-after: always !important;
+      -ms-page-break-after: always !important;
     }
 
-    /* Avoid breaks inside these elements */
+    /* Avoid breaks inside these elements with vendor prefixes */
     .experience-item,
     .project-item,
     .ats-header {
+      /* Standard properties */
       page-break-inside: avoid !important;
       break-inside: avoid !important;
+      /* Webkit browsers */
+      -webkit-column-break-inside: avoid !important;
+      /* Firefox/IE */
+      -moz-page-break-inside: avoid !important;
+      -ms-page-break-inside: avoid !important;
+      /* Additional orphan/widow control */
+      orphans: 3 !important;
+      widows: 3 !important;
     }
 
     /* Ensure consistent text styling with web version */
@@ -167,23 +226,62 @@
 
     /* Maintain grid layouts but make them print-friendly */
     .skills-grid {
+      /* Modern browsers: CSS Grid */
       display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
       gap: 1rem !important;
+      /* Webkit prefix for older Safari */
+      -webkit-grid-gap: 1rem !important;
     }
 
     /* Support both 3-column and 4-column layouts for skills */
     .skills-grid.lg\:grid-cols-3 {
-      grid-template-columns: 1fr 1fr 1fr !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      /* Webkit grid support */
+      -webkit-grid-template-columns: repeat(3, 1fr) !important;
     }
 
     .skills-grid.lg\:grid-cols-4 {
-      grid-template-columns: 1fr 1fr 1fr 1fr !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      /* Webkit grid support */
+      -webkit-grid-template-columns: repeat(4, 1fr) !important;
     }
 
     .languages-grid {
+      /* Modern browsers: CSS Grid */
       display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
+      grid-template-columns: repeat(2, 1fr) !important;
       gap: 0.5rem !important;
+      /* Webkit grid support */
+      -webkit-grid-template-columns: repeat(2, 1fr) !important;
+      -webkit-grid-gap: 0.5rem !important;
+    }
+
+    /* Flexbox fallback for older browsers that don't support grid */
+    @supports not (display: grid) {
+      .skills-grid,
+      .languages-grid {
+        display: -webkit-flex !important;
+        display: -ms-flexbox !important;
+        display: flex !important;
+        -webkit-flex-wrap: wrap !important;
+        -ms-flex-wrap: wrap !important;
+        flex-wrap: wrap !important;
+      }
+
+      .skills-grid > *,
+      .languages-grid > * {
+        -webkit-flex: 1 1 calc(33.333% - 1rem) !important;
+        -ms-flex: 1 1 calc(33.333% - 1rem) !important;
+        flex: 1 1 calc(33.333% - 1rem) !important;
+        margin: 0.5rem !important;
+      }
+
+      .languages-grid > * {
+        -webkit-flex: 1 1 calc(50% - 0.5rem) !important;
+        -ms-flex: 1 1 calc(50% - 0.5rem) !important;
+        flex: 1 1 calc(50% - 0.5rem) !important;
+      }
     }
 
     /* Ensure proper spacing in print */
@@ -201,6 +299,78 @@
       .print-footer,
       .print-footer-visible {
         display: none !important;
+      }
+    }
+
+    /* Enhanced cross-browser print optimizations */
+
+    /* Webkit-specific print optimizations */
+    @media print and (-webkit-min-device-pixel-ratio: 0) {
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .ats-resume {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+      }
+    }
+
+    /* Firefox-specific print optimizations */
+    @-moz-document url-prefix() {
+      @media print {
+        body {
+          print-color-adjust: exact !important;
+        }
+
+        .ats-section {
+          -moz-page-break-inside: avoid !important;
+        }
+      }
+    }
+
+    /* IE/Edge fallbacks */
+    @media print and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+      body {
+        -ms-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .experience-item,
+      .project-item {
+        -ms-page-break-inside: avoid !important;
+      }
+    } /* Print-specific font optimizations for better readability */
+    @media print {
+      /* Ensure consistent font rendering across all browsers */
+      * {
+        -webkit-text-size-adjust: 100% !important;
+        -ms-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+      }
+
+      /* High contrast mode support */
+      @media (-ms-high-contrast: active) {
+        .text-gray-600,
+        .text-gray-700 {
+          color: black !important;
+        }
+      }
+
+      /* Ensure proper text rendering in all browsers */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p,
+      span,
+      div {
+        text-rendering: optimizeSpeed !important;
+        -webkit-font-smoothing: subpixel-antialiased !important;
+        -moz-osx-font-smoothing: auto !important;
       }
     }
   }

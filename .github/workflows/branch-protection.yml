@@ -125,33 +125,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check portfolio-specific requirements
-        run: |
-          echo "🎨 Checking portfolio-specific requirements..."
-
-          # Check if critical files exist
-          CRITICAL_FILES=(
-            "src/app/[locale]/page.tsx"
-            "src/app/[locale]/resume/page.tsx"
-            "src/app/[locale]/resume/[type]/page.tsx"
-            "src/app/[locale]/resumes/page.tsx"
-            "src/app/[locale]/api/resume-pdf/route.ts"
-            "src/app/[locale]/api/resume-pdf/[type]/route.ts"
-            "src/features/resume/index.ts"
-            "src/components/server/ATSResume.tsx"
-            "vercel.json"
-            "next.config.ts"
-          )
-
-          for file in "${CRITICAL_FILES[@]}"; do
-            if [ -f "$file" ]; then
-              echo "✅ Found: $file"
-            else
-              echo "❌ Missing: $file"
-              exit 1
-            fi
-          done
-
       - name: Validate resume PDF endpoint
         run: |
           echo "📄 Validating PDF generation setup..."

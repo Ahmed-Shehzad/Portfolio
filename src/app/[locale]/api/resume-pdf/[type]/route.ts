@@ -2,6 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import { getResumeConfig, isValidResumeType } from "@/features/resume";
 import { logger } from "@/shared/utils";
 
+/**
+ * Sanitize filename by removing potentially dangerous characters
+ */
+function sanitizeFilename(filename: string): string {
+  return filename
+    .replace(/[^a-zA-Z0-9-_.]/g, "-") // Replace non-alphanumeric chars with hyphens
+    .replace(/-{2,}/g, "-") // Replace multiple consecutive hyphens with single hyphen
+    .replace(/^-/, "") // Remove leading hyphen
+    .replace(/-$/, ""); // Remove trailing hyphen
+}
+
+/**
+ * Determine protocol securely
+ */
+function getSecureProtocol(request: NextRequest): string {
+  // In production (Vercel), trust x-forwarded-proto header
+  if (process.env["VERCEL"] || process.env.NODE_ENV === "production") {
+    const forwardedProto = request.headers.get("x-forwarded-proto");
+    return forwardedProto === "https" ? "https" : "http"; // Use http as fallback, but prefer https
+  }
+
+  // In development, check if running on localhost with HTTPS
+  const host = request.headers.get("host");
+  if (host?.includes("localhost") || host?.includes("127.0.0.1")) {
+    return "http"; // Local development typically uses http
+  }
+
+  // Default to https for all other cases
+  return "https";
+}
+
 // Chrome args for Puppeteer
 const CHROME_ARGS = [
   "--no-sandbox",
@@ -22,7 +53,7 @@ const apiLogger = logger;
  * Launch browser with appropriate configuration based on environment
  */
 async function launchBrowser() {
-  if (process.env.VERCEL) {
+  if (process.env["VERCEL"]) {
     // Production: Use Sparticuz Chromium for Vercel
     apiLogger.info("Using @sparticuz/chromium for Vercel production");
 
@@ -59,13 +90,16 @@ async function generateSpecializedResumePDF(
   try {
     apiLogger.debug(`Navigating to resume URL: ${resumeUrl}`);
 
-    // Navigate to the resume page
+    // Navigate to the resume page with increased timeout and less strict wait condition
     await page.goto(resumeUrl, {
-      waitUntil: "networkidle0",
-      timeout: 30000,
+      waitUntil: "domcontentloaded", // Less strict than networkidle0
+      timeout: 60000, // Increased timeout to 60 seconds
     });
 
-    apiLogger.debug("Page loaded successfully");
+    apiLogger.debug("Page loaded successfully, waiting for content to settle");
+
+    // Wait a bit more for any dynamic content to load
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     apiLogger.debug("Generating PDF...");
 
@@ -116,9 +150,16 @@ export async function GET(
 
     apiLogger.info(`Generating PDF for ${type} resume in ${locale} locale`);
 
-    // Get the base URL
-    const protocol = request.headers.get("x-forwarded-proto") || "http";
+    // Get the base URL with secure protocol determination
+    const protocol = getSecureProtocol(request);
     const host = request.headers.get("host");
+
+    // Validate host header to prevent host header injection
+    if (!host || !/^[a-zA-Z\d.-]+(?::\d+)?$/.test(host)) {
+      apiLogger.warn(`Invalid or missing host header: ${host}`);
+      return NextResponse.json({ error: "Invalid host header" }, { status: 400 });
+    }
+
     const baseUrl = `${protocol}://${host}`;
 
     // Construct resume URL
@@ -134,11 +175,16 @@ export async function GET(
 
     apiLogger.info(`Successfully generated ${type} resume PDF`);
 
+    // Create sanitized filename
+    const sanitizedType = sanitizeFilename(type);
+    const sanitizedLocale = sanitizeFilename(locale);
+    const filename = `muhammad-ahmed-shehzad-${sanitizedType}-resume-${sanitizedLocale}.pdf`;
+
     // Return PDF response
     return new NextResponse(Buffer.from(pdf), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="muhammad-ahmed-shehzad-${type}-resume-${locale}.pdf"`,
+        "Content-Disposition": `attachment; filename="${filename}"`,
         "Cache-Control": "no-cache, no-store, must-revalidate",
         Pragma: "no-cache",
         Expires: "0",

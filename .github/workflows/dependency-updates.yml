@@ -157,15 +157,71 @@ jobs:
 
       - name: Check bundle size
         run: |
-          echo "📊 Analyzing bundle size..."
+          echo "📊 Analyzing Next.js bundle size..."
 
-          # Install bundle analyzer if not already present
-          npm install --no-save webpack-bundle-analyzer
+          # Check if build was successful and .next directory exists
+          if [ ! -d ".next" ]; then
+            echo "❌ .next directory not found. Build may have failed."
+            exit 1
+          fi
 
-          # Generate bundle analysis
-          npx webpack-bundle-analyzer .next/static/chunks/*.js --report --mode json > bundle-analysis.json
+          # Create bundle analysis report
+          echo "🔍 Analyzing bundle composition..."
 
-          echo "Bundle analysis completed!"
+          # Get Next.js bundle information
+          echo "## 📊 Bundle Analysis Report" > bundle-analysis.md
+          echo "Generated: $(date)" >> bundle-analysis.md
+          echo "" >> bundle-analysis.md
+
+          # Analyze main chunks
+          echo "### Main JavaScript Chunks" >> bundle-analysis.md
+          if [ -d ".next/static/chunks" ]; then
+            echo "| File | Size |" >> bundle-analysis.md
+            echo "|------|------|" >> bundle-analysis.md
+
+            for chunk in .next/static/chunks/*.js; do
+              if [ -f "$chunk" ]; then
+                filename=$(basename "$chunk")
+                size=$(du -h "$chunk" | cut -f1)
+                echo "| $filename | $size |" >> bundle-analysis.md
+              fi
+            done
+          else
+            echo "No chunks directory found" >> bundle-analysis.md
+          fi
+
+          echo "" >> bundle-analysis.md
+
+          # Analyze pages
+          echo "### Page Bundles" >> bundle-analysis.md
+          if [ -d ".next/static/chunks/pages" ]; then
+            echo "| Page | Size |" >> bundle-analysis.md
+            echo "|------|------|" >> bundle-analysis.md
+
+            for page in .next/static/chunks/pages/*.js; do
+              if [ -f "$page" ]; then
+                filename=$(basename "$page")
+                size=$(du -h "$page" | cut -f1)
+                echo "| $filename | $size |" >> bundle-analysis.md
+              fi
+            done
+          fi
+
+          echo "" >> bundle-analysis.md
+
+          # Total build size
+          echo "### Build Size Summary" >> bundle-analysis.md
+          if [ -d ".next" ]; then
+            total_size=$(du -sh .next | cut -f1)
+            static_size=$(du -sh .next/static 2>/dev/null | cut -f1 || echo "N/A")
+            echo "- Total .next directory: $total_size" >> bundle-analysis.md
+            echo "- Static assets: $static_size" >> bundle-analysis.md
+          fi
+
+          # Show the analysis
+          cat bundle-analysis.md
+
+          echo "✅ Bundle analysis completed!"
 
       - name: Generate maintenance report
         run: |
@@ -182,12 +238,23 @@ jobs:
           echo "- Build status: ✅ Successful" >> maintenance-report.md
           echo "- Node version: $(node --version)" >> maintenance-report.md
           echo "- NPM version: $(npm --version)" >> maintenance-report.md
+          if [ -d ".next" ]; then
+            total_build_size=$(du -sh .next | cut -f1)
+            echo "- Total build size: $total_build_size" >> maintenance-report.md
+          fi
           echo "" >> maintenance-report.md
 
           echo "## 📊 Project Stats" >> maintenance-report.md
           echo "- TypeScript files: $(find src -name '*.ts' -o -name '*.tsx' | wc -l)" >> maintenance-report.md
           echo "- Component files: $(find src/components -name '*.tsx' | wc -l)" >> maintenance-report.md
           echo "- Test files: $(find src -name '*.test.*' | wc -l)" >> maintenance-report.md
+          echo "" >> maintenance-report.md
+
+          # Append bundle analysis if it exists
+          if [ -f "bundle-analysis.md" ]; then
+            echo "## 📦 Bundle Analysis" >> maintenance-report.md
+            cat bundle-analysis.md >> maintenance-report.md
+          fi
 
           cat maintenance-report.md
 
@@ -197,5 +264,7 @@ jobs:
           name: maintenance-report-${{ github.run_number }}
           path: |
             maintenance-report.md
-            bundle-analysis.json
+            bundle-analysis.md
+            outdated.json
+            audit.json
           retention-days: 90

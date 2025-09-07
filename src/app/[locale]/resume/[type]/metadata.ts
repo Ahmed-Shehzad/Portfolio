@@ -14,11 +14,8 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
   }
 
   const metadata = await getLocalizedResumeMetadata(type, locale);
-  if (!metadata) {
-    notFound();
-  }
 
-  const baseUrl = "https://ahmed-shehzad.com";
+  const baseUrl = "https://portfolio-azure-five-75.vercel.app";
 
   return {
     title: metadata.title,
