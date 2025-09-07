@@ -1,4 +1,5 @@
 import type { ResumeConfig } from "@/features/resume";
+import { getTranslations } from "next-intl/server";
 
 interface ATSResumeProps {
   readonly config: ResumeConfig;
@@ -15,7 +16,8 @@ interface ATSResumeProps {
  * - Consistent design across web and print modes
  * - Tailwind CSS v4 optimized
  */
-export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
+export async function ATSResume({ config, locale }: ATSResumeProps) {
+  const t = await getTranslations({ locale, namespace: "resume" });
   return (
     <div className="w-full">
       {/* Resume Container */}
@@ -24,7 +26,7 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
           {/* Header Section */}
           <header className="ats-header mb-8 border-b-2 border-gray-800 pb-6">
             <h1 className="mb-3 text-4xl font-bold tracking-tight text-gray-900">
-              Muhammad Ahmed Shehzad
+              {t("common.name")}
             </h1>
             <h2 className="mb-4 text-xl font-medium text-gray-700">{config.title}</h2>
 
@@ -33,30 +35,30 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
                 <div className="flex items-center">
                   <span className="mr-2 font-medium">Email:</span>
                   <a
-                    href="mailto:ahmedshehzad786@gmail.com"
+                    href={`mailto:${t("common.contact.email")}`}
                     className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
                   >
-                    ahmedshehzad786@gmail.com
+                    {t("common.contact.email")}
                   </a>
                 </div>
                 <div className="flex items-center">
                   <span className="mr-2 font-medium">Phone:</span>
                   <a
-                    href="tel:+4917623378452"
+                    href={`tel:${t("common.contact.phone").replace(/\s/g, "")}`}
                     className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
                   >
-                    +49 176 233 78 452
+                    {t("common.contact.phone")}
                   </a>
                 </div>
                 <div className="flex items-center">
                   <span className="mr-2 font-medium">Location:</span>
                   <a
-                    href="https://maps.google.com/?q=Wiesbaden,Germany"
+                    href="https://maps.google.com/?q=Mainz,Germany"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
                   >
-                    Wiesbaden, Germany
+                    {t("common.contact.location")}
                   </a>
                 </div>
               </div>
@@ -64,34 +66,23 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
                 <div className="flex items-center">
                   <span className="mr-2 font-medium">LinkedIn:</span>
                   <a
-                    href="https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/"
+                    href={`https://${t("common.contact.linkedin")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="break-all text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
                   >
-                    https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/
+                    {t("common.contact.linkedin")}
                   </a>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 font-medium">GitHub:</span>
+                  <span className="mr-2 font-medium">Website:</span>
                   <a
-                    href="https://github.com/Ahmed-Shehzad"
+                    href={`https://${t("common.contact.website")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
                   >
-                    https://github.com/Ahmed-Shehzad
-                  </a>
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-2 font-medium">Portfolio:</span>
-                  <a
-                    href="https://portfolio-azure-five-75.vercel.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800 print:text-gray-700 print:no-underline"
-                  >
-                    https://portfolio-azure-five-75.vercel.app
+                    {t("common.contact.website")}
                   </a>
                 </div>
               </div>
@@ -101,29 +92,32 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
           {/* Professional Summary */}
           <section className="ats-section mb-8">
             <h2 className="ats-section-title mb-4 border-b border-gray-400 pb-2 text-2xl font-bold text-gray-900">
-              PROFESSIONAL SUMMARY
+              {t("common.sections.summary")}
             </h2>
-            <p className="leading-relaxed text-gray-800">
-              {config.description} with 5+ years of experience delivering high-quality software
-              solutions. Proven track record of building scalable applications, optimizing
-              performance, and leading technical initiatives that drive business growth.
-            </p>
+            <p className="leading-relaxed text-gray-800">{config.summary || config.description}</p>
           </section>
 
           {/* Technical Skills */}
           <section className="ats-section mb-8">
             <h2 className="ats-section-title mb-4 border-b border-gray-400 pb-2 text-2xl font-bold text-gray-900">
-              TECHNICAL SKILLS
+              {t("common.sections.skills")}
             </h2>
 
             <div className="skills-grid grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {/* Primary Skills Column */}
               <div>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">Programming Languages</h3>
+                <h3 className="mb-3 text-lg font-semibold text-gray-800">
+                  {(() => {
+                    if (config.skills.frontend) return t("skills.categories.frontend");
+                    if (config.skills.backend) return t("skills.categories.backend");
+                    return t("skills.categories.development");
+                  })()}
+                </h3>
                 <ul className="space-y-2 text-sm text-gray-700">
                   {(
-                    config.skills.primary ||
                     config.skills.frontend ||
                     config.skills.backend ||
+                    config.skills.primary ||
                     []
                   ).map((skill) => (
                     <li key={skill} className="flex items-start">
@@ -134,13 +128,18 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
                 </ul>
               </div>
 
+              {/* Secondary Skills Column */}
               <div>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">Frontend Technologies</h3>
+                <h3 className="mb-3 text-lg font-semibold text-gray-800">
+                  {config.skills.architecture
+                    ? t("skills.categories.architecture")
+                    : t("skills.categories.development")}
+                </h3>
                 <ul className="space-y-2 text-sm text-gray-700">
                   {(
-                    config.skills.secondary ||
+                    config.skills.architecture ||
                     config.skills.development ||
-                    config.skills.testing ||
+                    config.skills.secondary ||
                     []
                   ).map((skill) => (
                     <li key={skill} className="flex items-start">
@@ -152,7 +151,9 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
               </div>
 
               <div>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">Development Tools</h3>
+                <h3 className="mb-3 text-lg font-semibold text-gray-800">
+                  {t("skills.categories.tools")}
+                </h3>
                 <ul className="space-y-2 text-sm text-gray-700">
                   {(config.skills.tools || config.skills.devops || []).map((tool) => (
                     <li key={tool} className="flex items-start">
@@ -168,7 +169,7 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
           {/* Professional Experience - All experiences in one section */}
           <section className="ats-section print-page-break-before mb-8">
             <h2 className="ats-section-title mb-4 border-b border-gray-400 pb-2 text-2xl font-bold text-gray-900">
-              PROFESSIONAL EXPERIENCE
+              {t("common.sections.experience")}
             </h2>
 
             {config.experience.map((exp, index) => (
@@ -212,7 +213,7 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
           {/* Key Projects */}
           <section className="ats-section print-page-break-before mb-8">
             <h2 className="ats-section-title mb-4 border-b border-gray-400 pb-2 text-2xl font-bold text-gray-900">
-              KEY PROJECTS
+              {t("common.sections.projects")}
             </h2>
 
             {config.projects.map((project) => (
@@ -262,7 +263,7 @@ export function ATSResume({ config, locale: _locale }: ATSResumeProps) {
           {/* Languages */}
           <section className="ats-section">
             <h2 className="ats-section-title mb-4 border-b border-gray-400 pb-2 text-2xl font-bold text-gray-900">
-              LANGUAGES
+              {t("common.sections.languages")}
             </h2>
 
             <div className="languages-grid grid grid-cols-2 gap-4 lg:grid-cols-4">

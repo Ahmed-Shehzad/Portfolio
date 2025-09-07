@@ -1,4 +1,4 @@
-import { RESUME_TYPES, RESUME_CONFIGS } from "@/features/resume";
+import { RESUME_TYPES, getLocalizedResumeConfig } from "@/features/resume";
 import { LanguageSwitcher } from "@/components";
 import Link from "next/link";
 
@@ -8,6 +8,14 @@ interface ResumeSelectionPageProps {
 
 export default async function ResumeSelectionPage({ params }: ResumeSelectionPageProps) {
   const { locale } = await params;
+
+  // Get all localized configurations
+  const configurations = await Promise.all(
+    RESUME_TYPES.map(async (type) => ({
+      type,
+      config: await getLocalizedResumeConfig(type, locale),
+    }))
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 p-6">
@@ -26,8 +34,7 @@ export default async function ResumeSelectionPage({ params }: ResumeSelectionPag
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {RESUME_TYPES.map((type) => {
-            const config = RESUME_CONFIGS[type];
+          {configurations.map(({ type, config }) => {
             if (!config) return null;
             return (
               <Link key={type} href={`/${locale}/resume/${type}`} className="group block">

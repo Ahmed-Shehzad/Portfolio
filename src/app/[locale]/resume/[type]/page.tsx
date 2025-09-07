@@ -1,6 +1,6 @@
 import { ATSResume } from "@/components/server/ATSResume";
 import {
-  getResumeConfig,
+  getLocalizedResumeConfig,
   isValidResumeType,
   type ResumeType,
   type ResumePageProps,
@@ -20,7 +20,7 @@ export default async function SpecializedResumePage({ params }: ResumePageProps)
     notFound();
   }
 
-  const config = getResumeConfig(type);
+  const config = await getLocalizedResumeConfig(type as ResumeType, locale);
   if (!config) {
     notFound();
   }

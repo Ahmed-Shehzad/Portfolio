@@ -1,4 +1,4 @@
-import { getResumeMetadata, isValidResumeType } from "@/features/resume";
+import { getLocalizedResumeMetadata, isValidResumeType } from "@/features/resume";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
     notFound();
   }
 
-  const metadata = getResumeMetadata(type);
+  const metadata = await getLocalizedResumeMetadata(type, locale);
   if (!metadata) {
     notFound();
   }

@@ -216,5 +216,100 @@
       "expectedJoiningDatePlaceholder": "z.B. sofort, 2 Wochen Kündigungsfrist, Januar 2025",
       "joiningDateHelp": "Optional: Wird im Schlussabsatz aufgenommen, wenn ausgefüllt."
     }
+  },
+  "resume": {
+    "metadata": {
+      "frontend": {
+        "title": "Frontend-Entwickler Lebenslauf | Muhammad Ahmed Shehzad",
+        "description": "Spezialisierter Frontend-Entwickler Lebenslauf mit React, TypeScript und modernen Webentwicklungsfähigkeiten. ATS-optimiertes Format mit PDF-Download.",
+        "keywords": "Frontend-Entwickler,React-Entwickler,TypeScript,Next.js,Webentwicklung,UI/UX,Responsive Design,ATS Lebenslauf"
+      },
+      "backend": {
+        "title": "Backend-Entwickler Lebenslauf | Muhammad Ahmed Shehzad",
+        "description": "Spezialisierter Backend-Entwickler Lebenslauf mit .NET, C# und Cloud-Architekturfähigkeiten. ATS-optimiertes Format mit PDF-Download.",
+        "keywords": "Backend-Entwickler,.NET-Entwickler,C# Entwickler,Software-Ingenieur,Cloud-Architektur,Microservices,API-Entwicklung,ATS Lebenslauf"
+      },
+      "fullstack": {
+        "title": "Full-Stack-Entwickler Lebenslauf | Muhammad Ahmed Shehzad",
+        "description": "Erfahrener Full-Stack-Entwickler Lebenslauf mit React.js und .NET Core Fähigkeiten. ATS-optimiertes Format mit PDF-Download.",
+        "keywords": "Full-Stack-Entwickler,React-Entwickler,.NET-Entwickler,TypeScript,Software-Ingenieur,Webentwicklung,Vollstack-Ingenieur,ATS Lebenslauf"
+      }
+    },
+    "common": {
+      "name": "Muhammad Ahmed Shehzad",
+      "contact": {
+        "email": "muhammadahmedshehzad@gmail.com",
+        "phone": "+49 176 34935938",
+        "location": "Mainz, Deutschland",
+        "linkedin": "linkedin.com/in/muhammadahmedshehzad",
+        "website": "muhammadahmedshehzad.com"
+      },
+      "sections": {
+        "summary": "ZUSAMMENFASSUNG",
+        "skills": "FÄHIGKEITEN",
+        "experience": "BERUFSERFAHRUNG",
+        "projects": "PROJEKTE",
+        "languages": "SPRACHEN"
+      },
+      "languages": {
+        "english": "Englisch: Fließend",
+        "german": "Deutsch: Mittelstufe",
+        "urdu": "Urdu: Muttersprache",
+        "punjabi": "Punjabi: Konversation"
+      }
+    },
+    "configs": {
+      "frontend": {
+        "title": "Senior Frontend-Entwickler",
+        "description": "Ergebnisorientierter Senior Frontend-Entwickler mit 5+ Jahren Erfahrung in der Bereitstellung skalierbarer React.js-Anwendungen. Nachgewiesene Erfolgsbilanz: 40% Leistungsverbesserungen, 25.000+ Benutzerplattformen, 99,2% Verfügbarkeit. Experte in TypeScript, Next.js und modernen CI/CD-Praktiken in Gesundheitswesen, Fintech und Unternehmenssektoren.",
+        "summary": "Senior Frontend-Entwickler spezialisiert auf React-Ökosystem und moderne Webtechnologien. Bereitstellung hochperformanter Anwendungen für 25.000+ Benutzer mit 99,2% Verfügbarkeit. Experte in Komponentenarchitektur, State Management und CI/CD-Optimierung. Nachgewiesene Fähigkeit, Ladezeiten um 70% zu reduzieren und Benutzerengagement um 45% zu verbessern."
+      },
+      "backend": {
+        "title": "Backend Software-Ingenieur",
+        "description": "Senior Backend-Ingenieur mit 5+ Jahren Erfahrung im Aufbau skalierbarer .NET/C#-Anwendungen. Bereitgestellte Unternehmenslösungen für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Experte in CQRS, DDD, Microservices und Cloud-nativen Architekturen in Gesundheitswesen, Energie und Logistiksektoren.",
+        "summary": "Backend Software-Ingenieur spezialisiert auf .NET-Ökosystem und Cloud-native Architekturen. Architektierte Systeme für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Experte in CQRS, Domain-Driven Design und Event-Driven Architecture. Nachgewiesene Erfolgsbilanz bei der Reduzierung von API-Antwortzeiten um 82% und Systemfehlern um 65%."
+      },
+      "fullstack": {
+        "title": "Full-Stack Software-Ingenieur",
+        "description": "Full-Stack Software-Ingenieur mit Expertise in React.js Frontend und .NET Core Backend-Entwicklung. Architektierte komplette Lösungen für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Nachgewiesene Erfolgsbilanz bei der Bereitstellung von CI/CD-Pipelines, die Deployment-Zeit um 85% reduzieren und Systemleistung um 70% verbessern.",
+        "summary": "Full-Stack Software-Ingenieur mit Expertise in React.js Frontend und .NET Core Backend-Entwicklung. Architektierte komplette Lösungen für 25.000+ Benutzer mit 99,8% Verfügbarkeit. Nachgewiesene Erfolgsbilanz bei der Bereitstellung von CI/CD-Pipelines, die Deployment-Zeit um 85% reduzieren und Systemleistung um 70% verbessern."
+      }
+    },
+    "skills": {
+      "categories": {
+        "frontend": "Frontend",
+        "backend": "Backend",
+        "development": "Entwicklung",
+        "testing": "Testing",
+        "devops": "DevOps",
+        "cloud": "Cloud",
+        "databases": "Datenbanken",
+        "architecture": "Architektur",
+        "tools": "Tools"
+      }
+    },
+    "companies": {
+      "verbund_pflegehilfe": "Verbund Pflegehilfe e.V.",
+      "sustayn_gmbh": "Sustayn GmbH",
+      "fpt_software": "FPT Software",
+      "sodefa_gmbh": "SODEFA GmbH Co. & KG",
+      "cybersoft_north_america": "Cybersoft North America Inc.",
+      "six_logics": "Six Logics"
+    },
+    "positions": {
+      "senior_software_engineer": "Senior Software-Ingenieur",
+      "software_engineer": "Software-Ingenieur",
+      "frontend_developer": "Frontend-Entwickler",
+      "software_developer": "Software-Entwickler",
+      "full_stack_developer": "Full-Stack-Entwickler"
+    },
+    "durations": {
+      "verbund_pflegehilfe": "Juli 2023 – Heute",
+      "sustayn_gmbh": "Februar 2022 – Juli 2023",
+      "fpt_software": "September 2021 – November 2021 (Vertrag)",
+      "sodefa_gmbh": "August 2019 – September 2021",
+      "cybersoft_north_america": "April 2018 – Oktober 2018",
+      "six_logics": "November 2016 – April 2018"
+    }
   }
 }

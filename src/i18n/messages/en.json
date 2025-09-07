@@ -216,5 +216,100 @@
       "expectedJoiningDatePlaceholder": "e.g., immediately, 2 weeks notice, January 2025",
       "joiningDateHelp": "Optional: Will be included in the closing paragraph if filled."
     }
+  },
+  "resume": {
+    "metadata": {
+      "frontend": {
+        "title": "Frontend Developer Resume | Muhammad Ahmed Shehzad",
+        "description": "Specialized frontend developer resume showcasing React, TypeScript, and modern web development skills. ATS-ready format with PDF download.",
+        "keywords": "frontend developer,react developer,typescript,next.js,web development,UI/UX,responsive design,ATS resume"
+      },
+      "backend": {
+        "title": "Backend Developer Resume | Muhammad Ahmed Shehzad",
+        "description": "Specialized backend developer resume showcasing .NET, C#, and cloud architecture skills. ATS-ready format with PDF download.",
+        "keywords": "backend developer,.NET developer,C# developer,software engineer,cloud architecture,microservices,API development,ATS resume"
+      },
+      "fullstack": {
+        "title": "Full-Stack Developer Resume | Muhammad Ahmed Shehzad",
+        "description": "Experienced full-stack developer resume showcasing React.js and .NET Core skills. ATS-ready format with PDF download.",
+        "keywords": "full-stack developer,react developer,.NET developer,typescript,software engineer,web development,fullstack engineer,ATS resume"
+      }
+    },
+    "common": {
+      "name": "Muhammad Ahmed Shehzad",
+      "contact": {
+        "email": "muhammadahmedshehzad@gmail.com",
+        "phone": "+49 176 34935938",
+        "location": "Mainz, Germany",
+        "linkedin": "linkedin.com/in/muhammadahmedshehzad",
+        "website": "muhammadahmedshehzad.com"
+      },
+      "sections": {
+        "summary": "SUMMARY",
+        "skills": "SKILLS",
+        "experience": "EXPERIENCE",
+        "projects": "PROJECTS",
+        "languages": "LANGUAGES"
+      },
+      "languages": {
+        "english": "English: Fluent",
+        "german": "German: Intermediate",
+        "urdu": "Urdu: Native",
+        "punjabi": "Punjabi: Conversational"
+      }
+    },
+    "configs": {
+      "frontend": {
+        "title": "Senior Frontend Developer",
+        "description": "Results-driven Senior Frontend Developer with 5+ years delivering scalable React.js applications. Proven track record: 40% performance improvements, 25,000+ user platforms, 99.2% uptime. Expert in TypeScript, Next.js, and modern CI/CD practices across healthcare, fintech, and enterprise sectors.",
+        "summary": "Senior Frontend Developer specializing in React ecosystem and modern web technologies. Delivered high-performance applications serving 25,000+ users with 99.2% uptime. Expert in component architecture, state management, and CI/CD optimization. Proven ability to reduce load times by 70% and improve user engagement by 45%."
+      },
+      "backend": {
+        "title": "Backend Software Engineer",
+        "description": "Senior Backend Engineer with 5+ years building scalable .NET/C# applications. Delivered enterprise solutions serving 25,000+ users with 99.8% uptime. Expert in CQRS, DDD, microservices, and cloud-native architectures across healthcare, energy, and logistics sectors.",
+        "summary": "Backend Software Engineer specializing in .NET ecosystem and cloud-native architectures. Architected systems serving 25,000+ users with 99.8% uptime. Expert in CQRS, Domain-Driven Design, and Event-Driven Architecture. Proven track record reducing API response times by 82% and system defects by 65%."
+      },
+      "fullstack": {
+        "title": "Full-Stack Software Engineer",
+        "description": "Full-Stack Software Engineer with expertise in React.js frontend and .NET Core backend development. Architected complete solutions serving 25,000+ users with 99.8% uptime. Proven track record delivering CI/CD pipelines reducing deployment time by 85% and improving system performance by 70%.",
+        "summary": "Full-Stack Software Engineer with expertise in React.js frontend and .NET Core backend development. Architected complete solutions serving 25,000+ users with 99.8% uptime. Proven track record delivering CI/CD pipelines reducing deployment time by 85% and improving system performance by 70%."
+      }
+    },
+    "skills": {
+      "categories": {
+        "frontend": "Frontend",
+        "backend": "Backend",
+        "development": "Development",
+        "testing": "Testing",
+        "devops": "DevOps",
+        "cloud": "Cloud",
+        "databases": "Databases",
+        "architecture": "Architecture",
+        "tools": "Tools"
+      }
+    },
+    "companies": {
+      "verbund_pflegehilfe": "Verbund Pflegehilfe e.V.",
+      "sustayn_gmbh": "Sustayn GmbH",
+      "fpt_software": "FPT Software",
+      "sodefa_gmbh": "SODEFA GmbH Co. & KG",
+      "cybersoft_north_america": "Cybersoft North America Inc.",
+      "six_logics": "Six Logics"
+    },
+    "positions": {
+      "senior_software_engineer": "Senior Software Engineer",
+      "software_engineer": "Software Engineer",
+      "frontend_developer": "Frontend Developer",
+      "software_developer": "Software Developer",
+      "full_stack_developer": "Full-Stack Developer"
+    },
+    "durations": {
+      "verbund_pflegehilfe": "July 2023 – Present",
+      "sustayn_gmbh": "February 2022 – July 2023",
+      "fpt_software": "September 2021 – November 2021 (Contract)",
+      "sodefa_gmbh": "August 2019 – September 2021",
+      "cybersoft_north_america": "April 2018 – October 2018",
+      "six_logics": "November 2016 – April 2018"
+    }
   }
 }
