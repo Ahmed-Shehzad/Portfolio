@@ -5,6 +5,9 @@ import { LanguageSwitcher } from "@/components";
 import "./print.css";
 import { CoverLetterClientPage } from "./CoverLetterClientPage";
 
+// Force dynamic rendering since we use searchParams
+export const dynamic = "force-dynamic";
+
 // Constants to avoid duplication
 const COVER_LETTER_SUFFIX = "Cover Letter";
 const TITLE_KEY = "metadata.title";
@@ -127,9 +130,17 @@ export default async function CoverLetterPage({ params, searchParams }: CoverLet
   );
 }
 
-// Generate static parameters for all cover letter types
+// Generate static parameters for all cover letter types and locales
 export function generateStaticParams() {
-  return [{ type: "frontend" }, { type: "backend" }, { type: "fullstack" }];
+  const types = ["frontend", "backend", "fullstack"];
+  const locales = ["en", "de"];
+
+  return locales.flatMap((locale) =>
+    types.map((type) => ({
+      locale,
+      type,
+    }))
+  );
 }
 
 // Generate metadata for each cover letter type
