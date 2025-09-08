@@ -51,7 +51,7 @@
     "browserslist": "^4.25.4",
     "leaflet": "^1.9.4",
     "next": "^15.5.2",
-    "next-intl": "4.3.5",
+    "next-intl": "4.3.6",
     "nodemailer": "7.0.6",
     "puppeteer": "24.17.1",
     "puppeteer-core": "24.19.0",
