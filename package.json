@@ -54,7 +54,7 @@
     "next-intl": "4.3.5",
     "nodemailer": "7.0.6",
     "puppeteer": "24.17.1",
-    "puppeteer-core": "24.17.1",
+    "puppeteer-core": "24.19.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-leaflet": "^5.0.0",
