@@ -1,0 +1,23 @@
+# Portfolio Deployment Automation Configuration
+
+# Vercel settings
+VERCEL_SCOPE="muhammad-ahmed-shehzads-projects"
+PROJECT_NAME="portfolio"
+
+# Git settings
+AUTO_COMMIT=true
+AUTO_PUSH=true
+
+# URL update settings
+UPDATE_ROBOTS=true
+UPDATE_SITEMAP=true
+UPDATE_DEPLOYMENT_FILE=true
+
+# Deployment checks
+RUN_LINT=true
+RUN_FORMAT_CHECK=true
+RUN_BUILD=true
+
+# Post-deployment actions
+OPEN_BROWSER=false
+SEND_NOTIFICATION=false
