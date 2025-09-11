@@ -47,6 +47,12 @@ jobs:
           # Install Vercel CLI
           npm i -g vercel@latest
 
+          # Create .vercel directory if it doesn't exist
+          mkdir -p .vercel
+
+          # Create project.json with org and project IDs
+          echo "{\"orgId\":\"$VERCEL_ORG_ID\",\"projectId\":\"$VERCEL_PROJECT_ID\"}" > .vercel/project.json
+
           # Deploy to production
           vercel --token $VERCEL_TOKEN --prod --yes
 
@@ -57,8 +63,10 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          # Update URLs
+          # Make script executable
           chmod +x ./scripts/update-deployment-urls.sh
+
+          # Run URL update script
           ./scripts/update-deployment-urls.sh
 
       - name: 📝 Commit URL updates

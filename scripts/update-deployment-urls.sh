@@ -24,17 +24,35 @@ fi
 echo "$LATEST_URL" > deployment-url.txt
 echo "✅ Updated deployment-url.txt"
 
-# Update robots.txt
-sed -i '' "s|Sitemap: https://.*vercel\.app/sitemap\.xml|Sitemap: $LATEST_URL/sitemap.xml|g" public/robots.txt
+# Update robots.txt (handle both macOS and Linux sed)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s|Sitemap: https://.*vercel\.app/sitemap\.xml|Sitemap: $LATEST_URL/sitemap.xml|g" public/robots.txt
+else
+    # Linux (GitHub Actions)
+    sed -i "s|Sitemap: https://.*vercel\.app/sitemap\.xml|Sitemap: $LATEST_URL/sitemap.xml|g" public/robots.txt
+fi
 echo "✅ Updated public/robots.txt"
 
-# Update sitemap.xml
-sed -i '' "s|<loc>https://.*vercel\.app/</loc>|<loc>$LATEST_URL/</loc>|g" public/sitemap.xml
+# Update sitemap.xml (handle both macOS and Linux sed)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s|<loc>https://.*vercel\.app/</loc>|<loc>$LATEST_URL/</loc>|g" public/sitemap.xml
+else
+    # Linux (GitHub Actions)
+    sed -i "s|<loc>https://.*vercel\.app/</loc>|<loc>$LATEST_URL/</loc>|g" public/sitemap.xml
+fi
 echo "✅ Updated public/sitemap.xml"
 
-# Update lastmod in sitemap.xml to current date
+# Update lastmod in sitemap.xml to current date (handle both macOS and Linux sed)
 CURRENT_DATE=$(date +%Y-%m-%d)
-sed -i '' "s|<lastmod>.*</lastmod>|<lastmod>$CURRENT_DATE</lastmod>|g" public/sitemap.xml
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s|<lastmod>.*</lastmod>|<lastmod>$CURRENT_DATE</lastmod>|g" public/sitemap.xml
+else
+    # Linux (GitHub Actions)
+    sed -i "s|<lastmod>.*</lastmod>|<lastmod>$CURRENT_DATE</lastmod>|g" public/sitemap.xml
+fi
 echo "✅ Updated sitemap lastmod date"
 
 echo "🎉 All deployment URLs updated successfully!"
