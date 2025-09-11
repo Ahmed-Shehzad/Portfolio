@@ -39,13 +39,16 @@ jobs:
         run: npm run build
 
       - name: 🚀 Deploy to Vercel
-        uses: amondnet/vercel-action@a92c4bf67e7c7276b1317d1a97b7b8bd74b9fd0b # v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
-          working-directory: ./
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          # Install Vercel CLI
+          npm i -g vercel@latest
+
+          # Deploy to production
+          vercel --token $VERCEL_TOKEN --prod --yes
 
       - name: ⏳ Wait for deployment
         run: sleep 10
@@ -54,12 +57,6 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          # Install Vercel CLI
-          npm i -g vercel@latest
-
-          # Login to Vercel
-          echo "$VERCEL_TOKEN" | vercel login --stdin
-
           # Update URLs
           chmod +x ./scripts/update-deployment-urls.sh
           ./scripts/update-deployment-urls.sh
