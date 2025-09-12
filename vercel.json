@@ -6,10 +6,10 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "git": {
-    "deploymentEnabled": false
+    "deploymentEnabled": true
   },
   "github": {
-    "autoDeployments": false
+    "autoDeployments": true
   },
   "functions": {
     "app/api/resume-pdf/route.ts": {

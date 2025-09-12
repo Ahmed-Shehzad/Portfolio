@@ -1,0 +1,137 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Check for updates daily at 02:00 UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install npm-check-updates
+        run: npm install -g npm-check-updates
+
+      - name: Check for updates
+        id: check-updates
+        run: |
+          echo "updates=$(ncu --jsonUpgraded)" >> $GITHUB_OUTPUT
+
+      - name: Update dependencies
+        if: steps.check-updates.outputs.updates != '{}'
+        run: |
+          ncu -u
+          npm install
+
+      - name: Run tests
+        if: steps.check-updates.outputs.updates != '{}'
+        run: |
+          npm run test
+          npm run type-check
+          npm run build
+
+      - name: Create Pull Request
+        if: steps.check-updates.outputs.updates != '{}'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update dependencies"
+          title: "🔄 Automated Dependency Updates"
+          body: |
+            ## 📦 Dependency Updates
+
+            This PR contains automated dependency updates.
+
+            ### Changes
+            ```json
+            ${{ steps.check-updates.outputs.updates }}
+            ```
+
+            ### Verification
+            - ✅ Tests passing
+            - ✅ Type check passing
+            - ✅ Build successful
+
+            Please review the changes and merge if everything looks good.
+          branch: chore/dependency-updates
+          base: main
+          reviewers: Ahmed-Shehzad
+
+  security-updates:
+    name: Security Updates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Check for security vulnerabilities
+        id: audit
+        run: |
+          npm audit --json > audit-results.json || true
+          echo "vulnerabilities=$(cat audit-results.json | jq '.metadata.vulnerabilities.total')" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies and fix vulnerabilities
+        if: steps.audit.outputs.vulnerabilities != '0'
+        run: |
+          npm audit fix --force
+          npm install
+
+      - name: Run tests after security fixes
+        if: steps.audit.outputs.vulnerabilities != '0'
+        run: |
+          npm run test
+          npm run type-check
+          npm run build
+
+      - name: Create Security PR
+        if: steps.audit.outputs.vulnerabilities != '0'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "security: fix vulnerabilities"
+          title: "🔒 Security Vulnerability Fixes"
+          body: |
+            ## 🔒 Security Updates
+
+            This PR fixes security vulnerabilities found in dependencies.
+
+            ### Vulnerabilities Fixed
+            - Total vulnerabilities: ${{ steps.audit.outputs.vulnerabilities }}
+
+            ### Verification
+            - ✅ Tests passing
+            - ✅ Type check passing
+            - ✅ Build successful
+
+            **This PR should be reviewed and merged promptly for security.**
+          branch: security/vulnerability-fixes
+          base: main
+          reviewers: Ahmed-Shehzad
+          labels: security
