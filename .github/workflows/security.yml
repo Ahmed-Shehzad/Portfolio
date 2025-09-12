@@ -62,9 +62,7 @@ jobs:
         run: npm run test:ci
 
       - name: SonarQube Scan
-        uses: sonarqube-quality-gate-action@master
-        with:
-          scanMetadataReportFile: coverage/sonar-report.xml
+        uses: SonarSource/sonarqube-scan-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
