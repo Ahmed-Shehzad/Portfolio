@@ -15,7 +15,7 @@ This repository includes a comprehensive set of GitHub Actions workflows for aut
 - ✅ Quality checks (lint, format, type-check, tests)
 - 🏗️ Build verification
 - 🚀 Automatic production deployment to Vercel
-- 📝 Automatic URL updates in configuration files
+- 📝 Automatic URL updates via pull requests (respects branch protection)
 - 📊 Test coverage reporting
 
 **Required Secrets:**
@@ -23,6 +23,23 @@ This repository includes a comprehensive set of GitHub Actions workflows for aut
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
+
+**Branch Protection Compatibility:** ✅ Creates PRs for URL updates instead of direct pushes
+
+---
+
+### 🤖 [Auto-merge Deployment URLs](./auto-merge-urls.yml)
+
+**Triggers:** Pull requests with `automated` and `deployment` labels
+
+**Purpose:** Automatically merge deployment URL update PRs
+
+**Features:**
+
+- ⏳ Waits for all status checks to pass
+- 🤖 Auto-merges PRs with `[auto-merge]` in title
+- 🗑️ Automatically deletes merged branches
+- 🔒 Only processes PRs with specific labels for security
 
 ---
 

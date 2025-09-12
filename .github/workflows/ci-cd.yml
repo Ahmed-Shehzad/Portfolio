@@ -112,16 +112,45 @@ jobs:
           chmod +x ./scripts/update-deployment-urls.sh
           ./scripts/update-deployment-urls.sh
 
-      - name: 📝 Commit URL updates
+      - name: 📝 Create PR for URL updates
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+          # Check if there are changes to commit
           git add deployment-url.txt public/robots.txt public/sitemap.xml
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No URL changes to commit"
+            echo "url_update_needed=false" >> $GITHUB_ENV
           else
-            git commit -m "chore: update deployment URLs [skip ci]"
-            git push
+            echo "url_update_needed=true" >> $GITHUB_ENV
+
+            # Create a new branch for URL updates
+            BRANCH_NAME="chore/update-deployment-urls-$(date +%s)"
+            git checkout -b "$BRANCH_NAME"
+
+            # Commit changes with simple message
+            git commit -m "chore: update deployment URLs after production deployment [skip ci]"
+
+            # Push the branch
+            git push origin "$BRANCH_NAME"
+
+            # Create PR using GitHub CLI
+            PR_URL=$(gh pr create \
+              --title "chore: update deployment URLs [auto-merge]" \
+              --body "🤖 Automated URL update after production deployment to: ${{ steps.deploy.outputs.deployment_url }}" \
+              --head "$BRANCH_NAME" \
+              --base main \
+              --label "automated" \
+              --label "deployment")
+
+            echo "Created PR for URL updates: $PR_URL"
+            echo "Branch: $BRANCH_NAME"
+
+            # Try to enable auto-merge if the repository supports it
+            gh pr merge "$PR_URL" --auto --squash || echo "Auto-merge not available - manual merge required"
           fi
 
       - name: 📋 Deployment Summary
@@ -129,3 +158,8 @@ jobs:
           echo "## 🚀 Deployment Successful" >> $GITHUB_STEP_SUMMARY
           echo "**Live URL:** ${{ steps.deploy.outputs.deployment_url }}" >> $GITHUB_STEP_SUMMARY
           echo "**Build Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+          if [ "${url_update_needed:-false}" = "true" ]; then
+            echo "**URL Updates:** Pull request created for deployment URL updates" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**URL Updates:** No changes needed" >> $GITHUB_STEP_SUMMARY
+          fi
