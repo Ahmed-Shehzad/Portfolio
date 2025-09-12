@@ -7,17 +7,21 @@ set -e
 
 echo "🔄 Updating deployment URLs..."
 
-# For now, use the stable alias we know works
-LATEST_URL="https://portfolio-gayf3a56s-muhammad-ahmed-shehzads-projects.vercel.app"
-
-# Try to get the latest deployment URL dynamically (fallback to manual)
-DYNAMIC_URL=$(vercel ls --scope muhammad-ahmed-shehzads-projects 2>/dev/null | grep -A20 "Deployments for" | grep "https://portfolio-.*vercel\.app" | grep "Production" | head -1 | sed 's/.*\(https:\/\/portfolio-[^[:space:]]*\.vercel\.app\).*/\1/' || echo "")
+# Try to get the latest deployment URL dynamically
+DYNAMIC_URL=$(vercel ls --scope muhammad-ahmed-shehzads-projects 2>/dev/null | grep "Production" | grep "● Ready" | head -1 | grep -oE "https://portfolio-[^[:space:]]*\.vercel\.app" || echo "")
 
 if [ ! -z "$DYNAMIC_URL" ]; then
     LATEST_URL="$DYNAMIC_URL"
     echo "📍 Found dynamic URL: $LATEST_URL"
 else
-    echo "📍 Using stable alias URL: $LATEST_URL"
+    # Fallback to reading from deployment-url.txt if dynamic detection fails
+    if [ -f "deployment-url.txt" ]; then
+        LATEST_URL=$(cat deployment-url.txt)
+        echo "📍 Using URL from deployment-url.txt: $LATEST_URL"
+    else
+        echo "❌ Error: Could not find deployment URL"
+        exit 1
+    fi
 fi
 
 # Update deployment-url.txt
