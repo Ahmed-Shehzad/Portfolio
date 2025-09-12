@@ -32,7 +32,10 @@ jobs:
       - name: Check for updates
         id: check-updates
         run: |
-          echo "updates=$(ncu --jsonUpgraded)" >> $GITHUB_OUTPUT
+          UPDATES=$(ncu --jsonUpgraded)
+          echo "updates<<EOF" >> $GITHUB_OUTPUT
+          echo "$UPDATES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update dependencies
         if: steps.check-updates.outputs.updates != '{}'
