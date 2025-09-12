@@ -35,6 +35,7 @@
     "deploy:preview": "npm run vercel:build && npm run vercel:deploy",
     "deploy:production": "npm run vercel:build:prod && npm run vercel:deploy:prod",
     "deploy:auto": "./scripts/auto-deploy.sh",
+    "deploy:monitor": "./scripts/monitor-deployments.sh",
     "urls:update": "./scripts/update-deployment-urls.sh",
     "urls:update:commit": "./scripts/update-deployment-urls.sh --commit",
     "sonar:up": "docker compose -f docker-compose.sonar.yml up -d --wait",

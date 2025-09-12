@@ -92,19 +92,47 @@ jobs:
       - name: 🏗️ Build project
         run: npm run build
 
-      - name: 🚀 Deploy to Vercel
+      - name: � Check existing deployments
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          echo "🔍 Checking recent Vercel deployments..."
+          vercel list --token $VERCEL_TOKEN | head -10 || echo "Failed to list deployments"
+
+      - name: �🚀 Deploy to Vercel
         id: deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
+          echo "🚀 Starting Vercel deployment..."
+          echo "Timestamp: $(date)"
+          echo "Commit: ${{ github.sha }}"
+
           npm i -g vercel@latest
           mkdir -p .vercel
           echo '{"orgId":"${{ secrets.VERCEL_ORG_ID }}","projectId":"${{ secrets.VERCEL_PROJECT_ID }}"}' > .vercel/project.json
-          DEPLOYMENT_URL=$(vercel --token $VERCEL_TOKEN --prod --yes | grep -oE "https://portfolio-[^[:space:]]*\.vercel\.app" | tail -1)
+
+          echo "📋 Vercel CLI version: $(vercel --version)"
+          echo "🔧 Deploying to production..."
+
+          # Deploy and capture the full output
+          DEPLOY_OUTPUT=$(vercel --token $VERCEL_TOKEN --prod --yes 2>&1)
+          echo "📄 Deploy output:"
+          echo "$DEPLOY_OUTPUT"
+
+          # Extract deployment URL more reliably
+          DEPLOYMENT_URL=$(echo "$DEPLOY_OUTPUT" | grep -oE "https://[^[:space:]]*\.vercel\.app" | tail -1)
+
+          if [ -z "$DEPLOYMENT_URL" ]; then
+            echo "❌ Failed to extract deployment URL"
+            echo "Full output was: $DEPLOY_OUTPUT"
+            exit 1
+          fi
+
           echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "🎉 Deployed to: $DEPLOYMENT_URL"
+          echo "✅ Successfully deployed to: $DEPLOYMENT_URL"
 
       - name: 🔄 Update deployment URLs
         run: |

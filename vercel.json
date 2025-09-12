@@ -5,6 +5,12 @@
   "devCommand": "npm run dev",
   "framework": "nextjs",
   "regions": ["iad1"],
+  "git": {
+    "deploymentEnabled": false
+  },
+  "github": {
+    "autoDeployments": false
+  },
   "functions": {
     "app/api/resume-pdf/route.ts": {
       "maxDuration": 30,
