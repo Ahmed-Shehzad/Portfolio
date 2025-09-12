@@ -1,0 +1,25 @@
+name: "CodeQL Config"
+
+disable-default-queries: false
+
+queries:
+  - uses: security-and-quality
+
+paths-ignore:
+  - "node_modules"
+  - "coverage"
+  - ".next"
+  - "public/worker.js"
+  - "scripts"
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/*.d.ts"
+
+paths:
+  - "src"
+
+# Include additional packs for JavaScript/TypeScript
+packs:
+  - "javascript"

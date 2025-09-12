@@ -4,7 +4,13 @@ export async function GET() {
   const robotsTxt = `User-agent: *
 Allow: /
 
-Sitemap: https://your-vercel-domain.vercel.app/sitemap.xml`;
+# Sitemap
+Sitemap: https://portfolio-azure-five-75.vercel.app/sitemap.xml
+
+# Block access to sensitive files
+Disallow: /api/
+Disallow: /_next/
+Disallow: /performance-analysis.js`;
 
   return new NextResponse(robotsTxt, {
     headers: {
