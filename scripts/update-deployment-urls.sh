@@ -8,7 +8,7 @@ set -e
 echo "🔄 Updating deployment URLs..."
 
 # For now, use the stable alias we know works
-LATEST_URL="https://portfolio-ahmed-shehzad-muhammad-ahmed-shehzads-projects.vercel.app"
+LATEST_URL="https://portfolio-gayf3a56s-muhammad-ahmed-shehzads-projects.vercel.app"
 
 # Try to get the latest deployment URL dynamically (fallback to manual)
 DYNAMIC_URL=$(vercel ls --scope muhammad-ahmed-shehzads-projects 2>/dev/null | grep -A20 "Deployments for" | grep "https://portfolio-.*vercel\.app" | grep "Production" | head -1 | sed 's/.*\(https:\/\/portfolio-[^[:space:]]*\.vercel\.app\).*/\1/' || echo "")

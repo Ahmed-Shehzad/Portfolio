@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://portfolio-ahmed-shehzad-muhammad-ahmed-shehzads-projects.vercel.app/sitemap.xml
+Sitemap: https://portfolio-gayf3a56s-muhammad-ahmed-shehzads-projects.vercel.app/sitemap.xml
 
 # Block access to sensitive files
 Disallow: /api/
