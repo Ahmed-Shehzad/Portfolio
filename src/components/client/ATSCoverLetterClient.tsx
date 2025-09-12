@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ATSCoverLetterClientProps {
   readonly locale: string;
@@ -132,11 +132,7 @@ export function ATSCoverLetterClient({
                 <div>
                   <span className="font-medium">LinkedIn:</span>{" "}
                   <a
-                    href={
-                      t.common.contact.linkedin.startsWith("http")
-                        ? t.common.contact.linkedin
-                        : `https://${t.common.contact.linkedin}`
-                    }
+                    href={`${t.common.contact.linkedin}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 transition-colors hover:text-blue-800 hover:underline"
@@ -147,11 +143,7 @@ export function ATSCoverLetterClient({
                 <div>
                   <span className="font-medium">Website:</span>{" "}
                   <a
-                    href={
-                      t.common.contact.website.startsWith("http")
-                        ? t.common.contact.website
-                        : `https://${t.common.contact.website}`
-                    }
+                    href={`${t.common.contact.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 transition-colors hover:text-blue-800 hover:underline"
@@ -162,11 +154,7 @@ export function ATSCoverLetterClient({
                 <div>
                   <span className="font-medium">GitHub:</span>{" "}
                   <a
-                    href={
-                      t.common.contact.Github.startsWith("http")
-                        ? t.common.contact.Github
-                        : `https://${t.common.contact.Github}`
-                    }
+                    href={`${t.common.contact.Github}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 transition-colors hover:text-blue-800 hover:underline"

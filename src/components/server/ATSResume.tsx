@@ -80,7 +80,7 @@ export async function ATSResume({ config, locale }: ATSResumeProps) {
                     Location:
                   </span>
                   <a
-                    href="https://maps.google.com/?q=Wiesbaden,Germany"
+                    href={`https://maps.google.com/?q=${encodeURIComponent(t("common.contact.location"))}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-sm text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
@@ -101,7 +101,7 @@ export async function ATSResume({ config, locale }: ATSResumeProps) {
                     LinkedIn:
                   </span>
                   <a
-                    href={`https://${t("common.contact.linkedin")}`}
+                    href={`${t("common.contact.linkedin")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-sm break-all text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
@@ -120,7 +120,7 @@ export async function ATSResume({ config, locale }: ATSResumeProps) {
                     Website:
                   </span>
                   <a
-                    href={`https://${t("common.contact.website")}`}
+                    href={`${t("common.contact.website")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-sm text-blue-600 underline hover:text-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none print:text-gray-700 print:no-underline"
@@ -133,6 +133,17 @@ export async function ATSResume({ config, locale }: ATSResumeProps) {
                   <span id="website-description" className="sr-only">
                     Personal portfolio website - opens in new tab
                   </span>
+                </div>
+                <div>
+                  <span className="font-medium">GitHub:</span>{" "}
+                  <a
+                    href={`${t("common.contact.Github")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+                  >
+                    {t("common.contact.Github")}
+                  </a>
                 </div>
               </div>
             </footer>
