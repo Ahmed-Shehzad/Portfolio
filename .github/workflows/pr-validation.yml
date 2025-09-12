@@ -1,0 +1,123 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  statuses: write
+
+jobs:
+  # Validate PR title and description
+  validation:
+    name: PR Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: ✅ Validate PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "## 📝 PR Validation Results" >> $GITHUB_STEP_SUMMARY
+
+          # Check if title follows conventional commits
+          if echo "$PR_TITLE" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+"; then
+            echo "✅ PR title follows conventional commits format" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ PR title should follow conventional commits format" >> $GITHUB_STEP_SUMMARY
+            echo "Example: 'feat: add new feature' or 'fix(auth): resolve login issue'" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check title length
+          if [ ${#PR_TITLE} -le 72 ]; then
+            echo "✅ PR title length is appropriate (${#PR_TITLE}/72 characters)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ PR title is too long (${#PR_TITLE}/72 characters)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # Check for required files and structure
+  structure-check:
+    name: Structure Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: 🏗️ Check project structure
+        run: |
+          echo "## 🏗️ Project Structure Check" >> $GITHUB_STEP_SUMMARY
+
+          # Required files
+          REQUIRED_FILES=("package.json" "next.config.ts" "tsconfig.json" "tailwind.config.ts")
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ $file exists" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $file is missing" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          # Required directories
+          REQUIRED_DIRS=("src" "public" ".github")
+          for dir in "${REQUIRED_DIRS[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "✅ $dir/ directory exists" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $dir/ directory is missing" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+  # Security check for sensitive files
+  security-check:
+    name: Security Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: 🔒 Check for sensitive information
+        run: |
+          echo "## 🔒 Security Check Results" >> $GITHUB_STEP_SUMMARY
+
+          # Check for common sensitive files
+          SENSITIVE_PATTERNS=(
+            "\.env"
+            "\.key"
+            "\.pem"
+            "\.p12"
+            "\.keystore"
+            "password"
+            "secret"
+          )
+
+          FOUND_ISSUES=false
+          for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+            if find . -name "*$pattern*" -type f | grep -v ".git" | head -5; then
+              echo "⚠️ Found files matching pattern: $pattern" >> $GITHUB_STEP_SUMMARY
+              FOUND_ISSUES=true
+            fi
+          done
+
+          if [ "$FOUND_ISSUES" = false ]; then
+            echo "✅ No sensitive files detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check for hardcoded secrets in code
+          if grep -r "password\|secret\|key\|token" src/ --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" | head -3; then
+            echo "⚠️ Potential hardcoded secrets found in source code" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No hardcoded secrets detected in source code" >> $GITHUB_STEP_SUMMARY
+          fi
