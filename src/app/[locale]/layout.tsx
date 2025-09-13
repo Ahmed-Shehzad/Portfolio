@@ -1,15 +1,15 @@
 // Direct import instead of barrel to avoid any potential circular or undefined export issues
-import { ErrorBoundaryWrapper } from "@/wrappers/ErrorBoundaryWrapper";
 import { QueryProvider } from "@/lib/query/provider";
-import type { Metadata } from "next";
-import { Inter, Calistoga } from "next/font/google";
-import { ReactNode } from "react";
-import { twMerge } from "tailwind-merge";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ErrorBoundaryWrapper } from "@/wrappers/ErrorBoundaryWrapper";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
+import { Calistoga, Inter } from "next/font/google";
 import { notFound } from "next/navigation";
+import { ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
 import "../globals.css";
 
@@ -171,7 +171,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
               ],
               address: {
                 "@type": "PostalAddress",
-                addressCountry: "Pakistan",
+                addressCountry: "Deutschland",
               },
             }),
           }}
