@@ -134,6 +134,12 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       <head>
         {/* Font preconnect links are handled by Next.js font optimization */}
 
+        {/* Google Site Verification */}
+        <meta
+          name="google-site-verification"
+          content="CuXdR74lUe8KC36UMDLnQOzdICuatbceGelMh4yVyII"
+        />
+
         {/* Structured Data - JSON-LD for SEO */}
         <script
           type="application/ld+json"
