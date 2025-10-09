@@ -1,6 +1,6 @@
 name: Security & Quality
 
-on:
+"on":
   push:
     branches: [main, develop]
   pull_request:
@@ -48,13 +48,17 @@ jobs:
 
           # Check if there are any vulnerabilities
           if [ -f "audit-results.json" ]; then
-            VULNERABILITIES=$(cat audit-results.json | jq '.metadata.vulnerabilities.total // 0' 2>/dev/null || echo "0")
+            VULNERABILITIES=$(cat audit-results.json |
+              jq '.metadata.vulnerabilities.total // 0' 2>/dev/null ||
+              echo "0")
 
             if [ "$VULNERABILITIES" -gt 0 ]; then
               echo "⚠️ Found $VULNERABILITIES vulnerabilities"
               echo "vulnerabilities=$VULNERABILITIES" >> $GITHUB_OUTPUT
               # Display summary
-              cat audit-results.json | jq '.metadata.vulnerabilities' 2>/dev/null || echo "Could not parse vulnerabilities"
+              cat audit-results.json |
+                jq '.metadata.vulnerabilities' 2>/dev/null ||
+                echo "Could not parse vulnerabilities"
             else
               echo "✅ No vulnerabilities found"
               echo "vulnerabilities=0" >> $GITHUB_OUTPUT
@@ -74,10 +78,12 @@ jobs:
 
           # Check for outdated packages
           echo "📅 Checking for outdated packages..."
-          npm outdated --json > outdated-packages.json || echo '{}' > outdated-packages.json
+          npm outdated --json > outdated-packages.json ||
+            echo '{}' > outdated-packages.json
 
           # Display results
-          if [ -f "outdated-packages.json" ] && [ "$(cat outdated-packages.json)" != "{}" ]; then
+          if [ -f "outdated-packages.json" ] &&
+             [ "$(cat outdated-packages.json)" != "{}" ]; then
             echo "📅 Found outdated packages"
           else
             echo "✅ All packages are up to date"
@@ -119,7 +125,8 @@ jobs:
       - name: Run tests with coverage
         run: |
           echo "🧪 Running tests with coverage..."
-          npm run test:ci || echo "Tests completed with potential issues"
+          npm run test:ci ||
+            echo "Tests completed with potential issues"
 
           # Check if coverage files exist
           if [ -f "coverage/lcov.info" ]; then
@@ -128,13 +135,15 @@ jobs:
           else
             echo "❌ LCOV coverage report not found"
             echo "Available files in coverage directory:"
-            ls -la coverage/ || echo "Coverage directory not found"
+            ls -la coverage/ ||
+              echo "Coverage directory not found"
           fi
 
           # Check if generic report was created successfully
           if [ -f "coverage/generic-report.xml" ]; then
             echo "✅ Generic test report generated"
-            echo "Generic report size: $(wc -l < coverage/generic-report.xml) lines"
+            echo "Generic report size:
+              $(wc -l < coverage/generic-report.xml) lines"
             # Validate XML format
             head -n 5 coverage/generic-report.xml
           else
@@ -148,20 +157,28 @@ jobs:
           echo "sonar.sources=src" >> sonar-project.properties
           echo "sonar.tests=src" >> sonar-project.properties
           echo "sonar.test.inclusions=**/*.test.ts,**/*.test.tsx" >> sonar-project.properties
-          echo "sonar.exclusions=**/*.test.ts,**/*.test.tsx,**/node_modules/**,**/*.d.ts,**/coverage/**" >> sonar-project.properties
+          echo "sonar.exclusions=**/*.test.ts,**/*.test.tsx,
+            **/node_modules/**,**/*.d.ts,**/coverage/**" >>
+            sonar-project.properties
 
           # Always include LCOV coverage if it exists
           if [ -f "coverage/lcov.info" ]; then
-            echo "sonar.javascript.lcov.reportPaths=coverage/lcov.info" >> sonar-project.properties
-            echo "sonar.typescript.lcov.reportPaths=coverage/lcov.info" >> sonar-project.properties
+            echo "sonar.javascript.lcov.reportPaths=coverage/lcov.info" >>
+              sonar-project.properties
+            echo "sonar.typescript.lcov.reportPaths=coverage/lcov.info" >>
+              sonar-project.properties
           fi
 
           # Only add generic report if it exists and is valid XML
-          if [ -f "coverage/generic-report.xml" ] && head -n 1 coverage/generic-report.xml | grep -q "<?xml\|<testExecutions" 2>/dev/null; then
-            echo "sonar.testExecutionReportPaths=coverage/generic-report.xml" >> sonar-project.properties
+          if [ -f "coverage/generic-report.xml" ] &&
+             head -n 1 coverage/generic-report.xml |
+             grep -q "<?xml\|<testExecutions" 2>/dev/null; then
+            echo "sonar.testExecutionReportPaths=coverage/generic-report.xml" >>
+              sonar-project.properties
             echo "✅ Including test execution report in SonarQube analysis"
           else
-            echo "⚠️ Skipping test execution report - file not found or invalid format"
+            echo "⚠️ Skipping test execution report -
+              file not found or invalid format"
           fi
 
           echo "📋 SonarQube properties:"
@@ -194,7 +211,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript"] # Simplified to just javascript since TS compiles to JS
+        # Simplified to just javascript since TS compiles to JS
+        language: ["javascript"]
 
     steps:
       - name: Checkout code

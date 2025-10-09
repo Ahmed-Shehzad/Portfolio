@@ -1,6 +1,6 @@
 name: Dependency Updates
 
-on:
+"on":
   schedule:
     # Check for updates daily at 02:00 UTC
     - cron: "0 2 * * *"
@@ -98,7 +98,8 @@ jobs:
         id: audit
         run: |
           npm audit --json > audit-results.json || true
-          echo "vulnerabilities=$(cat audit-results.json | jq '.metadata.vulnerabilities.total')" >> $GITHUB_OUTPUT
+          echo "vulnerabilities=$(cat audit-results.json |
+            jq '.metadata.vulnerabilities.total')" >> $GITHUB_OUTPUT
 
       - name: Install dependencies and fix vulnerabilities
         if: steps.audit.outputs.vulnerabilities != '0'

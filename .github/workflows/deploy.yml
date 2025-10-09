@@ -1,6 +1,6 @@
 name: Deploy to Vercel
 
-on:
+"on":
   push:
     branches: [main]
   workflow_run:
@@ -33,14 +33,18 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: >-
+          vercel pull --yes --environment=preview
+          --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Preview to Vercel
         id: deploy-preview
-        run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+        run: >-
+          echo "url=$(vercel deploy --prebuilt
+          --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
 
       - name: Comment Preview URL
         uses: actions/github-script@v8
@@ -51,15 +55,22 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 Preview deployment ready! \n\n📱 **Preview URL**: ${{ steps.deploy-preview.outputs.url }}'
+              body: >-
+              🚀 Preview deployment ready!
+
+
+              📱 **Preview URL**: ${{ steps.deploy-preview.outputs.url }}
             })
 
   deploy-production:
     name: Deploy Production
     runs-on: ubuntu-latest
-    if: |
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    if: >-
+      (github.event_name == 'push' &&
+      github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main')
 
     environment:
       name: production
@@ -79,14 +90,18 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: >-
+          vercel pull --yes --environment=production
+          --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Production to Vercel
         id: deploy-production
-        run: echo "url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+        run: >-
+          echo "url=$(vercel deploy --prebuilt --prod
+          --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
 
       - name: Create deployment record
         uses: actions/github-script@v8
@@ -111,22 +126,32 @@ jobs:
                 repo: context.repo.repo,
                 deployment_id: deployment.data.id,
                 state: 'success',
-                environment_url: '${{ steps.deploy-production.outputs.url }}',
+                environment_url: >-
+                ${{ steps.deploy-production.outputs.url }},
                 description: 'Deployment successful'
               });
 
-              console.log(`✅ Deployment created with ID: ${deployment.data.id}`);
-              console.log(`🚀 Deployment URL: ${{ steps.deploy-production.outputs.url }}`);
+              console.log(
+                `✅ Deployment created with ID: ${deployment.data.id}`
+              );
+              console.log(
+                `🚀 Deployment URL: ${{ steps.deploy-production.outputs.url }}`
+              );
             } catch (error) {
-              console.log(`❌ Failed to create deployment record: ${error.message}`);
-              console.log(`🚀 Deployment URL: ${{ steps.deploy-production.outputs.url }}`);
+              console.log(
+                `❌ Failed to create deployment record: ${error.message}`
+              );
+              console.log(
+                `🚀 Deployment URL: ${{ steps.deploy-production.outputs.url }}`
+              );
             }
 
       - name: Update deployment URLs
         run: |
           echo "🚀 Production URL: ${{ steps.deploy-production.outputs.url }}"
           echo "✅ Deployment completed successfully!"
-          echo "📊 Check deployment status at: https://github.com/${{ github.repository }}/deployments"
+          echo "📊 Check deployment status at:
+          https://github.com/${{ github.repository }}/deployments"
 
       - name: Create deployment comment
         uses: actions/github-script@v8
@@ -138,7 +163,14 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 commit_sha: context.sha,
-                body: `🚀 **Production Deployment Complete**\n\n📱 **Live URL**: ${{ steps.deploy-production.outputs.url }}\n⏰ **Deployed at**: ${new Date().toISOString()}\n🔗 **Commit**: ${context.sha.substring(0, 7)}`
+                body: >-
+                  🚀 **Production Deployment Complete**
+
+                  📱 **Live URL**: ${{ steps.deploy-production.outputs.url }}
+
+                  ⏰ **Deployed at**: ${new Date().toISOString()}
+
+                  🔗 **Commit**: ${context.sha.substring(0, 7)}
               });
               console.log('✅ Deployment comment created');
             } catch (error) {

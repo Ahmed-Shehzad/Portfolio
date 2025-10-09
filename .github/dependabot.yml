@@ -83,16 +83,6 @@ updates:
           - "minor"
           - "patch"
 
-    # Ignore specific packages or versions if needed (uncomment as needed)
-    # ignore:
-    #   # Example: Ignore major version updates for critical dependencies
-    #   - dependency-name: "react"
-    #     update-types: ["version-update:semver-major"]
-    #
-    #   # Ignore specific versions that might have known issues
-    #   - dependency-name: "next"
-    #     versions: ["14.0.0", "14.0.1"]
-
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -118,26 +108,3 @@ updates:
         update-types:
           - "minor"
           - "patch"
-
-  # Enable version updates for Docker (if you add Docker files later)
-  # - package-ecosystem: "docker"
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #     day: "sunday"
-  #     time: "08:00"
-  #     timezone: "UTC"
-  #   open-pull-requests-limit: 2
-  #   reviewers:
-  #     - "Ahmed-Shehzad"
-  #   commit-message:
-  #     prefix: "chore(docker)"
-  #   labels:
-  #     - "docker"
-  #     - "infrastructure"
-# Note: Dependabot will automatically:
-# 1. Check for updates according to the schedule
-# 2. Create pull requests with dependency updates
-# 3. Include changelogs and compatibility information
-# 4. Respect semantic versioning when grouping updates
-# 5. Automatically rebase PRs when new commits are pushed to the target branch

@@ -1,6 +1,6 @@
 name: CI
 
-on:
+"on":
   push:
     branches: [main, develop]
   pull_request:
@@ -79,7 +79,7 @@ jobs:
       - name: Upload coverage reports
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage/lcov.info
+          files: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -109,7 +109,8 @@ jobs:
         run: npm run build
         env:
           # Add any required environment variables for build
-          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL || 'https://portfolio-azure-five-75.vercel.app' }}
+          NEXT_PUBLIC_BASE_URL: >-
+            https://portfolio-azure-five-75.vercel.app
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
