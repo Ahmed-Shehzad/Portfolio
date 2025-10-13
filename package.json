@@ -54,7 +54,7 @@
     "next-intl": "^4.3.12",
     "nodemailer": "7.0.9",
     "puppeteer": "^24.23.0",
-    "puppeteer-core": "^24.20.0",
+    "puppeteer-core": "^24.24.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-leaflet": "^5.0.0",
