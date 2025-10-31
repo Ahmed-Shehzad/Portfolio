@@ -113,7 +113,7 @@ jobs:
             https://portfolio-azure-five-75.vercel.app
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-output
           path: .next/
