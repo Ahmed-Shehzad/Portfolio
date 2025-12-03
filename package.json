@@ -50,7 +50,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "browserslist": "^4.26.3",
     "leaflet": "^1.9.4",
-    "next": "^15.5.4",
+    "next": "^15.5.7",
     "next-intl": "^4.3.12",
     "nodemailer": "7.0.9",
     "puppeteer": "^24.23.0",
