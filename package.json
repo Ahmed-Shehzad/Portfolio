@@ -62,8 +62,8 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
-    "@next/bundle-analyzer": "^15.5.4",
+    "@eslint/eslintrc": "^3.3.1",
+    "@next/bundle-analyzer": "^16.0.1",
     "@next/eslint-plugin-next": "^15.5.4",
     "@react-leaflet/core": "^3.0.0",
     "@tanstack/eslint-plugin-query": "^5.91.0",
