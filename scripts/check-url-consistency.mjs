@@ -28,6 +28,10 @@ const EXTENSIONS_TO_CHECK = [
   ".yaml",
 ];
 
+function log(message = "") {
+  process.stdout.write(`${message}\n`);
+}
+
 function getAllFiles(dir, files = []) {
   const items = readdirSync(dir);
 
@@ -77,9 +81,10 @@ function checkFile(filePath) {
 }
 
 function main() {
-  console.log("🔍 Checking URL consistency...\n");
-  console.log(`✅ Production URL: ${PRODUCTION_URL}`);
-  console.log(`❌ Old URLs to find: ${OLD_URLS.join(", ")}\n`);
+  log("🔍 Checking URL consistency...");
+  log(`✅ Production URL: ${PRODUCTION_URL}`);
+  log(`❌ Old URLs to find: ${OLD_URLS.join(", ")}`);
+  log("");
 
   const files = getAllFiles(process.cwd());
   const allIssues = [];
@@ -90,21 +95,21 @@ function main() {
   }
 
   if (allIssues.length === 0) {
-    console.log("✅ All URLs are consistent! No old URLs found.");
-    console.log("🚀 Your site is ready for Google Safe Browsing review.");
+    log("✅ All URLs are consistent! No old URLs found.");
+    log("🚀 Your site is ready for Google Safe Browsing review.");
   } else {
-    console.log(`❌ Found ${allIssues.length} URL inconsistencies:\n`);
+    log(`❌ Found ${allIssues.length} URL inconsistencies:`);
+    log("");
 
     for (const issue of allIssues) {
-      console.log(`📁 File: ${issue.file}`);
-      console.log(`📍 Line ${issue.line}: ${issue.lineContent}`);
-      console.log(`🔗 Found: ${issue.oldUrl}`);
-      console.log(`🔧 Should be: ${PRODUCTION_URL}\n`);
+      log(`📁 File: ${issue.file}`);
+      log(`📍 Line ${issue.line}: ${issue.lineContent}`);
+      log(`🔗 Found: ${issue.oldUrl}`);
+      log(`🔧 Should be: ${PRODUCTION_URL}`);
+      log("");
     }
 
-    console.log(
-      "🚨 Please fix these URLs before deploying and submitting for Safe Browsing review!"
-    );
+    log("🚨 Please fix these URLs before deploying and submitting for Safe Browsing review!");
     process.exit(1);
   }
 }
