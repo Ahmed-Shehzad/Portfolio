@@ -4,8 +4,7 @@ import ArrowDown from "@/assets/icons/arrow-down.svg";
 import SparkleIcon from "@/assets/icons/sparkle.svg";
 import StarIcon from "@/assets/icons/star.svg";
 import GrainImage from "@/assets/images/grain.jpg";
-import PortraitImage from "@/assets/images/me.jpg";
-import { HeroOrbit, OptimizedImage } from "@/components";
+import { HeroOrbit, Portrait3D } from "@/components";
 import { useTranslations } from "next-intl";
 import { memo, useCallback } from "react";
 
@@ -185,13 +184,11 @@ export const HeroSection = memo(() => {
             <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:gap-8">
               <div className="relative flex-shrink-0">
                 <div className="absolute inset-0 translate-y-2 transform rounded-full bg-gradient-to-b from-transparent to-black/50 blur-lg" />
-                <OptimizedImage
-                  src={PortraitImage}
+                <Portrait3D
                   alt="Muhammad Ahmed Shehzad - Professional headshot of a full-stack developer"
-                  className="relative z-10 rounded-full border-4 border-transparent"
+                  className="z-10"
                   width={150}
                   height={150}
-                  priority
                 />
               </div>
               <div className="text-center md:text-right">
