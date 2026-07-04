@@ -111,3 +111,6 @@ public/worker.js
 *.woff2
 *.ttf
 *.eot
+
+# Generated 3D model assets
+public/models/
