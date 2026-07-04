@@ -64,22 +64,23 @@ export const Portrait3D = memo(
       let cleanup: (() => void) | undefined;
 
       const init = async () => {
-        const [THREE, { GLTFLoader }] = await Promise.all([
+        const [THREE, { GLTFLoader }, { RoomEnvironment }] = await Promise.all([
           import("three"),
           import("three/addons/loaders/GLTFLoader.js"),
+          import("three/addons/environments/RoomEnvironment.js"),
         ]);
         if (disposed || !containerRef.current) return;
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 10);
-        // Far enough back that the full medallion (casing radius ~0.67) stays
+        // Far enough back that the full medallion (casing radius ~0.69) stays
         // in frame at any rotation angle.
         camera.position.z = 2.65;
 
-        // Lights only affect the casing — the photo relief is unlit so it
-        // keeps the exact colors of the original picture.
-        scene.add(new THREE.AmbientLight(0xffffff, 1.6));
-        const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+        // Lighting only affects the bronze casing — the photo relief is unlit
+        // so it keeps the exact colors of the original picture.
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
         keyLight.position.set(1.5, 1.5, 2.5);
         scene.add(keyLight);
 
@@ -91,15 +92,22 @@ export const Portrait3D = memo(
         renderer.domElement.setAttribute("aria-hidden", "true");
         container.appendChild(renderer.domElement);
 
+        // Image-based environment so the metal casing picks up realistic
+        // reflections instead of flat shading.
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+        scene.environment = environment;
+        pmrem.dispose();
+
         const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
         const model = gltf.scene;
 
-        const disposables: Array<{ dispose: () => void }> = [];
+        const disposables: Array<{ dispose: () => void }> = [environment];
         model.traverse((object) => {
           const mesh = object as Mesh;
           if (!mesh.isMesh) return;
           const material = mesh.material as MeshStandardMaterial;
-          if (material.map) {
+          if (mesh.name === "relief") {
             // Photo relief: swap the glTF PBR material for an unlit one so
             // the picture keeps its exact colors without scene lighting.
             const photoTexture = material.map;
@@ -108,13 +116,15 @@ export const Portrait3D = memo(
               side: THREE.DoubleSide,
             });
             material.dispose();
-            disposables.push(photoTexture, mesh.material);
+            if (photoTexture) disposables.push(photoTexture);
+            disposables.push(mesh.material);
           } else {
-            // Casing: keep the lit PBR material for a metallic rim and back.
-            // The export carries no normals and its winding culls badly from
-            // behind, so compute normals and render both faces.
+            // Casing: keep the lit PBR material for the engraved bronze rim
+            // and back. The export carries no normals and its winding culls
+            // badly from behind, so compute normals and render both faces.
             if (!mesh.geometry.attributes.normal) mesh.geometry.computeVertexNormals();
             material.side = THREE.DoubleSide;
+            if (material.map) disposables.push(material.map);
             disposables.push(material);
           }
           disposables.push(mesh.geometry);
