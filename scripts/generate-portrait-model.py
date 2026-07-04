@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Generate the 3D portrait model used by the Portrait3D component.
 
-Builds a depth-displaced, circular relief mesh from the portrait photo and its
-depth map (src/assets/images/me-3d.jpg / me-3d-depth.jpg — the depth map was
-produced with the Depth Anything V2 monocular depth-estimation model), then
-exports it to public/models/ as:
+Builds a solid, 360°-viewable portrait medallion:
+
+- Front: a depth-displaced circular relief baked from the portrait photo and
+  its depth map (src/assets/images/me-3d.jpg / me-3d-depth.jpg — the depth map
+  was produced with the Depth Anything V2 monocular depth-estimation model).
+- Casing: a dark cylindrical backing with a rim and back face, so the model
+  reads as a physical medallion from every angle instead of a hollow shell.
+
+Exports to public/models/ as:
 
 - portrait.glb   (binary glTF — loaded at runtime by Portrait3D)
 - portrait.gltf  (JSON glTF with embedded buffers, for tooling that prefers it)
@@ -33,8 +38,13 @@ DEPTH_SCALE = 0.42
 GRID = 161  # vertices per side
 TEXTURE_SIZE = 1024
 
+# Casing dimensions, derived from the relief's depth range ±DEPTH_SCALE/2.
+CASING_RADIUS = (PLANE_SIZE / 2) * 1.03
+CASING_FRONT_Z = -0.16  # just behind the relief's lowest (background) surface
+CASING_THICKNESS = 0.14
 
-def build_mesh() -> trimesh.Trimesh:
+
+def build_relief() -> trimesh.Trimesh:
     depth_img = Image.open(DEPTH).convert("L")
     depth = np.asarray(depth_img.resize((GRID, GRID), Image.BICUBIC), dtype=np.float32) / 255.0
 
@@ -57,9 +67,7 @@ def build_mesh() -> trimesh.Trimesh:
     tr = tl + 1
     bl = tl + GRID
     br = bl + 1
-    faces = np.concatenate(
-        [np.stack([tl, bl, tr], axis=-1), np.stack([tr, bl, br], axis=-1)]
-    )
+    faces = np.concatenate([np.stack([tl, bl, tr], axis=-1), np.stack([tr, bl, br], axis=-1)])
 
     # Keep only faces fully inside the circular avatar silhouette.
     uv_dist = np.linalg.norm(uv - 0.5, axis=1)
@@ -85,19 +93,89 @@ def build_mesh() -> trimesh.Trimesh:
     return mesh
 
 
+def build_casing() -> trimesh.Trimesh:
+    # Built by hand instead of trimesh.creation.cylinder: its caps are fans of
+    # 160 sliver triangles from the center, which degrade on some rasterizers.
+    # Concentric rings keep every triangle well-shaped.
+    sections = 160
+    rings = 6
+    z_front = CASING_FRONT_Z
+    z_back = CASING_FRONT_Z - CASING_THICKNESS
+    theta = np.linspace(0.0, 2.0 * np.pi, sections, endpoint=False)
+    cos_t, sin_t = np.cos(theta), np.sin(theta)
+
+    vertices: list[list[float]] = []
+    faces: list[list[int]] = []
+
+    def add_cap(z: float, facing_forward: bool) -> None:
+        base = len(vertices)
+        vertices.append([0.0, 0.0, z])
+        for k in range(1, rings + 1):
+            r = CASING_RADIUS * k / rings
+            vertices.extend([r * c, r * s, z] for c, s in zip(cos_t, sin_t))
+
+        def ring_start(k: int) -> int:
+            return base + 1 + (k - 1) * sections
+
+        first = ring_start(1)
+        for i in range(sections):
+            a, b = first + i, first + (i + 1) % sections
+            faces.append([base, a, b] if facing_forward else [base, b, a])
+        for k in range(1, rings):
+            inner, outer = ring_start(k), ring_start(k + 1)
+            for i in range(sections):
+                a, b = inner + i, inner + (i + 1) % sections
+                c, d = outer + i, outer + (i + 1) % sections
+                if facing_forward:
+                    faces.extend([[a, c, d], [a, d, b]])
+                else:
+                    faces.extend([[a, d, c], [a, b, d]])
+
+    add_cap(z_front, facing_forward=True)
+    add_cap(z_back, facing_forward=False)
+
+    # Side wall with its own vertices so the rim edge stays sharp.
+    wall_front = len(vertices)
+    vertices.extend([CASING_RADIUS * c, CASING_RADIUS * s, z_front] for c, s in zip(cos_t, sin_t))
+    wall_back = len(vertices)
+    vertices.extend([CASING_RADIUS * c, CASING_RADIUS * s, z_back] for c, s in zip(cos_t, sin_t))
+    for i in range(sections):
+        a, b = wall_front + i, wall_front + (i + 1) % sections
+        c, d = wall_back + i, wall_back + (i + 1) % sections
+        faces.extend([[a, c, d], [a, d, b]])
+
+    material = trimesh.visual.material.PBRMaterial(
+        name="casing",
+        baseColorFactor=[0.13, 0.16, 0.23, 1.0],
+        metallicFactor=0.45,
+        roughnessFactor=0.5,
+    )
+    casing = trimesh.Trimesh(
+        vertices=np.array(vertices, dtype=np.float64),
+        faces=np.array(faces, dtype=np.int64),
+        visual=trimesh.visual.TextureVisuals(material=material),
+        process=False,
+    )
+    return casing
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    mesh = build_mesh()
-    print(f"mesh: {len(mesh.vertices)} vertices, {len(mesh.faces)} faces")
+    relief = build_relief()
+    casing = build_casing()
+    scene = trimesh.Scene({"relief": relief, "casing": casing})
+    vertices = len(relief.vertices) + len(casing.vertices)
+    faces = len(relief.faces) + len(casing.faces)
+    print(f"model: {vertices} vertices, {faces} faces")
 
-    mesh.export(OUT_DIR / "portrait.glb")
+    scene.export(OUT_DIR / "portrait.glb")
 
-    gltf_files = trimesh.exchange.gltf.export_gltf(mesh, embed_buffers=True)
+    gltf_files = trimesh.exchange.gltf.export_gltf(scene, embed_buffers=True)
     for name, data in gltf_files.items():
         out = OUT_DIR / ("portrait.gltf" if name.endswith(".gltf") else name)
         out.write_bytes(data)
 
-    mesh.export(OUT_DIR / "portrait.obj")
+    scene.export(OUT_DIR / "portrait.obj")
 
     for f in sorted(OUT_DIR.iterdir()):
         print(f"  {f.name}: {f.stat().st_size / 1024:.0f} KiB")
