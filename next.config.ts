@@ -90,8 +90,9 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' vercel.live va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "font-src 'self' fonts.gstatic.com data:",
-              "img-src 'self' data: https:",
-              "connect-src 'self' https: vercel.live va.vercel-scripts.com vitals.vercel-insights.com",
+              "img-src 'self' data: blob: https:",
+              // blob: is required for THREE.GLTFLoader to decode textures embedded in .glb models
+              "connect-src 'self' blob: https: vercel.live va.vercel-scripts.com vitals.vercel-insights.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",

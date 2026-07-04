@@ -1,59 +1,32 @@
 "use client";
 
-import PortraitDepth from "@/assets/images/me-3d-depth.jpg";
 import PortraitPhoto from "@/assets/images/me-3d.jpg";
 import Image from "next/image";
 import { memo, useEffect, useRef, useState } from "react";
+import type { Mesh, MeshStandardMaterial } from "three";
 
 /**
  * Portrait3D
  *
- * Renders the portrait photo as an interactive 3D model. The photograph is
- * projected onto a densely subdivided plane whose vertices are displaced by a
- * pre-computed depth map (generated with a monocular depth-estimation model),
- * producing a real volumetric relief of the face and shoulders. The mesh
- * gently tilts toward the pointer and idles with a subtle sway.
+ * Renders the portrait as an interactive 3D model loaded from a glTF binary
+ * (public/models/portrait.glb). The model is a circular relief mesh baked
+ * from the portrait photo and a depth map produced by a monocular
+ * depth-estimation model — see scripts/generate-portrait-model.py, which also
+ * exports .gltf and .obj variants of the same model. The mesh gently tilts
+ * toward the pointer and idles with a subtle sway.
  *
  * Progressive enhancement:
  * - A regular optimized <Image> renders first (SSR-safe, priority-loadable).
- * - Three.js is loaded lazily on the client; the WebGL canvas fades in on top
- *   only when the renderer and textures are ready.
+ * - Three.js and the model are loaded lazily on the client; the WebGL canvas
+ *   fades in on top only when the model is ready.
  * - Falls back to the static image when WebGL is unavailable or the user
  *   prefers reduced motion.
  */
 
-const VERTEX_SHADER = /* glsl */ `
-  uniform sampler2D uDepth;
-  uniform float uDepthScale;
-  varying vec2 vUv;
-
-  void main() {
-    vUv = uv;
-    float depth = texture2D(uDepth, uv).r;
-    vec3 displaced = position + vec3(0.0, 0.0, (depth - 0.5) * uDepthScale);
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
-  }
-`;
-
-const FRAGMENT_SHADER = /* glsl */ `
-  uniform sampler2D uPhoto;
-  varying vec2 vUv;
-
-  void main() {
-    // Circular mask so the relief keeps the round avatar silhouette.
-    float dist = distance(vUv, vec2(0.5));
-    float alpha = 1.0 - smoothstep(0.485, 0.5, dist);
-    if (alpha <= 0.001) discard;
-
-    vec4 color = texture2D(uPhoto, vUv);
-    gl_FragColor = vec4(color.rgb, alpha);
-  }
-`;
+const MODEL_URL = "/models/portrait.glb";
 
 /** Maximum tilt (radians) applied when the pointer reaches a viewport edge. */
 const MAX_TILT = 0.3;
-/** Peak-to-peak depth of the relief relative to the unit plane. */
-const DEPTH_SCALE = 0.42;
 
 interface Portrait3DProps {
   alt: string;
@@ -81,7 +54,10 @@ export const Portrait3D = memo(
       let cleanup: (() => void) | undefined;
 
       const init = async () => {
-        const THREE = await import("three");
+        const [THREE, { GLTFLoader }] = await Promise.all([
+          import("three"),
+          import("three/addons/loaders/GLTFLoader.js"),
+        ]);
         if (disposed || !containerRef.current) return;
 
         const scene = new THREE.Scene();
@@ -96,33 +72,30 @@ export const Portrait3D = memo(
         renderer.domElement.setAttribute("aria-hidden", "true");
         container.appendChild(renderer.domElement);
 
-        const loader = new THREE.TextureLoader();
-        const [photoTexture, depthTexture] = await Promise.all([
-          loader.loadAsync(PortraitPhoto.src),
-          loader.loadAsync(PortraitDepth.src),
-        ]);
+        const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
+        const model = gltf.scene;
+
+        // Swap the glTF PBR materials for unlit ones so the photo texture
+        // keeps its exact colors without scene lighting.
+        const disposables: Array<{ dispose: () => void }> = [];
+        model.traverse((object) => {
+          const mesh = object as Mesh;
+          if (!mesh.isMesh) return;
+          const pbrMaterial = mesh.material as MeshStandardMaterial;
+          const photoTexture = pbrMaterial.map;
+          mesh.material = new THREE.MeshBasicMaterial({ map: photoTexture });
+          pbrMaterial.dispose();
+          disposables.push(mesh.geometry, mesh.material);
+          if (photoTexture) disposables.push(photoTexture);
+        });
+
         if (disposed) {
-          photoTexture.dispose();
-          depthTexture.dispose();
+          disposables.forEach((resource) => resource.dispose());
           renderer.dispose();
           renderer.domElement.remove();
           return;
         }
-        photoTexture.colorSpace = THREE.SRGBColorSpace;
-
-        const geometry = new THREE.PlaneGeometry(1.3, 1.3, 160, 160);
-        const material = new THREE.ShaderMaterial({
-          vertexShader: VERTEX_SHADER,
-          fragmentShader: FRAGMENT_SHADER,
-          uniforms: {
-            uPhoto: { value: photoTexture },
-            uDepth: { value: depthTexture },
-            uDepthScale: { value: DEPTH_SCALE },
-          },
-          transparent: true,
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+        scene.add(model);
 
         const pointerTarget = { x: 0, y: 0 };
         const handlePointerMove = (event: PointerEvent) => {
@@ -156,8 +129,8 @@ export const Portrait3D = memo(
           const idleY = Math.cos(elapsed * 0.45) * 0.05;
           const targetY = pointerTarget.x * MAX_TILT + idleY;
           const targetX = pointerTarget.y * MAX_TILT * 0.7 + idleX;
-          mesh.rotation.y += (targetY - mesh.rotation.y) * 0.06;
-          mesh.rotation.x += (targetX - mesh.rotation.x) * 0.06;
+          model.rotation.y += (targetY - model.rotation.y) * 0.06;
+          model.rotation.x += (targetX - model.rotation.x) * 0.06;
 
           renderer.render(scene, camera);
         };
@@ -170,17 +143,14 @@ export const Portrait3D = memo(
           window.removeEventListener("pointermove", handlePointerMove);
           observer.disconnect();
           resizeObserver.disconnect();
-          geometry.dispose();
-          material.dispose();
-          photoTexture.dispose();
-          depthTexture.dispose();
+          disposables.forEach((resource) => resource.dispose());
           renderer.dispose();
           renderer.domElement.remove();
         };
       };
 
       init().catch(() => {
-        // WebGL init failed — the static image below remains visible.
+        // Model or WebGL init failed — the static image below remains visible.
       });
 
       return () => {
