@@ -4,7 +4,6 @@ import { ScrollAnimationWrapper } from "@/wrappers";
 const footerLinks = [
   { href: "https://github.com/Ahmed-Shehzad", label: "Github" },
   { href: "https://x.com/AhmedShehzad1", label: "X" },
-  { href: "https://www.instagram.com/iahmedshehzad/", label: "Instagram" },
   {
     href: "https://www.linkedin.com/in/muhammad-ahmed-shehzad-66750989/",
     label: "LinkedIn",
