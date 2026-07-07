@@ -29,7 +29,10 @@ import type { Mesh, MeshStandardMaterial } from "three";
  *   motion the idle sway and pointer tilt are disabled but drag still works.
  */
 
-const MODEL_URL = "/models/portrait.glb";
+// Versioned filename: /models/* is served with a 1-year immutable
+// Cache-Control, so shape changes must ship under a new name or returning
+// visitors keep rendering their stale cached model.
+const MODEL_URL = "/models/portrait-bust.glb";
 
 /** Maximum tilt (radians) applied when the pointer reaches a viewport edge. */
 const MAX_TILT = 0.3;
@@ -93,8 +96,14 @@ export const Portrait3D = memo(
           if (!mesh.isMesh) return;
           const material = mesh.material as MeshStandardMaterial;
           // The bust is colored per vertex with the photo's real tones baked
-          // in — render it unlit so no scene lighting distorts them.
-          mesh.material = new THREE.MeshBasicMaterial({ vertexColors: true });
+          // in — render it unlit so no scene lighting distorts them. Only
+          // enable vertex colors when the geometry actually carries them;
+          // a mesh without COLOR_0 would otherwise render black.
+          const hasVertexColors = Boolean(mesh.geometry.attributes.color);
+          mesh.material = new THREE.MeshBasicMaterial({
+            vertexColors: hasVertexColors,
+            map: hasVertexColors ? null : material.map,
+          });
           material.dispose();
           disposables.push(mesh.geometry, mesh.material);
         });
