@@ -21,8 +21,10 @@ Pipeline (single photo -> sculpted, colored 3D bust):
    - decimate 50% with nearest-vertex color transfer
    - center, scale to a 1.15-unit height (matches the Portrait3D camera)
 
-3. EXPORT to public/models/ as portrait.glb (runtime), portrait.gltf, and
-   portrait.obj (for DCC tools).
+3. EXPORT to public/models/ as portrait-bust.glb (runtime),
+   portrait-bust.gltf, and portrait-bust.obj (for DCC tools). The filename
+   is versioned: /models/* is cached immutable for a year, so shape changes
+   need a new name to reach returning visitors.
 
 Usage:
   python3 scripts/generate-portrait-bust.py <bust-raw.glb> <triposr-input.png>
@@ -176,11 +178,11 @@ def main(raw_glb: str, input_png: str) -> None:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     scene = trimesh.Scene({"bust": bust})
-    scene.export(OUT_DIR / "portrait.glb")
+    scene.export(OUT_DIR / "portrait-bust.glb")
     gltf_files = trimesh.exchange.gltf.export_gltf(scene, embed_buffers=True)
     for name, data in gltf_files.items():
-        (OUT_DIR / ("portrait.gltf" if name.endswith(".gltf") else name)).write_bytes(data)
-    scene.export(OUT_DIR / "portrait.obj")
+        (OUT_DIR / ("portrait-bust.gltf" if name.endswith(".gltf") else name)).write_bytes(data)
+    scene.export(OUT_DIR / "portrait-bust.obj")
     for f in sorted(OUT_DIR.iterdir()):
         print(f"  {f.name}: {f.stat().st_size / 1024:.0f} KiB")
 
