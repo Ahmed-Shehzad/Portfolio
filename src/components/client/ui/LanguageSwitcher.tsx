@@ -49,12 +49,9 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
         });
       }
 
-      // Use window.location for more reliable navigation
-      if (typeof window !== "undefined") {
-        window.location.href = newPath;
-      } else {
-        router.push(newPath);
-      }
+      // Client-side navigation swaps the locale in place — no full page
+      // reload, no white flash, scroll position preserved.
+      router.replace(newPath, { scroll: false });
 
       // Reset toggle state after navigation
       setTimeout(() => setIsToggling(false), 500);

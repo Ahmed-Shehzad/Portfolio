@@ -40,7 +40,13 @@ const baseHeaderOptions = [
   { title: "Projects", href: "#projects", id: "projects" },
   { title: "About", href: "#about", id: "about" },
   { title: "Contact", href: "#contact", id: "contact" },
-  { title: "Resume", href: "/resumes", id: "resumes", isExternal: true },
+  {
+    title: "Resume",
+    href: "/resumes",
+    id: "resumes",
+    isExternal: true,
+    showInNavigation: false, // Pages stay reachable by URL; link hidden from nav
+  },
   {
     title: "Cover Letters",
     href: "/cover-letters",
