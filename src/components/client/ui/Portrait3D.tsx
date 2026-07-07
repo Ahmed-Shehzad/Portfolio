@@ -9,14 +9,15 @@ import type { Mesh, MeshStandardMaterial } from "three";
  * Portrait3D
  *
  * Renders the portrait as an interactive 3D model loaded from a glTF binary
- * (public/models/portrait.glb). The model is a solid medallion — a circular
- * relief baked from the portrait photo and a depth map, mounted in a dark
- * cylindrical casing — so it stays believable from every angle. See
- * scripts/generate-portrait-model.py, which also exports .gltf and .obj
+ * (public/models/portrait.glb). The model is a sculpted head-and-shoulders
+ * bust reconstructed from the portrait photo with a single-image-to-3D model
+ * and colored per vertex, with the original photo projected onto the
+ * front-facing surface so the face keeps its real colors and detail. See
+ * scripts/generate-portrait-bust.py, which also exports .gltf and .obj
  * variants of the same model.
  *
  * Interaction:
- * - Drag (mouse or touch) spins the medallion a full 360° with momentum.
+ * - Drag (mouse or touch) spins the bust a full 360° with momentum.
  * - When idle, it eases back to face the visitor, tilting gently toward the
  *   pointer with a subtle sway.
  *
@@ -34,7 +35,7 @@ const MODEL_URL = "/models/portrait.glb";
 const MAX_TILT = 0.3;
 /** Pitch limit (radians) while dragging, to keep the pose readable. */
 const MAX_PITCH = 0.7;
-/** Idle time after a drag before the medallion eases back to face front. */
+/** Idle time after a drag before the bust eases back to face front. */
 const RETURN_DELAY_MS = 2200;
 const TWO_PI = Math.PI * 2;
 
@@ -64,25 +65,16 @@ export const Portrait3D = memo(
       let cleanup: (() => void) | undefined;
 
       const init = async () => {
-        const [THREE, { GLTFLoader }, { RoomEnvironment }] = await Promise.all([
+        const [THREE, { GLTFLoader }] = await Promise.all([
           import("three"),
           import("three/addons/loaders/GLTFLoader.js"),
-          import("three/addons/environments/RoomEnvironment.js"),
         ]);
         if (disposed || !containerRef.current) return;
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 10);
-        // Far enough back that the full medallion (casing radius ~0.69) stays
-        // in frame at any rotation angle.
+        // Far enough back that the full bust stays in frame at any angle.
         camera.position.z = 2.65;
-
-        // Lighting only affects the bronze casing — the photo relief is unlit
-        // so it keeps the exact colors of the original picture.
-        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-        const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
-        keyLight.position.set(1.5, 1.5, 2.5);
-        scene.add(keyLight);
 
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -92,42 +84,19 @@ export const Portrait3D = memo(
         renderer.domElement.setAttribute("aria-hidden", "true");
         container.appendChild(renderer.domElement);
 
-        // Image-based environment so the metal casing picks up realistic
-        // reflections instead of flat shading.
-        const pmrem = new THREE.PMREMGenerator(renderer);
-        const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-        scene.environment = environment;
-        pmrem.dispose();
-
         const gltf = await new GLTFLoader().loadAsync(MODEL_URL);
         const model = gltf.scene;
 
-        const disposables: Array<{ dispose: () => void }> = [environment];
+        const disposables: Array<{ dispose: () => void }> = [];
         model.traverse((object) => {
           const mesh = object as Mesh;
           if (!mesh.isMesh) return;
           const material = mesh.material as MeshStandardMaterial;
-          if (mesh.name === "relief") {
-            // Photo relief: swap the glTF PBR material for an unlit one so
-            // the picture keeps its exact colors without scene lighting.
-            const photoTexture = material.map;
-            mesh.material = new THREE.MeshBasicMaterial({
-              map: photoTexture,
-              side: THREE.DoubleSide,
-            });
-            material.dispose();
-            if (photoTexture) disposables.push(photoTexture);
-            disposables.push(mesh.material);
-          } else {
-            // Casing: keep the lit PBR material for the engraved bronze rim
-            // and back. The export carries no normals and its winding culls
-            // badly from behind, so compute normals and render both faces.
-            if (!mesh.geometry.attributes.normal) mesh.geometry.computeVertexNormals();
-            material.side = THREE.DoubleSide;
-            if (material.map) disposables.push(material.map);
-            disposables.push(material);
-          }
-          disposables.push(mesh.geometry);
+          // The bust is colored per vertex with the photo's real tones baked
+          // in — render it unlit so no scene lighting distorts them.
+          mesh.material = new THREE.MeshBasicMaterial({ vertexColors: true });
+          material.dispose();
+          disposables.push(mesh.geometry, mesh.material);
         });
 
         if (disposed) {
