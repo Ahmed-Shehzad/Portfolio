@@ -6,14 +6,16 @@ Builds a solid, 360°-viewable portrait medallion:
 - Front: a depth-displaced circular relief baked from the portrait photo and
   its depth map (src/assets/images/me-3d.jpg / me-3d-depth.jpg — the depth map
   was produced with the Depth Anything V2 monocular depth-estimation model).
-- Casing: a dark cylindrical backing with a rim and back face, so the model
-  reads as a physical medallion from every angle instead of a hollow shell.
+- Casing: a clear glass cylindrical backing with a rim and back face, so the
+  model reads as a photo relief set in a transparent glass coin. The glTF
+  carries it as a translucent PBR material; the Portrait3D component upgrades
+  it to a refractive MeshPhysicalMaterial at runtime.
 
 Exports to public/models/ as:
 
-- portrait-medallion.glb   (binary glTF — loaded at runtime by Portrait3D)
-- portrait-medallion.gltf  (JSON glTF with embedded buffers, for tooling)
-- portrait-medallion.obj   (+ .mtl and texture, for DCC tools like Blender)
+- portrait-glass.glb   (binary glTF — loaded at runtime by Portrait3D)
+- portrait-glass.gltf  (JSON glTF with embedded buffers, for tooling)
+- portrait-glass.obj   (+ .mtl and texture, for DCC tools like Blender)
 
 The filename is versioned: /models/* is cached immutable for a year, so
 shape changes need a new name to reach returning visitors.
@@ -28,7 +30,7 @@ from pathlib import Path
 
 import numpy as np
 import trimesh
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 PHOTO = ROOT / "src/assets/images/me-3d.jpg"
@@ -46,10 +48,6 @@ CASING_RADIUS = (PLANE_SIZE / 2) * 1.06
 CASING_FRONT_Z = -0.16  # just behind the relief's lowest (background) surface
 CASING_THICKNESS = 0.14
 
-# Antique bronze palette for the casing texture.
-BRONZE_BASE = (125, 94, 51)
-BRONZE_LIGHT = (196, 156, 99)
-BRONZE_DARK = (74, 53, 26)
 
 
 def build_relief() -> trimesh.Trimesh:
@@ -99,84 +97,6 @@ def build_relief() -> trimesh.Trimesh:
     mesh = trimesh.Trimesh(vertices=vertices, faces=faces, visual=visual, process=False)
     mesh.remove_unreferenced_vertices()
     return mesh
-
-
-def _circular_text(draw, text: str, center: float, radius: float, font, fill) -> None:
-    """Draw text along the top arc of a circle, centered at 12 o'clock."""
-    from PIL import Image
-
-    step = 2 * np.pi / max(len(text), 1) * 0.37  # angular spacing per character
-    start = -step * (len(text) - 1) / 2
-    for i, ch in enumerate(text):
-        angle = start + i * step  # 0 = top, positive clockwise
-        glyph = Image.new("RGBA", (96, 96), (0, 0, 0, 0))
-        gdraw = ImageDraw.Draw(glyph)
-        gdraw.text((48, 48), ch, font=font, fill=fill, anchor="mm")
-        rotated = glyph.rotate(-np.degrees(angle), resample=Image.BICUBIC)
-        x = center + radius * np.sin(angle)
-        y = center - radius * np.cos(angle)
-        draw._image.paste(rotated, (int(x) - 48, int(y) - 48), rotated)
-
-
-def build_back_texture() -> Image.Image:
-    """Engraved coin-style back: reeded rim, circumferential name, monogram."""
-    size = 1024
-    c = size / 2
-    tex = Image.new("RGB", (size, size), BRONZE_BASE)
-    draw = ImageDraw.Draw(tex)
-
-    # Radial shading: brighter center fading to darker edge.
-    yy, xx = np.mgrid[0:size, 0:size]
-    r = np.sqrt((xx - c) ** 2 + (yy - c) ** 2) / c
-    t = np.clip(r, 0, 1) ** 1.6
-    base = np.array(BRONZE_BASE, dtype=np.float32)
-    light = np.array(BRONZE_LIGHT, dtype=np.float32)
-    dark = np.array(BRONZE_DARK, dtype=np.float32)
-    shaded = light * (1 - t)[..., None] * 0.35 + base * 0.75 + dark * t[..., None] * 0.25
-    tex = Image.fromarray(np.clip(shaded, 0, 255).astype(np.uint8))
-    draw = ImageDraw.Draw(tex)
-
-    # Reeded rim: fine radial ticks like a coin edge.
-    for k in range(240):
-        a = 2 * np.pi * k / 240
-        x1, y1 = c + 0.945 * c * np.sin(a), c - 0.945 * c * np.cos(a)
-        x2, y2 = c + 0.995 * c * np.sin(a), c - 0.995 * c * np.cos(a)
-        shade = BRONZE_DARK if k % 2 else BRONZE_LIGHT
-        draw.line([(x1, y1), (x2, y2)], fill=shade, width=3)
-
-    # Rule circles framing the text band.
-    for radius, width, shade in [
-        (0.93, 4, BRONZE_DARK),
-        (0.70, 3, BRONZE_DARK),
-        (0.68, 2, BRONZE_LIGHT),
-    ]:
-        bb = [c - radius * c, c - radius * c, c + radius * c, c + radius * c]
-        draw.ellipse(bb, outline=shade, width=width)
-
-    try:
-        font_text = ImageFont.truetype(
-            "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf", 58
-        )
-        font_mono = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf", 260)
-    except OSError:
-        font_text = ImageFont.load_default()
-        font_mono = ImageFont.load_default()
-
-    draw._image = tex
-    _circular_text(draw, "MUHAMMAD AHMED SHEHZAD", c, 0.815 * c, font_text, BRONZE_DARK)
-
-    # Engraved monogram: dark glyph with a light catch-light offset.
-    draw.text((c + 4, c + 6), "MAS", font=font_mono, fill=tuple(int(v * 0.7) for v in BRONZE_DARK), anchor="mm")
-    draw.text((c - 2, c - 3), "MAS", font=font_mono, fill=BRONZE_LIGHT, anchor="mm")
-    draw.text((c, c), "MAS", font=font_mono, fill=BRONZE_DARK, anchor="mm")
-
-    # Plain-bronze corner patch sampled by the wall and front-ring UVs.
-    draw.rectangle([0, 0, 28, 28], fill=BRONZE_BASE)
-
-    buf = BytesIO()
-    tex.save(buf, format="JPEG", quality=90)
-    buf.seek(0)
-    return Image.open(buf)
 
 
 def build_casing() -> trimesh.Trimesh:
@@ -248,14 +168,15 @@ def build_casing() -> trimesh.Trimesh:
 
     material = trimesh.visual.material.PBRMaterial(
         name="casing",
-        baseColorTexture=build_back_texture(),
-        metallicFactor=0.9,
-        roughnessFactor=0.45,
+        baseColorFactor=[0.88, 0.94, 1.0, 0.28],
+        metallicFactor=0.0,
+        roughnessFactor=0.08,
+        alphaMode="BLEND",
     )
     casing = trimesh.Trimesh(
         vertices=np.array(vertices, dtype=np.float64),
         faces=np.array(faces, dtype=np.int64),
-        visual=trimesh.visual.TextureVisuals(uv=np.array(uv, dtype=np.float64), material=material),
+        visual=trimesh.visual.TextureVisuals(material=material),
         process=False,
     )
     return casing
@@ -270,14 +191,14 @@ def main() -> None:
     faces = len(relief.faces) + len(casing.faces)
     print(f"model: {vertices} vertices, {faces} faces")
 
-    scene.export(OUT_DIR / "portrait-medallion.glb")
+    scene.export(OUT_DIR / "portrait-glass.glb")
 
     gltf_files = trimesh.exchange.gltf.export_gltf(scene, embed_buffers=True)
     for name, data in gltf_files.items():
-        out = OUT_DIR / ("portrait-medallion.gltf" if name.endswith(".gltf") else name)
+        out = OUT_DIR / ("portrait-glass.gltf" if name.endswith(".gltf") else name)
         out.write_bytes(data)
 
-    scene.export(OUT_DIR / "portrait-medallion.obj")
+    scene.export(OUT_DIR / "portrait-glass.obj")
 
     for f in sorted(OUT_DIR.iterdir()):
         print(f"  {f.name}: {f.stat().st_size / 1024:.0f} KiB")

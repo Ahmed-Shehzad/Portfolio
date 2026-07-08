@@ -9,9 +9,9 @@ import type { Mesh, MeshStandardMaterial } from "three";
  * Portrait3D
  *
  * Renders the portrait as an interactive 3D model loaded from a glTF binary
- * (public/models/portrait-medallion.glb). The model is a solid medallion — a circular
- * relief baked from the portrait photo and a depth map, mounted in a dark
- * cylindrical casing — so it stays believable from every angle. See
+ * (public/models/portrait-glass.glb). The model is a circular relief baked
+ * from the portrait photo and a depth map, set in a clear glass coin — so it
+ * stays believable from every angle. See
  * scripts/generate-portrait-model.py, which also exports .gltf and .obj
  * variants of the same model.
  *
@@ -31,7 +31,7 @@ import type { Mesh, MeshStandardMaterial } from "three";
 // Versioned filename: /models/* is served with a 1-year immutable
 // Cache-Control, so shape changes must ship under a new name or returning
 // visitors keep rendering their stale cached model.
-const MODEL_URL = "/models/portrait-medallion.glb";
+const MODEL_URL = "/models/portrait-glass.glb";
 
 /** Maximum tilt (radians) applied when the pointer reaches a viewport edge. */
 const MAX_TILT = 0.3;
@@ -80,10 +80,10 @@ export const Portrait3D = memo(
         // in frame at any rotation angle.
         camera.position.z = 2.65;
 
-        // Lighting only affects the bronze casing — the photo relief is unlit
+        // Lighting only affects the glass casing — the photo relief is unlit
         // so it keeps the exact colors of the original picture.
         scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-        const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+        const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
         keyLight.position.set(1.5, 1.5, 2.5);
         scene.add(keyLight);
 
@@ -95,8 +95,8 @@ export const Portrait3D = memo(
         renderer.domElement.setAttribute("aria-hidden", "true");
         container.appendChild(renderer.domElement);
 
-        // Image-based environment so the metal casing picks up realistic
-        // reflections instead of flat shading.
+        // Image-based environment so the glass casing picks up realistic
+        // reflections and refraction highlights.
         const pmrem = new THREE.PMREMGenerator(renderer);
         const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
         scene.environment = environment;
@@ -122,13 +122,23 @@ export const Portrait3D = memo(
             if (photoTexture) disposables.push(photoTexture);
             disposables.push(mesh.material);
           } else {
-            // Casing: keep the lit PBR material for the engraved bronze rim
-            // and back. The export carries no normals and its winding culls
-            // badly from behind, so compute normals and render both faces.
+            // Casing: replace the glTF's translucent stand-in with real
+            // refractive glass. The export carries no normals, so compute
+            // them; render both faces so the far wall shows through.
             if (!mesh.geometry.attributes.normal) mesh.geometry.computeVertexNormals();
-            material.side = THREE.DoubleSide;
-            if (material.map) disposables.push(material.map);
-            disposables.push(material);
+            mesh.material = new THREE.MeshPhysicalMaterial({
+              color: 0xdfeaf2,
+              metalness: 0,
+              roughness: 0.18,
+              transmission: 1,
+              thickness: 0.3,
+              ior: 1.5,
+              envMapIntensity: 0.35,
+              specularIntensity: 0.5,
+              side: THREE.DoubleSide,
+            });
+            material.dispose();
+            disposables.push(mesh.material);
           }
           disposables.push(mesh.geometry);
         });
