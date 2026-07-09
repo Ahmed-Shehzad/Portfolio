@@ -20,7 +20,9 @@ const main = async () => {
   const { join } = await import("node:path");
   const { default: postcss } = await import("postcss");
 
-  const cssDir = join(process.cwd(), ".next", "static", "css");
+  // Next 15 (webpack) emits .next/static/css/*.css; Next 16 (Turbopack)
+  // emits .next/static/chunks/*.css — walk the whole static dir.
+  const staticDir = join(process.cwd(), ".next", "static");
 
   const unwrap = (root) => {
     // Re-walk until stable: replacing an at-rule with its children can insert
@@ -41,7 +43,7 @@ const main = async () => {
 
   let files = [];
   try {
-    files = readdirSync(cssDir).filter((f) => f.endsWith(".css"));
+    files = readdirSync(staticDir, { recursive: true }).filter((f) => f.endsWith(".css"));
   } catch {
     console.log("flatten-css-layers: no CSS output directory, skipping");
     return;
@@ -49,7 +51,7 @@ const main = async () => {
 
   for (const file of files) {
     try {
-      const path = join(cssDir, file);
+      const path = join(staticDir, file);
       const css = readFileSync(path, "utf8");
       const result = postcss.parse(css, { from: path });
       unwrap(result);
