@@ -10,12 +10,12 @@ const nextConfig: NextConfig = {
   images: {
     // Enable image optimization for better performance
     unoptimized: false, // Enable optimization for responsive images
-    domains: [
-      "https://www.365scores.com",
-      "https://extraleicht.com/",
-      "https://app.sustayn.de",
-      "https://www.pflegehilfe.org/",
-    ], // Add external image domains if needed
+    remotePatterns: [
+      { protocol: "https", hostname: "www.365scores.com" },
+      { protocol: "https", hostname: "extraleicht.com" },
+      { protocol: "https", hostname: "app.sustayn.de" },
+      { protocol: "https", hostname: "www.pflegehilfe.org" },
+    ],
     formats: ["image/webp", "image/avif"],
     // Enhanced image optimization settings
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -29,6 +29,19 @@ const nextConfig: NextConfig = {
   // Remove GitHub Pages specific paths for Vercel
   // basePath: "/Portfolio", // Removed for Vercel
   // assetPrefix: "/Portfolio", // Removed for Vercel
+
+  // Turbopack (Next 16 default bundler): import SVGs as React components.
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
+
+  // Kept for `next build --webpack` fallbacks and tooling that still uses
+  // the webpack pipeline.
   webpack(config) {
     // Remove the default Next.js svg loader if present
     config.module.rules = config.module.rules.map((rule: { test?: RegExp; exclude?: RegExp }) => {
