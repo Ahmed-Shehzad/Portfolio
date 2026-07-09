@@ -28,17 +28,12 @@
   color: var(--ink-faint);
 }
 
-/* Pastel liquid backdrop: lavender / pink / ice blue, slowly drifting. */
+/* Pastel liquid backdrop: lavender / pink / ice blue, slowly drifting.
+ * The gradients live on a fixed pseudo-element instead of the body with
+ * background-attachment: fixed, which iOS Safari does not render. */
 .liquid-bg {
   position: relative;
   background-color: #e9e6f4;
-  background-image:
-    radial-gradient(90rem 60rem at 12% -10%, rgba(214, 197, 245, 0.9), transparent 60%),
-    radial-gradient(80rem 55rem at 95% 15%, rgba(247, 213, 231, 0.85), transparent 60%),
-    radial-gradient(70rem 60rem at 30% 85%, rgba(197, 226, 246, 0.9), transparent 62%),
-    radial-gradient(60rem 50rem at 80% 95%, rgba(233, 204, 239, 0.7), transparent 65%),
-    linear-gradient(160deg, #efe9f6 0%, #ece6f5 40%, #e3e9f5 100%);
-  background-attachment: fixed;
 }
 
 .liquid-bg::before {
@@ -49,7 +44,12 @@
   pointer-events: none;
   background:
     radial-gradient(32rem 26rem at 25% 30%, rgba(255, 255, 255, 0.5), transparent 70%),
-    radial-gradient(38rem 30rem at 75% 65%, rgba(255, 245, 255, 0.45), transparent 70%);
+    radial-gradient(38rem 30rem at 75% 65%, rgba(255, 245, 255, 0.45), transparent 70%),
+    radial-gradient(90rem 60rem at 12% -10%, rgba(214, 197, 245, 0.9), transparent 60%),
+    radial-gradient(80rem 55rem at 95% 15%, rgba(247, 213, 231, 0.85), transparent 60%),
+    radial-gradient(70rem 60rem at 30% 85%, rgba(197, 226, 246, 0.9), transparent 62%),
+    radial-gradient(60rem 50rem at 80% 95%, rgba(233, 204, 239, 0.7), transparent 65%),
+    linear-gradient(160deg, #efe9f6 0%, #ece6f5 40%, #e3e9f5 100%);
   animation: liquid-drift 26s ease-in-out infinite alternate;
 }
 
