@@ -10,6 +10,7 @@
  *
  * Runs after `next build` (see the build script in package.json).
  */
+/* eslint-disable no-console -- build-time script, console output is its UI */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import postcss from "postcss";
