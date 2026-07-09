@@ -43,14 +43,20 @@ try {
 }
 
 for (const file of files) {
-  const path = join(cssDir, file);
-  const css = readFileSync(path, "utf8");
-  const result = postcss.parse(css, { from: path });
-  unwrap(result);
-  const flattened = result.toString();
-  writeFileSync(path, flattened);
-  const layersLeft = (flattened.match(/@layer/g) || []).length;
-  console.log(
-    `flatten-css-layers: ${file} ${css.length} -> ${flattened.length} bytes, @layer left: ${layersLeft}`
-  );
+  try {
+    const path = join(cssDir, file);
+    const css = readFileSync(path, "utf8");
+    const result = postcss.parse(css, { from: path });
+    unwrap(result);
+    const flattened = result.toString();
+    writeFileSync(path, flattened);
+    const layersLeft = (flattened.match(/@layer/g) || []).length;
+    console.log(
+      `flatten-css-layers: ${file} ${css.length} -> ${flattened.length} bytes, @layer left: ${layersLeft}`
+    );
+  } catch (error) {
+    // Never fail the deploy over the compatibility pass — a layered
+    // stylesheet still works everywhere except old Safari.
+    console.warn(`flatten-css-layers: skipped ${file}: ${error}`);
+  }
 }
