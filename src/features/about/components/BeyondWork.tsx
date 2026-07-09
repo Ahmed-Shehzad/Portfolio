@@ -7,7 +7,7 @@ export const BeyondWork = memo(() => {
       <ScrollAnimationWrapper animation="fadeInUp" delay={250}>
         <div className="mb-8 text-center">
           <h3 className="mb-4 text-2xl font-semibold md:text-3xl">Beyond Work</h3>
-          <p className="mx-auto max-w-2xl text-white/70">
+          <p className="text-ink-soft mx-auto max-w-2xl">
             The human side that brings creativity and fresh perspective to my work
           </p>
         </div>
@@ -16,9 +16,9 @@ export const BeyondWork = memo(() => {
       <ScrollAnimationWrapper animation="fadeInUp" delay={300}>
         <div className="mx-auto max-w-4xl">
           <div className="rounded-3xl bg-gradient-to-r from-orange-300 to-red-300 p-[1px]">
-            <div className="rounded-3xl bg-gray-900 p-8 md:p-10">
+            <div className="rounded-3xl bg-white/45 p-8 md:p-10">
               <div className="text-center">
-                <p className="text-lg leading-relaxed text-white/90 md:text-xl">
+                <p className="text-ink-soft text-lg leading-relaxed md:text-xl">
                   &ldquo;When I&apos;m not coding, you&apos;ll probably find me hiking scenic
                   trails, capturing landscapes through photography, or diving into books on
                   technology, psychology, and business. I also enjoy experimenting in the kitchen —

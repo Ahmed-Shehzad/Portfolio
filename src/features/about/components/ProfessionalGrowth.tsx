@@ -32,7 +32,7 @@ export const ProfessionalGrowth = memo(() => {
       <ScrollAnimationWrapper animation="fadeInUp" delay={250}>
         <div className="mb-8 text-center">
           <h3 className="mb-4 text-2xl font-semibold md:text-3xl">What Sets Me Apart</h3>
-          <p className="mx-auto max-w-2xl text-white/70">
+          <p className="text-ink-soft mx-auto max-w-2xl">
             Beyond technical skills, here&apos;s what makes me a valuable partner for your projects
           </p>
         </div>
@@ -59,7 +59,7 @@ export const ProfessionalGrowth = memo(() => {
                 height={200}
               />
             </div>
-            <div className="mt-4 px-6 text-center text-sm text-white/60">
+            <div className="text-ink-soft mt-4 px-6 text-center text-sm">
               Currently exploring: Next.js 15, React 19, and modern DevOps practices
             </div>
           </Card>

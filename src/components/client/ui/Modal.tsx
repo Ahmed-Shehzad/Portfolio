@@ -48,7 +48,7 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
   const modalContent = (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <button
-        className="absolute inset-0 cursor-pointer bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 cursor-pointer bg-indigo-950/25 backdrop-blur-sm"
         onClick={onClose}
         aria-label="Close modal"
       />

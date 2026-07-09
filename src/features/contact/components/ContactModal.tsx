@@ -345,12 +345,12 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex cursor-pointer items-center justify-center rounded-lg bg-gradient-to-r from-emerald-400 to-sky-400 px-4 py-2 text-sm font-medium text-white transition-all hover:from-emerald-500 hover:to-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="accent-pill inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-all hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
                     <svg
-                      className="mr-2 h-4 w-4 animate-spin text-white"
+                      className="text-ink mr-2 h-4 w-4 animate-spin"
                       fill="none"
                       viewBox="0 0 24 24"
                     >

@@ -45,7 +45,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
   ) {
     secureLog.error("Invalid center coordinates provided", "Invalid coordinates format");
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
+      <div className="text-ink flex h-full w-full items-center justify-center rounded-lg bg-white/45">
         <div className="text-center">
           <div className="mb-2 text-2xl">🗺️</div>
           <div className="text-sm font-medium">Invalid map coordinates</div>
@@ -62,7 +62,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
   if (typeof zoom !== "number" || zoom < 0 || zoom > 20) {
     secureLog.error("Invalid zoom level provided", `Zoom: ${zoom}`);
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
+      <div className="text-ink flex h-full w-full items-center justify-center rounded-lg bg-white/45">
         <div className="text-center">
           <div className="mb-2 text-2xl">🗺️</div>
           <div className="text-sm font-medium">Invalid zoom level</div>
@@ -92,9 +92,9 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
       return L.divIcon({
         html: `
           <div class="relative">
-            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-20 animate-ping" style="animation-duration: 2s; width: 80px; height: 80px; left: -10px; top: -10px;"></div>
-            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300 to-sky-400 -z-10" style="width: 80px; height: 80px; left: -10px; top: -10px;"></div>
-            <div class="bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full flex items-center justify-center relative" style="width: 60px; height: 60px;">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-sky-500 -z-20 animate-ping" style="animation-duration: 2s; width: 80px; height: 80px; left: -10px; top: -10px;"></div>
+            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500 to-sky-500 -z-10" style="width: 80px; height: 80px; left: -10px; top: -10px;"></div>
+            <div class="bg-gradient-to-r from-violet-400 to-sky-400 rounded-full flex items-center justify-center relative" style="width: 60px; height: 60px;">
               <img src="${escapedSrc}" alt="Map marker indicating Muhammad Ahmed's location in Deutschland" style="width: 60px; height: 60px;" class="rounded-full" />
               <div class="absolute inset-0 outline-2 outline-offset-2 outline-gray-950/30 rounded-full" style="outline: 2px solid rgba(3, 7, 18, 0.3);"></div>
             </div>
@@ -183,7 +183,7 @@ export const OpenStreetMap = (props: IOpenStreetMapProps) => {
     );
 
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-800 text-white">
+      <div className="text-ink flex h-full w-full items-center justify-center rounded-lg bg-white/45">
         <div className="text-center">
           <div className="mb-2 text-2xl">🗺️</div>
           <div className="text-sm font-medium">{errorMessage}</div>

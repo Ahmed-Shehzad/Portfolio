@@ -80,8 +80,8 @@ const NavigationItem: FC<NavigationItemProps> = (props) => {
   const isExternalPage = option.isExternal || false;
   const className = `nav-item block w-full text-left py-3 px-4 rounded-lg transition-colors duration-200 md:w-auto md:text-center md:py-2 md:rounded-full ${
     isActive && !isExternalPage
-      ? "bg-white text-gray-900 hover:bg-white/90"
-      : "text-white hover:bg-white/10 md:hover:bg-white/20"
+      ? "bg-white/85 text-ink shadow-sm hover:bg-white"
+      : "text-ink-soft hover:bg-white/50 hover:text-ink md:hover:bg-white/60"
   }`;
 
   if (isExternalPage) {
@@ -298,7 +298,7 @@ export const Header = () => {
   return (
     <>
       <header
-        className="fixed top-0 z-10 w-full border-b border-white/10 bg-black/10 backdrop-blur-sm"
+        className="fixed top-0 z-10 w-full border-b border-white/50 bg-white/25 backdrop-blur-xl"
         role="banner"
       >
         <div
@@ -313,17 +313,17 @@ export const Header = () => {
               aria-expanded={isMobileMenuOpen}
             >
               <span
-                className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${
+                className={`bg-ink block h-0.5 w-6 transition-transform duration-300 ${
                   isMobileMenuOpen ? "translate-y-2 rotate-45" : ""
                 }`}
               />
               <span
-                className={`block h-0.5 w-6 bg-white transition-opacity duration-300 ${
+                className={`bg-ink block h-0.5 w-6 transition-opacity duration-300 ${
                   isMobileMenuOpen ? "opacity-0" : ""
                 }`}
               />
               <span
-                className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${
+                className={`bg-ink block h-0.5 w-6 transition-transform duration-300 ${
                   isMobileMenuOpen ? "-translate-y-2 -rotate-45" : ""
                 }`}
               />
@@ -334,7 +334,7 @@ export const Header = () => {
           {!showMobileUI && (
             <div className="flex items-center gap-4">
               <nav
-                className="flex gap-1 rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur"
+                className="glass-pill flex gap-1 p-0.5"
                 role="navigation"
                 aria-label="Main navigation"
               >
@@ -359,7 +359,7 @@ export const Header = () => {
       {/* Mobile/Tablet side drawer overlay */}
       {showMobileUI && isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-indigo-950/20 backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
         />
@@ -368,21 +368,21 @@ export const Header = () => {
       {/* Mobile/Tablet side drawer */}
       {showMobileUI && (
         <div
-          className={`fixed top-0 left-0 z-50 h-full w-72 transform bg-black/10 backdrop-blur-lg transition-transform duration-300 ease-in-out ${
+          className={`fixed top-0 left-0 z-50 h-full w-72 transform border-r border-white/60 bg-white/40 backdrop-blur-2xl transition-transform duration-300 ease-in-out ${
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           {/* Drawer header */}
-          <div className="flex items-center justify-between border-b border-white/10 p-6">
-            <h2 className="text-xl font-semibold text-white">Portfolio</h2>
+          <div className="flex items-center justify-between border-b border-white/50 p-6">
+            <h2 className="text-ink text-xl font-semibold">Portfolio</h2>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-white/50"
               aria-label="Close navigation menu"
             >
               <span className="sr-only">Close menu</span>
               <svg
-                className="h-6 w-6 text-white"
+                className="text-ink h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -410,8 +410,8 @@ export const Header = () => {
           </nav>
 
           {/* Language switcher in mobile menu */}
-          <div className="border-t border-white/10 p-6">
-            <div className="mb-3 text-sm font-medium text-white/70">Language</div>
+          <div className="border-t border-white/50 p-6">
+            <div className="text-ink-soft mb-3 text-sm font-medium">Language</div>
             <LanguageSwitcher className="w-full" />
           </div>
         </div>

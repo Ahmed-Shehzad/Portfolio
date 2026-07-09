@@ -15,10 +15,10 @@ export const CardHeader: FC<CardHeaderProps> = (props) => {
   return (
     <div className={twMerge("flex flex-col p-6 md:px-10 md:py-8", className)}>
       <div className="inline-flex items-center gap-2">
-        <StarIcon className="size-9 text-emerald-300" />
-        <h3 className="font-serif text-3xl">{title}</h3>
+        <StarIcon className="size-9 text-violet-500" />
+        <h3 className="text-ink font-serif text-3xl">{title}</h3>
       </div>
-      <p className="mt-2 text-sm text-white/60 lg:text-base">{description}</p>
+      <p className="text-ink-soft mt-2 text-sm lg:text-base">{description}</p>
     </div>
   );
 };
