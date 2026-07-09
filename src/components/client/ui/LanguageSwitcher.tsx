@@ -69,18 +69,16 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
   const targetLocaleConfig = localeConfig[targetLocale];
 
   return (
-    <div
-      className={`rounded-full border border-white/15 bg-white/10 p-0.5 backdrop-blur ${className}`}
-    >
+    <div className={`glass-pill p-0.5 ${className}`}>
       <button
         onClick={handleLocaleToggle}
         disabled={isToggling}
-        className="group relative flex items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-white/10 focus:ring-2 focus:ring-white/50 focus:outline-none disabled:opacity-50"
+        className="group text-ink relative flex items-center gap-3 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 hover:bg-white/40 focus:ring-2 focus:ring-violet-300 focus:outline-none disabled:opacity-50"
         aria-label={`Switch to ${targetLocaleConfig.name}`}
         title={`Switch to ${targetLocaleConfig.name}`}
       >
         {/* Current Language - Highlighted with Header Style */}
-        <div className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-gray-900 transition-colors duration-200 hover:bg-white/90">
+        <div className="text-ink flex items-center gap-2 rounded-full bg-white/85 px-3 py-1.5 shadow-sm transition-colors duration-200 hover:bg-white">
           <span className="text-base">{currentLocaleConfig.flag}</span>
           <span className="hidden font-semibold sm:block">{currentLocaleConfig.name}</span>
           <span className="font-semibold sm:hidden">{displayLocale.toUpperCase()}</span>
@@ -106,7 +104,7 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
         </div>
 
         {/* Target Language - Subdued */}
-        <div className="flex items-center gap-2 rounded-full px-3 py-1.5 text-white transition-colors duration-200 hover:bg-white/20">
+        <div className="text-ink-soft flex items-center gap-2 rounded-full px-3 py-1.5 transition-colors duration-200 hover:bg-white/50">
           <span className="text-base transition-all duration-200">{targetLocaleConfig.flag}</span>
           <span className="hidden font-medium sm:block">{targetLocaleConfig.name}</span>
           <span className="font-medium sm:hidden">{targetLocale.toUpperCase()}</span>
@@ -114,8 +112,8 @@ export const LanguageSwitcher = ({ className = "" }: LanguageSwitcherProps) => {
 
         {/* Loading Indicator */}
         {isToggling && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white/5 backdrop-blur-sm">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white/40 backdrop-blur-sm">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-violet-200 border-t-violet-500" />
           </div>
         )}
       </button>

@@ -20,7 +20,7 @@ const ContactModalComponent = dynamic(
     loading: () => (
       <div className="flex items-center justify-center p-8">
         <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500/20 border-t-emerald-500" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-500/20 border-t-violet-500" />
           <p className="text-sm text-white/60">Loading contact form...</p>
         </div>
       </div>

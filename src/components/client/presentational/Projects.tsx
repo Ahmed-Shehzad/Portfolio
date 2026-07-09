@@ -52,8 +52,8 @@ export const Projects: FC<ProjectsProps> = ({ translations, isLoading, isError, 
           </ScrollAnimationWrapper>
           <div className="mt-10 flex items-center justify-center md:mt-20">
             <div className="text-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-emerald-300 border-r-transparent" />
-              <p className="mt-4 text-white/60">{translations.loading}</p>
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-violet-400 border-r-transparent" />
+              <p className="text-ink-soft mt-4">{translations.loading}</p>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@ export const Projects: FC<ProjectsProps> = ({ translations, isLoading, isError, 
           <div className="mt-10 flex items-center justify-center md:mt-20">
             <div className="text-center">
               <p className="text-red-400">{translations.error}</p>
-              <p className="mt-2 text-white/60">{translations.errorDescription}</p>
+              <p className="text-ink-soft mt-2">{translations.errorDescription}</p>
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ export const Projects: FC<ProjectsProps> = ({ translations, isLoading, isError, 
             return (
               <Card
                 key={project.title}
-                className="sticky px-8 pt-8 pb-0 md:px-10 md:pt-12 lg:px-20 lg:pt-16"
+                className="glass-panel-solid sticky px-8 pt-8 pb-0 md:px-10 md:pt-12 lg:px-20 lg:pt-16"
                 style={{ top: stickyOffset }}
               >
                 <ScrollAnimationWrapper
@@ -113,18 +113,18 @@ export const Projects: FC<ProjectsProps> = ({ translations, isLoading, isError, 
                 >
                   <div className="lg:grid lg:grid-cols-2 lg:gap-16">
                     <div className="lg:pb-16">
-                      <div className="inline-flex bg-gradient-to-r from-emerald-300 to-sky-400 bg-clip-text text-sm font-bold tracking-widest text-transparent uppercase">
+                      <div className="inline-flex bg-gradient-to-r from-violet-500 to-sky-500 bg-clip-text text-sm font-bold tracking-widest text-transparent uppercase">
                         {project.company} &bull; {project.year}
                       </div>
                       <h3 className="mt-2 font-serif text-2xl md:mt-5 md:text-4xl">
                         {project.title}
                       </h3>
-                      <hr className="mt-4 border-t-2 border-white/5 md:mt-5" />
+                      <hr className="mt-4 border-t-2 border-white/60 md:mt-5" />
                       <ul className="mt-4 flex flex-col gap-4 md:mt-5">
                         {project.results.map((result) => (
                           <li
                             key={result.title}
-                            className="flex gap-2 text-sm text-white/50 md:text-base"
+                            className="text-ink-faint flex gap-2 text-sm md:text-base"
                           >
                             <CheckCircleIcon className="size-5 md:size-6" />
                             <span>{result.title}</span>
@@ -146,15 +146,15 @@ export const Projects: FC<ProjectsProps> = ({ translations, isLoading, isError, 
                     {/* Visual preview frame: maintain aspect ratio on tablets (e.g., iPad Pro 11"/12.9") */}
                     <div className="relative mt-8 h-56 w-full overflow-hidden rounded-2xl sm:h-60 md:aspect-[158/100] md:h-auto lg:mt-0 lg:aspect-auto lg:h-[400px]">
                       <figure
-                        className="relative flex h-full flex-col rounded-2xl border border-white/10 bg-neutral-900/70 px-2 pt-5 pb-3 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/5 backdrop-blur supports-[backdrop-filter]:bg-neutral-900/50 sm:px-3 sm:pt-6 sm:pb-4"
+                        className="relative flex h-full flex-col rounded-2xl border border-white/60 bg-white/40 px-2 pt-5 pb-3 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/60 backdrop-blur supports-[backdrop-filter]:bg-white/30 sm:px-3 sm:pt-6 sm:pb-4"
                         aria-label={`${project.title} preview in MacBook frame`}
                       >
                         {/* Camera notch / bezel indicator */}
                         <div
-                          className="pointer-events-none absolute top-1.5 left-1/2 h-2 w-20 -translate-x-1/2 rounded-full bg-black/40 sm:w-24"
+                          className="pointer-events-none absolute top-1.5 left-1/2 h-2 w-20 -translate-x-1/2 rounded-full bg-white/70 sm:w-24"
                           aria-hidden="true"
                         />
-                        <div className="relative flex-grow overflow-hidden rounded-lg ring-1 ring-white/10">
+                        <div className="relative flex-grow overflow-hidden rounded-lg ring-1 ring-white/60">
                           <OptimizedImage
                             src={project.image}
                             alt={`${project.title} screenshot showcasing the ${project.company} project from ${project.year}`}

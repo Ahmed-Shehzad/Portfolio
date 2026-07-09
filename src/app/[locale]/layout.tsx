@@ -207,7 +207,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         className={twMerge(
           inter.variable,
           calistoga.variable,
-          "bg-gray-900 font-sans text-white antialiased"
+          "liquid-bg text-ink font-sans antialiased"
         )}
       >
         <NextIntlClientProvider messages={messages}>

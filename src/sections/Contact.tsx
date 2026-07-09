@@ -37,7 +37,7 @@ export const ContactSection = () => {
     <div id="contact" className="py-16 pt-12 md:px-24 lg:py-24 lg:pt-20">
       <div className="container">
         <ScrollAnimationWrapper animation="scaleIn">
-          <div className="relative z-0 overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-300 to-sky-400 px-10 py-8 text-center text-gray-900 md:*:text-left">
+          <div className="glass-panel text-ink relative z-0 overflow-hidden rounded-3xl px-10 py-8 text-center md:*:text-left">
             <div
               className="absolute inset-0 -z-10 opacity-5"
               style={{
@@ -52,7 +52,7 @@ export const ContactSection = () => {
               <div>
                 <button
                   onClick={handleOpenModal}
-                  className="inline-flex h-12 w-max cursor-pointer items-center gap-2 rounded-xl border border-gray-900 bg-gray-900 px-6 text-white backdrop-blur-[1px] transition-all duration-300 text-shadow-white hover:border hover:border-neutral-900/20 hover:bg-neutral-900/30 hover:shadow-[5px_5px_0_rgba(255,255,255,0.1)]"
+                  className="accent-pill inline-flex h-12 w-max cursor-pointer items-center gap-2 px-6 font-semibold transition-transform duration-300 hover:-translate-y-0.5"
                 >
                   <span className="font-semibold">{t("button")}</span>
                   <ArrowUpRightIcon className="size-4" />

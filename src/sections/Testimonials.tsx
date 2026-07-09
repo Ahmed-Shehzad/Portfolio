@@ -138,7 +138,7 @@ export const TestimonialsSection = memo(() => {
                       {/* Header with Avatar and Company Badge */}
                       <div className="mb-4 flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="inline-flex size-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-700">
+                          <div className="inline-flex size-12 flex-shrink-0 items-center justify-center rounded-full bg-white/60">
                             <OptimizedImage
                               src={testimonial.avatar}
                               alt={`${testimonial.name}'s avatar`}
@@ -148,8 +148,8 @@ export const TestimonialsSection = memo(() => {
                             />
                           </div>
                           <div>
-                            <div className="font-semibold text-white">{testimonial.name}</div>
-                            <div className="text-xs text-white/60">{testimonial.position}</div>
+                            <div className="text-ink font-semibold">{testimonial.name}</div>
+                            <div className="text-ink-faint text-xs">{testimonial.position}</div>
                           </div>
                         </div>
                         <div
@@ -162,13 +162,13 @@ export const TestimonialsSection = memo(() => {
 
                       {/* Company Name */}
                       <div className="mb-4">
-                        <span className="text-sm font-medium text-white/80">
+                        <span className="text-ink-soft text-sm font-medium">
                           {testimonial.company}
                         </span>
                       </div>
 
                       {/* Testimonial Text */}
-                      <p className="text-sm leading-relaxed text-white/90 md:text-base">
+                      <p className="text-ink-soft text-sm leading-relaxed md:text-base">
                         {testimonial.text}
                       </p>
 

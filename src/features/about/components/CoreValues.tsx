@@ -30,7 +30,7 @@ export const CoreValues = memo(() => {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               {/* Quality First */}
               <div className="w-full">
-                <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-300 to-sky-300 px-4 py-3 transition-transform hover:scale-105">
+                <div className="flex w-full items-center gap-2 rounded-lg bg-gradient-to-r from-violet-300 to-sky-300 px-4 py-3 transition-transform hover:scale-105">
                   <span>🎯</span>
                   <div className="text-sm">
                     <div className="font-semibold text-gray-950">{t("values.quality.title")}</div>

@@ -1,5 +1,119 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+ * Liquid Glass theme
+ * Soft pastel "liquid" backdrop, frosted translucent surfaces, violet accent
+ * pills, and muted slate-blue ink — modeled on the reference glassmorphism
+ * design. All theme decisions live in these tokens and utilities.
+ * ------------------------------------------------------------------------- */
+:root {
+  --ink: #33517a; /* headings / primary text (slate blue) */
+  --ink-soft: #5f7396; /* secondary text */
+  --ink-faint: #8494b3; /* tertiary text */
+  --accent: #8b5cf6; /* violet accent */
+  --accent-soft: #b9a5f9;
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-highlight: rgba(255, 255, 255, 0.85);
+}
+
+.text-ink {
+  color: var(--ink);
+}
+
+.text-ink-soft {
+  color: var(--ink-soft);
+}
+
+.text-ink-faint {
+  color: var(--ink-faint);
+}
+
+/* Pastel liquid backdrop: lavender / pink / ice blue, slowly drifting. */
+.liquid-bg {
+  position: relative;
+  background-color: #e9e6f4;
+  background-image:
+    radial-gradient(90rem 60rem at 12% -10%, rgba(214, 197, 245, 0.9), transparent 60%),
+    radial-gradient(80rem 55rem at 95% 15%, rgba(247, 213, 231, 0.85), transparent 60%),
+    radial-gradient(70rem 60rem at 30% 85%, rgba(197, 226, 246, 0.9), transparent 62%),
+    radial-gradient(60rem 50rem at 80% 95%, rgba(233, 204, 239, 0.7), transparent 65%),
+    linear-gradient(160deg, #efe9f6 0%, #ece6f5 40%, #e3e9f5 100%);
+  background-attachment: fixed;
+}
+
+.liquid-bg::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(32rem 26rem at 25% 30%, rgba(255, 255, 255, 0.5), transparent 70%),
+    radial-gradient(38rem 30rem at 75% 65%, rgba(255, 245, 255, 0.45), transparent 70%);
+  animation: liquid-drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes liquid-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(2%, 2%, 0) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-bg::before {
+    animation: none;
+  }
+}
+
+/* Frosted glass surface — panels, cards, sheets. */
+.glass-panel {
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.3));
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    0 20px 45px -22px rgba(103, 110, 176, 0.45),
+    inset 0 1px 0 var(--glass-highlight);
+}
+
+/* Near-opaque glass — for stacked sticky cards where translucency would let
+ * the card underneath bleed through. */
+.glass-panel-solid {
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.985), rgba(249, 247, 255, 0.96));
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  box-shadow:
+    0 20px 45px -22px rgba(103, 110, 176, 0.45),
+    inset 0 1px 0 var(--glass-highlight);
+}
+
+/* Frosted glass pill — nav bars, badges, secondary buttons. */
+.glass-pill {
+  border-radius: 9999px;
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.34));
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  box-shadow:
+    0 12px 28px -16px rgba(103, 110, 176, 0.45),
+    inset 0 1px 0 var(--glass-highlight);
+}
+
+/* Violet accent pill — primary call-to-action, like the reference "Button". */
+.accent-pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: linear-gradient(135deg, #c1abfa 0%, #9d78f5 55%, #8b5cf6 100%);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px -12px rgba(139, 92, 246, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -29,23 +143,23 @@
     padding: 0.125rem 1rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--ink-soft);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-duration: 300ms;
   }
 
   .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: rgba(255, 255, 255, 0.55);
+    color: var(--ink);
   }
 
   /* Better contrast for accessibility */
   .text-muted {
-    color: rgb(229 231 235); /* gray-200 for better contrast than white/60 */
+    color: var(--ink-soft);
   }
 
   .text-secondary {
-    color: rgb(209 213 219); /* gray-300 for better contrast */
+    color: var(--ink-soft);
   }
 
   /* Screen reader only content */
@@ -382,8 +496,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 9999px;
-    border: 1px solid rgba(110, 231, 183, 0.05);
-    box-shadow: 0 0 80px inset rgba(110, 231, 183, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.08);
+    box-shadow: 0 0 80px inset rgba(255, 255, 255, 0.35);
   }
 
   .animation-ping {
