@@ -10,8 +10,8 @@ export const PersonalIntroduction = memo(() => {
   return (
     <ScrollAnimationWrapper animation="fadeInUp" delay={150}>
       <div className="mx-auto mt-12 max-w-4xl">
-        <div className="rounded-3xl bg-gradient-to-r from-violet-500 to-sky-500 p-[1px]">
-          <div className="rounded-3xl bg-white/45 p-8 md:p-10">
+        <div className="rounded-3xl">
+          <div className="glass-panel rounded-3xl p-8 md:p-10">
             <div className="flex flex-col gap-6 md:gap-8">
               <div className="space-y-4">
                 <h3 className="bg-gradient-to-r from-violet-500 to-sky-500 bg-clip-text text-xl font-semibold text-transparent md:text-2xl">
