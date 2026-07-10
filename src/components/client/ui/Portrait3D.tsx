@@ -88,6 +88,10 @@ export const Portrait3D = memo(
         scene.add(keyLight);
 
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        // Don't fetch/print shader program info logs: ANGLE's D3D compiler
+        // emits harmless X4122 double-precision warnings for the glass
+        // material's transmission shader, spamming the console on Windows.
+        renderer.debug.checkShaderErrors = false;
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.domElement.style.position = "absolute";

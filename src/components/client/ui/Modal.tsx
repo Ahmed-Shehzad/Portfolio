@@ -9,9 +9,11 @@ interface IModalProps {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
+  /** Accessible name for the dialog. */
+  label?: string;
 }
 
-export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
+export const Modal = ({ children, isOpen, onClose, label = "Dialog" }: IModalProps) => {
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -65,6 +67,7 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
           <dialog
             open
             aria-modal="true"
+            aria-label={label}
             className="relative z-10 mx-4 w-full max-w-lg bg-transparent"
           >
             <motion.div
