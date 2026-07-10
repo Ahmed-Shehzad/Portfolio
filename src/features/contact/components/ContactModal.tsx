@@ -28,10 +28,10 @@ const VALIDATION_RULES = {
 
 // Form input styling utilities
 const getInputClassName = (hasError: boolean) =>
-  `mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-gray-900 shadow-sm transition-colors placeholder:text-gray-500 focus:ring-1 focus:outline-none ${
+  `text-ink placeholder:text-ink-faint mt-1 block w-full rounded-xl border bg-white/75 px-3 py-2 shadow-sm transition-colors focus:ring-1 focus:outline-none ${
     hasError
       ? "border-red-300 focus:border-red-400 focus:ring-red-400"
-      : "border-gray-300 focus:border-sky-400 focus:ring-sky-400"
+      : "border-white/70 focus:border-violet-400 focus:ring-violet-400"
   }`;
 
 type ValidationRule = {
@@ -192,7 +192,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
 
   return (
     <Modal isOpen={isOpen} onClose={handleCancel}>
-      <div className="glass-panel-solid relative overflow-hidden rounded-2xl">
+      <div className="glass-panel relative overflow-hidden rounded-3xl">
         {/* Background texture */}
         <div
           className="absolute inset-0 opacity-5"
@@ -202,14 +202,12 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
         />
 
         {/* Header */}
-        <div className="relative border-b border-gray-200 px-6 py-4">
+        <div className="relative border-b border-white/50 px-6 py-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-serif text-xl font-semibold text-gray-900">
-              Let&apos;s Work Together
-            </h2>
+            <h2 className="text-ink font-serif text-xl font-semibold">Let&apos;s Work Together</h2>
             <button
               onClick={handleCancel}
-              className="cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="text-ink-faint hover:text-ink cursor-pointer rounded-full p-2 transition-colors hover:bg-white/50"
               aria-label="Close modal"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -222,7 +220,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
               </svg>
             </button>
           </div>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="text-ink-soft mt-1 text-sm">
             Fill out the form below and I&apos;ll get back to you as soon as possible.
           </p>
         </div>
@@ -262,7 +260,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="text-ink-soft block text-sm font-medium">
                   Name *
                 </label>
                 <input
@@ -279,7 +277,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
                 {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="text-ink-soft block text-sm font-medium">
                   Email *
                 </label>
                 <input
@@ -298,7 +296,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
             </div>
 
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="subject" className="text-ink-soft block text-sm font-medium">
                 Subject *
               </label>
               <input
@@ -316,7 +314,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="message" className="text-ink-soft block text-sm font-medium">
                 Message *
               </label>
               <textarea
@@ -337,7 +335,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                className="glass-pill text-ink cursor-pointer px-4 py-2 text-sm font-medium transition-transform hover:-translate-y-0.5"
                 disabled={isSubmitting}
               >
                 Cancel
@@ -350,7 +348,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
                 {isSubmitting ? (
                   <>
                     <svg
-                      className="text-ink mr-2 h-4 w-4 animate-spin"
+                      className="mr-2 h-4 w-4 animate-spin text-white"
                       fill="none"
                       viewBox="0 0 24 24"
                     >
