@@ -9,7 +9,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import ProfilePhoto from "@/assets/images/me.jpg";
+import ProfilePhoto from "@/assets/images/me-3d.jpg";
 
 interface HeaderOption {
   title: string;
