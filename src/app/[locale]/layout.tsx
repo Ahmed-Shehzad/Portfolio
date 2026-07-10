@@ -215,8 +215,16 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
             <QueryProvider>{children}</QueryProvider>
           </ErrorBoundaryWrapper>
         </NextIntlClientProvider>
-        <SpeedInsights />
-        <Analytics />
+        {/* Vercel's injected scripts 404 (and log console errors on every
+         * page view) unless Speed Insights / Web Analytics are enabled for
+         * the project in the Vercel dashboard. Set ENABLE_VERCEL_ANALYTICS=1
+         * there after enabling both features to mount them. */}
+        {process.env["ENABLE_VERCEL_ANALYTICS"] === "1" && (
+          <>
+            <SpeedInsights />
+            <Analytics />
+          </>
+        )}
       </body>
     </html>
   );

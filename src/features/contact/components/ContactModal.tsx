@@ -191,7 +191,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCancel}>
+    <Modal isOpen={isOpen} onClose={handleCancel} label="Contact form">
       <div className="glass-panel relative overflow-hidden rounded-3xl">
         {/* Background texture */}
         <div
