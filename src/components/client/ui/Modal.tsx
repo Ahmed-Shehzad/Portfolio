@@ -1,6 +1,7 @@
 "use client";
 
 import { secureLog } from "@/shared/utils/logging";
+import { AnimatePresence, motion } from "motion/react";
 import { ReactNode, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 
@@ -43,19 +44,41 @@ export const Modal = ({ children, isOpen, onClose }: IModalProps) => {
     };
   }, [isOpen, handleEscape]);
 
-  if (!isOpen) return null;
-
+  // AnimatePresence stays mounted so the dialog can play its exit
+  // animation before unmounting.
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <button
-        className="absolute inset-0 cursor-pointer bg-indigo-950/25 backdrop-blur-sm"
-        onClick={onClose}
-        aria-label="Close modal"
-      />
-      <dialog open aria-modal="true" className="relative z-10 mx-4 w-full max-w-lg">
-        {children}
-      </dialog>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <motion.button
+            className="absolute inset-0 cursor-pointer bg-indigo-950/25 backdrop-blur-sm"
+            onClick={onClose}
+            aria-label="Close modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          />
+          {/* bg-transparent kills the native <dialog> white UA background,
+           * which otherwise shows as square corners behind the rounded
+           * glass panel. */}
+          <dialog
+            open
+            aria-modal="true"
+            className="relative z-10 mx-4 w-full max-w-lg bg-transparent"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 56, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.97 }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {children}
+            </motion.div>
+          </dialog>
+        </div>
+      )}
+    </AnimatePresence>
   );
 
   try {
