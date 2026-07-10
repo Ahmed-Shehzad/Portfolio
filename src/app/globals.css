@@ -28,6 +28,10 @@
   color: var(--ink-faint);
 }
 
+.bg-ink {
+  background-color: var(--ink);
+}
+
 /* Pastel liquid backdrop: lavender / pink / ice blue, slowly drifting.
  * The gradients live on a fixed pseudo-element instead of the body with
  * background-attachment: fixed, which iOS Safari does not render. */
