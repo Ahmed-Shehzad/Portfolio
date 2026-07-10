@@ -15,8 +15,8 @@ export const BeyondWork = memo(() => {
 
       <ScrollAnimationWrapper animation="fadeInUp" delay={300}>
         <div className="mx-auto max-w-4xl">
-          <div className="rounded-3xl bg-gradient-to-r from-orange-300 to-red-300 p-[1px]">
-            <div className="rounded-3xl bg-white/45 p-8 md:p-10">
+          <div className="rounded-3xl">
+            <div className="glass-panel rounded-3xl p-8 md:p-10">
               <div className="text-center">
                 <p className="text-ink-soft text-lg leading-relaxed md:text-xl">
                   &ldquo;When I&apos;m not coding, you&apos;ll probably find me hiking scenic

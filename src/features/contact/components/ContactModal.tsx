@@ -192,7 +192,7 @@ export const ContactModal = ({ isOpen, onClose }: IContactModalProps) => {
 
   return (
     <Modal isOpen={isOpen} onClose={handleCancel}>
-      <div className="relative overflow-hidden rounded-2xl bg-white shadow-2xl">
+      <div className="glass-panel-solid relative overflow-hidden rounded-2xl">
         {/* Background texture */}
         <div
           className="absolute inset-0 opacity-5"

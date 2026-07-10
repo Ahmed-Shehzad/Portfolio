@@ -12,8 +12,8 @@
   --ink-faint: #8494b3; /* tertiary text */
   --accent: #8b5cf6; /* violet accent */
   --accent-soft: #b9a5f9;
-  --glass-border: rgba(255, 255, 255, 0.65);
-  --glass-highlight: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
 }
 
 .text-ink {
@@ -33,7 +33,7 @@
  * background-attachment: fixed, which iOS Safari does not render. */
 .liquid-bg {
   position: relative;
-  background-color: #e9e6f4;
+  background-color: #e4def2;
 }
 
 .liquid-bg::before {
@@ -44,12 +44,13 @@
   pointer-events: none;
   background:
     radial-gradient(32rem 26rem at 25% 30%, rgba(255, 255, 255, 0.5), transparent 70%),
-    radial-gradient(38rem 30rem at 75% 65%, rgba(255, 245, 255, 0.45), transparent 70%),
-    radial-gradient(90rem 60rem at 12% -10%, rgba(214, 197, 245, 0.9), transparent 60%),
-    radial-gradient(80rem 55rem at 95% 15%, rgba(247, 213, 231, 0.85), transparent 60%),
-    radial-gradient(70rem 60rem at 30% 85%, rgba(197, 226, 246, 0.9), transparent 62%),
-    radial-gradient(60rem 50rem at 80% 95%, rgba(233, 204, 239, 0.7), transparent 65%),
-    linear-gradient(160deg, #efe9f6 0%, #ece6f5 40%, #e3e9f5 100%);
+    radial-gradient(38rem 30rem at 75% 65%, rgba(255, 240, 252, 0.45), transparent 70%),
+    radial-gradient(90rem 60rem at 12% -10%, rgba(188, 160, 243, 0.95), transparent 62%),
+    radial-gradient(80rem 55rem at 95% 15%, rgba(250, 186, 222, 0.95), transparent 62%),
+    radial-gradient(70rem 60rem at 30% 85%, rgba(153, 208, 247, 0.95), transparent 64%),
+    radial-gradient(60rem 50rem at 80% 95%, rgba(222, 173, 240, 0.9), transparent 66%),
+    radial-gradient(44rem 22rem at 55% 48%, rgba(255, 189, 214, 0.4), transparent 70%),
+    linear-gradient(160deg, #ebe1f7 0%, #e5dcf5 40%, #d8e4f7 100%);
   animation: liquid-drift 26s ease-in-out infinite alternate;
 }
 
@@ -68,50 +69,107 @@
   }
 }
 
-/* Frosted glass surface — panels, cards, sheets. */
+/* Transparent bubble glass — panels, cards, sheets. The slab reads as real
+ * glass: a see-through fill with a diagonal specular streak, a bright
+ * refractive rim (inset bevels on every edge), an interior glow suggesting
+ * thickness, and a soft drop shadow lifting it off the backdrop. */
 .glass-panel {
   border: 1px solid var(--glass-border);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.3));
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 34%,
+    rgba(255, 255, 255, 0.04) 62%,
+    rgba(255, 255, 255, 0.24) 100%
+  );
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
   box-shadow:
-    0 20px 45px -22px rgba(103, 110, 176, 0.45),
-    inset 0 1px 0 var(--glass-highlight);
+    inset 0 1px 1px var(--glass-highlight),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.5),
+    inset 1.5px 0 1px -0.5px rgba(255, 255, 255, 0.55),
+    inset -1.5px 0 1px -0.5px rgba(255, 255, 255, 0.55),
+    inset 0 0 28px rgba(255, 255, 255, 0.14),
+    0 24px 48px -20px rgba(97, 94, 166, 0.4),
+    0 6px 16px -8px rgba(97, 94, 166, 0.25);
 }
 
-/* Near-opaque glass — for stacked sticky cards where translucency would let
- * the card underneath bleed through. */
+/* Milkier glass — for stacked sticky cards where full translucency would let
+ * the card underneath bleed through. Same rim and sheen, denser fill. */
 .glass-panel-solid {
   border: 1px solid var(--glass-border);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.985), rgba(249, 247, 255, 0.96));
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  /* Fully opaque: these cards stack on scroll, and any alpha at all lets the
+   * card underneath ghost through. The glass look comes from the rim + sheen. */
+  background: linear-gradient(115deg, #ffffff 0%, #fdfcff 40%, #faf8ff 70%, #fefeff 100%);
+  /* Cards can carry both .glass-panel and .glass-panel-solid (Card.tsx bakes
+   * the former in); a backdrop blur on a near-opaque stacked card composites
+   * the card underneath through — force it off. */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow:
-    0 20px 45px -22px rgba(103, 110, 176, 0.45),
-    inset 0 1px 0 var(--glass-highlight);
+    inset 0 1px 1px var(--glass-highlight),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 0 28px rgba(255, 255, 255, 0.16),
+    0 24px 48px -20px rgba(97, 94, 166, 0.4),
+    0 6px 16px -8px rgba(97, 94, 166, 0.25);
 }
 
-/* Frosted glass pill — nav bars, badges, secondary buttons. */
+/* Transparent glass pill — nav bars, badges, secondary buttons. */
 .glass-pill {
   border-radius: 9999px;
   border: 1px solid var(--glass-border);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.34));
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(255, 255, 255, 0.16) 45%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
   box-shadow:
-    0 12px 28px -16px rgba(103, 110, 176, 0.45),
-    inset 0 1px 0 var(--glass-highlight);
+    inset 0 1px 1px var(--glass-highlight),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.45),
+    inset 0 0 14px rgba(255, 255, 255, 0.16),
+    0 12px 28px -14px rgba(97, 94, 166, 0.45);
 }
 
-/* Violet accent pill — primary call-to-action, like the reference "Button". */
+/* Glass chrome — fixed header bar and other full-width sheets. */
+.glass-chrome {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.12));
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 12px 30px -18px rgba(97, 94, 166, 0.4);
+}
+
+/* Violet accent pill — glossy jelly-glass call-to-action, like the reference
+ * "Button": bright specular band on top, deeper glow pooling at the bottom. */
 .accent-pill {
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  background: linear-gradient(135deg, #c1abfa 0%, #9d78f5 55%, #8b5cf6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.14) 42%,
+      rgba(255, 255, 255, 0) 62%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(198, 170, 251, 0.92) 0%,
+      rgba(154, 113, 246, 0.92) 55%,
+      rgba(134, 88, 244, 0.94) 100%
+    );
   color: #ffffff;
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  backdrop-filter: blur(10px) saturate(160%);
+  text-shadow: 0 1px 2px rgba(76, 29, 149, 0.35);
   box-shadow:
-    0 14px 30px -12px rgba(139, 92, 246, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -8px 16px rgba(109, 63, 233, 0.5),
+    0 16px 32px -12px rgba(139, 92, 246, 0.65);
 }
 
 @layer base {

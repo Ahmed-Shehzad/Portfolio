@@ -297,10 +297,7 @@ export const Header = () => {
 
   return (
     <>
-      <header
-        className="fixed top-0 z-10 w-full border-b border-white/50 bg-white/25 backdrop-blur-xl"
-        role="banner"
-      >
+      <header className="glass-chrome fixed top-0 z-10 w-full" role="banner">
         <div
           className={`flex w-full items-center px-4 pt-8 pb-4 md:px-24 ${showMobileUI ? "justify-between" : "justify-center"}`}
         >

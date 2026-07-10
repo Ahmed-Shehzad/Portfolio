@@ -70,7 +70,7 @@ export const TapeSection = () => {
   return (
     <section id="tape">
       <ScrollAnimationWrapper animation="fadeIn" className="overflow-x-clip py-16 lg:py-24">
-        <div className="-mx-1 -rotate-3 bg-gradient-to-r from-violet-400 to-sky-400">
+        <div className="glass-panel -mx-1 -rotate-3">
           <div className="flex [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
             <div className="flex flex-none animate-[move-left_30s_linear_infinite] gap-4 py-3 pr-4 will-change-transform hover:[animation-play-state:paused]">
               {[0, 1].map((repeat) => (
@@ -81,8 +81,8 @@ export const TapeSection = () => {
                       className="inline-flex items-center gap-4"
                       aria-hidden={repeat === 1}
                     >
-                      <span className="text-sm font-extrabold text-white uppercase">{word}</span>
-                      <StarIcon className="size-6 -rotate-12 text-white" />
+                      <span className="text-ink text-sm font-extrabold uppercase">{word}</span>
+                      <StarIcon className="size-6 -rotate-12 text-violet-400" />
                     </div>
                   ))}
                 </Fragment>

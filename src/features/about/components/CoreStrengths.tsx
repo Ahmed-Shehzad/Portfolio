@@ -15,11 +15,11 @@ export const CoreStrengths = memo(() => {
 
       <ScrollAnimationWrapper animation="fadeInUp" delay={300}>
         <div className="mx-auto max-w-6xl">
-          <div className="rounded-3xl bg-gradient-to-r from-purple-300 to-pink-300 p-[1px]">
-            <div className="rounded-3xl bg-white/45 p-8 md:p-10">
+          <div className="rounded-3xl">
+            <div className="glass-panel rounded-3xl p-8 md:p-10">
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 {/* Backend Architecture & APIs */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🏗️</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Backend Architecture & APIs</h4>
@@ -32,7 +32,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Frontend Integration Skills */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🌐</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Frontend Integration Skills</h4>
@@ -44,7 +44,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* DevOps & Cloud Integration */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🚀</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">DevOps & Cloud Integration</h4>
@@ -56,7 +56,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* AI-Assisted Development */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🤖</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">AI-Assisted Development</h4>
@@ -68,7 +68,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Database & Architecture */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🗄️</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Database & Architecture</h4>
@@ -80,7 +80,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Messaging & Integration */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🔄</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Messaging & Integration</h4>
@@ -92,7 +92,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Quality Assurance */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🧪</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Quality Assurance</h4>
@@ -103,7 +103,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Communication */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">💬</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Communication</h4>
@@ -115,7 +115,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Continuous Learning */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🚀</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Continuous Learning</h4>
@@ -127,7 +127,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Team Dynamics */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">🤝</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Team Dynamics</h4>
@@ -138,7 +138,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Clean Architecture Patterns */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">📐</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Clean Architecture Patterns</h4>
@@ -150,7 +150,7 @@ export const CoreStrengths = memo(() => {
                 </div>
 
                 {/* Performance Optimization */}
-                <div className="flex items-start gap-3 rounded-2xl bg-white/45 p-6 shadow-md">
+                <div className="glass-panel flex items-start gap-3 rounded-2xl p-6">
                   <span className="mt-1 text-2xl">⚡</span>
                   <div>
                     <h4 className="text-ink mb-2 font-semibold">Performance Optimization</h4>
