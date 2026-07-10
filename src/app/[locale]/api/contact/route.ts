@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+// SMTP needs the full Node.js runtime, and the two sequential sends must not
+// be cut off by the default serverless duration.
+export const runtime = "nodejs";
+export const maxDuration = 30;
+
 interface ContactFormData {
   name: string;
   email: string;
@@ -54,6 +59,10 @@ const createTransporter = () => {
       user: process.env["SMTP_USER"],
       pass: process.env["SMTP_PASS"],
     },
+    // Fail fast instead of hanging into the serverless function timeout.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
   });
 };
 
@@ -151,11 +160,15 @@ const sendContactEmail = async (formData: ContactFormData): Promise<void> => {
     `,
   };
 
-  // Send both emails
-  await Promise.all([
-    transporter.sendMail(notificationEmail),
-    transporter.sendMail(confirmationEmail),
-  ]);
+  // The notification to me is the one that must succeed; the confirmation
+  // to the sender is best-effort — a bad recipient address must not make
+  // the whole submission report failure after my copy already went out.
+  await transporter.sendMail(notificationEmail);
+  try {
+    await transporter.sendMail(confirmationEmail);
+  } catch (confirmationError) {
+    console.error("Confirmation email failed (notification was sent):", confirmationError);
+  }
 };
 
 export async function POST(
@@ -225,10 +238,17 @@ export async function POST(
   } catch (error) {
     console.error("Contact form submission error:", error);
 
+    // Surface the SMTP failure class (EAUTH, ESOCKET, ETIMEDOUT, ...) —
+    // never the message, which could carry sensitive detail. This is what
+    // lets us tell a revoked app password apart from a blocked connection
+    // without access to the server logs.
+    const errorCode =
+      error && typeof error === "object" && "code" in error ? String(error.code) : "UNKNOWN";
+
     return NextResponse.json(
       {
         success: false,
-        message: "Sorry, there was an error sending your message. Please try again later.",
+        message: `Sorry, there was an error sending your message. Please try again later. (${errorCode})`,
       },
       { status: 500 }
     );
