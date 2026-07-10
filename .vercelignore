@@ -48,8 +48,9 @@ Thumbs.db
 docker-compose*.yml
 Dockerfile*
 
-# Scripts (build-time only)
-scripts/
+# Shell scripts (never needed on Vercel). The scripts/ directory MUST be
+# uploaded: `npm run build` runs ON Vercel and calls
+# scripts/flatten-css-layers.mjs as its final step.
 *.sh
 
 # Documentation (not needed for runtime)
@@ -63,11 +64,11 @@ sonar-project.properties
 # Test artifacts
 act-artifacts/
 
-# Linting configs
+# Linting configs (postcss.config.* is NOT ignored — the Vercel build needs
+# it for Tailwind to process the stylesheet)
 .eslintrc*
 .prettierrc*
 eslint.config.*
-postcss.config.*
 
 # Workspace files
 *.code-workspace

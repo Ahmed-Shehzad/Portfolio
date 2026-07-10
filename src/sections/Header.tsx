@@ -8,6 +8,8 @@ import { logger } from "@/shared/utils";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
+import ProfilePhoto from "@/assets/images/me-3d.jpg";
 
 interface HeaderOption {
   title: string;
@@ -371,7 +373,14 @@ export const Header = () => {
         >
           {/* Drawer header */}
           <div className="flex items-center justify-between border-b border-white/50 p-6">
-            <h2 className="text-ink text-xl font-semibold">Portfolio</h2>
+            <Image
+              src={ProfilePhoto}
+              alt="Muhammad Ahmed Shehzad"
+              width={44}
+              height={44}
+              className="size-11 rounded-full border border-white/70 object-cover shadow-sm"
+              priority={false}
+            />
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-white/50"
