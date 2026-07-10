@@ -56,16 +56,25 @@ A modern, responsive portfolio website built with Next.js 15, featuring internat
    Configure the following variables:
 
    ```env
-   # Email Configuration
-   SMTP_HOST=your-smtp-host
+   # Email Configuration (contact form)
+   # For Gmail: SMTP_USER is the full address and SMTP_PASS is a 16-character
+   # app password (Google Account -> Security -> 2-Step Verification -> App
+   # passwords), entered WITHOUT spaces. Changing the Google account password
+   # revokes existing app passwords. In Vercel, set these for the Production
+   # environment — env changes only apply to NEW deployments.
+   SMTP_HOST=smtp.gmail.com
    SMTP_PORT=587
-   SMTP_USER=your-email
-   SMTP_PASS=your-password
-   EMAIL_FROM=your-email
-   EMAIL_TO=recipient-email
+   SMTP_SECURE=false
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=your-app-password
+   CONTACT_EMAIL=recipient-email # defaults to SMTP_USER when unset
 
    # App Configuration
    NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+   # Vercel Web Analytics / Speed Insights (optional)
+   # Enable both features in the Vercel dashboard first, then set:
+   # ENABLE_VERCEL_ANALYTICS=1
    ```
 
 4. **Run the development server**
