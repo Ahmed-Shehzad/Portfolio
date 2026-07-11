@@ -66,6 +66,125 @@ const createTransporter = () => {
   });
 };
 
+// Escape user-provided text before interpolating it into email HTML.
+const escapeHtml = (value: string): string =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+/* ---------------------------------------------------------------------------
+ * Liquid Glass email templates — mirrors the site's design system:
+ * pastel lavender/pink/ice-blue backdrop, milky glass cards with bright rims
+ * and rounded corners, slate-blue ink text, violet jelly accents.
+ * Email clients don't support backdrop-filter, so the glass reads through
+ * translucent white fills over the pastel gradient plus bright borders.
+ * ------------------------------------------------------------------------- */
+const glass = {
+  // Pastel liquid backdrop (solid fallback first for clients without gradients)
+  body: "margin:0;padding:32px 12px;background-color:#e9e2f6;background-image:linear-gradient(160deg,#f6e8f7 0%,#e7dff7 40%,#d9e6f8 100%);font-family:Arial,Helvetica,sans-serif;",
+  // Milky glass card (solid fallback, then translucent white where supported)
+  card: "max-width:600px;margin:0 auto;background-color:#f6f3fc;background-color:rgba(255,255,255,0.58);border:1px solid rgba(255,255,255,0.9);border-radius:24px;box-shadow:0 24px 48px -20px rgba(97,94,166,0.4);overflow:hidden;",
+  inner: "padding:28px;",
+  // Inner glass tiles
+  tile: "background-color:#faf8fe;background-color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.95);border-radius:16px;padding:18px 20px;margin:16px 0;",
+  // Violet jelly pill (like the site's accent buttons)
+  pill: "display:inline-block;background-color:#8b5cf6;background-image:linear-gradient(135deg,#c1abfa 0%,#8b5cf6 100%);color:#ffffff;border-radius:999px;padding:10px 22px;font-size:15px;font-weight:bold;border:1px solid rgba(255,255,255,0.7);",
+  ink: "color:#33517a;",
+  inkSoft: "color:#5f7396;",
+  inkFaint: "color:#8494b3;",
+  hr: "border:none;border-top:1px solid rgba(255,255,255,0.95);margin:0;",
+  footer: "padding:18px 28px 26px;font-size:12px;color:#8494b3;text-align:center;line-height:1.6;",
+};
+
+const notificationHtml = (formData: ContactFormData): string => {
+  const name = escapeHtml(formData.name);
+  const email = escapeHtml(formData.email);
+  const subject = escapeHtml(formData.subject);
+  const message = escapeHtml(formData.message).replace(/\n/g, "<br>");
+  return `
+    <body style="${glass.body}">
+      <div style="${glass.card}">
+        <div style="${glass.inner}">
+          <div style="text-align:center;margin-bottom:8px;">
+            <span style="${glass.pill}">New contact request</span>
+          </div>
+          <h2 style="${glass.ink}font-size:22px;text-align:center;margin:14px 0 4px;">${subject}</h2>
+          <p style="${glass.inkFaint}font-size:13px;text-align:center;margin:0 0 18px;">via the portfolio contact form</p>
+
+          <div style="${glass.tile}">
+            <p style="${glass.inkSoft}margin:4px 0;font-size:14px;"><strong style="${glass.ink}">Name</strong> &nbsp;${name}</p>
+            <p style="${glass.inkSoft}margin:4px 0;font-size:14px;"><strong style="${glass.ink}">Email</strong> &nbsp;<a href="mailto:${email}" style="color:#8b5cf6;text-decoration:none;">${email}</a></p>
+          </div>
+
+          <div style="${glass.tile}">
+            <p style="${glass.ink}margin:0 0 8px;font-size:14px;font-weight:bold;">Message</p>
+            <p style="${glass.inkSoft}margin:0;font-size:14px;line-height:1.7;">${message}</p>
+          </div>
+        </div>
+        <hr style="${glass.hr}">
+        <div style="${glass.footer}">
+          Reply directly to this email to respond to ${name}.
+        </div>
+      </div>
+    </body>
+  `;
+};
+
+const confirmationHtml = (formData: ContactFormData): string => {
+  const name = escapeHtml(formData.name);
+  const subject = escapeHtml(formData.subject);
+  const preview = escapeHtml(
+    formData.message.length > 150 ? `${formData.message.substring(0, 150)}...` : formData.message
+  ).replace(/\n/g, "<br>");
+  return `
+    <body style="${glass.body}">
+      <div style="${glass.card}">
+        <div style="${glass.inner}">
+          <div style="text-align:center;margin-bottom:8px;">
+            <span style="${glass.pill}">&#128075; Message received</span>
+          </div>
+          <h2 style="${glass.ink}font-size:22px;text-align:center;margin:14px 0 18px;">Thank you for reaching out!</h2>
+
+          <div style="${glass.tile}">
+            <p style="${glass.inkSoft}margin:0;font-size:14px;line-height:1.7;">
+              Hi <strong style="${glass.ink}">${name}</strong>,<br><br>
+              Thank you for contacting me through my portfolio! I've received your message about
+              &ldquo;<strong style="${glass.ink}">${subject}</strong>&rdquo; and I appreciate you taking the time to reach out.
+            </p>
+          </div>
+
+          <div style="${glass.tile}">
+            <p style="${glass.ink}margin:0 0 8px;font-size:14px;font-weight:bold;">What happens next?</p>
+            <p style="${glass.inkSoft}margin:0;font-size:14px;line-height:1.8;">
+              &#10022; I typically respond within 24&ndash;48 hours<br>
+              &#10022; I'll review your message carefully and reply thoughtfully<br>
+              &#10022; If it's urgent, feel free to mention that in a follow-up
+            </p>
+          </div>
+
+          <div style="${glass.tile}">
+            <p style="${glass.ink}margin:0 0 8px;font-size:14px;font-weight:bold;">Your message summary</p>
+            <p style="${glass.inkSoft}margin:0 0 10px;font-size:13px;"><strong style="${glass.ink}">Subject</strong> &nbsp;${subject}</p>
+            <p style="${glass.inkFaint}margin:0;font-size:13px;font-style:italic;line-height:1.6;">&ldquo;${preview}&rdquo;</p>
+          </div>
+
+          <div style="text-align:center;margin:22px 0 6px;">
+            <a href="https://portfolio-azure-five-75.vercel.app/en" style="${glass.pill}text-decoration:none;">Explore my latest work</a>
+          </div>
+        </div>
+        <hr style="${glass.hr}">
+        <div style="${glass.footer}">
+          This is an automated confirmation from Muhammad Ahmed Shehzad's portfolio.<br>
+          Please don't reply to this email &mdash; I'll respond to your original message directly.
+        </div>
+      </div>
+    </body>
+  `;
+};
+
 // Send email function
 const sendContactEmail = async (formData: ContactFormData): Promise<void> => {
   const transporter = createTransporter();
@@ -75,30 +194,7 @@ const sendContactEmail = async (formData: ContactFormData): Promise<void> => {
     from: `"${formData.name}" <${process.env["SMTP_USER"]}>`, // sender address
     to: process.env["CONTACT_EMAIL"] || process.env["SMTP_USER"], // your email address
     subject: `Portfolio Contact: ${formData.subject}`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #333; border-bottom: 2px solid #0891b2; padding-bottom: 10px;">
-          New Contact Form Submission
-        </h2>
-
-        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #059669; margin-top: 0;">Contact Details</h3>
-          <p><strong>Name:</strong> ${formData.name}</p>
-          <p><strong>Email:</strong> ${formData.email}</p>
-          <p><strong>Subject:</strong> ${formData.subject}</p>
-        </div>
-
-        <div style="background-color: #fff; padding: 20px; border-left: 4px solid #0891b2; margin: 20px 0;">
-          <h3 style="color: #0891b2; margin-top: 0;">Message</h3>
-          <p style="line-height: 1.6; color: #374151;">${formData.message.replace(/\n/g, "<br>")}</p>
-        </div>
-
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
-          <p>This email was sent from your portfolio contact form.</p>
-          <p>Reply directly to this email to respond to ${formData.name}.</p>
-        </div>
-      </div>
-    `,
+    html: notificationHtml(formData),
     replyTo: formData.email, // Set reply-to as the user's email
   };
 
@@ -107,57 +203,7 @@ const sendContactEmail = async (formData: ContactFormData): Promise<void> => {
     from: `"Muhammad Ahmed Shehzad" <${process.env["SMTP_USER"]}>`,
     to: formData.email,
     subject: `Thank you for reaching out - Message received`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #059669; border-bottom: 2px solid #059669; padding-bottom: 10px;">
-          Thank You for Your Message!
-        </h2>
-
-        <div style="background-color: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #059669;">
-          <p style="margin: 0; font-size: 16px; color: #374151;">
-            Hi <strong>${formData.name}</strong>,
-          </p>
-          <br>
-          <p style="margin: 0; line-height: 1.6; color: #374151;">
-            Thank you for reaching out through my portfolio! I've successfully received your message about
-            "<strong>${formData.subject}</strong>" and I appreciate you taking the time to contact me.
-          </p>
-        </div>
-
-        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #0891b2; margin-top: 0;">What happens next?</h3>
-          <ul style="color: #374151; line-height: 1.6; padding-left: 20px;">
-            <li>I typically respond to messages within 24-48 hours</li>
-            <li>I'll review your message carefully and provide a thoughtful response</li>
-            <li>If your inquiry is urgent, feel free to mention that in a follow-up</li>
-          </ul>
-        </div>
-
-        <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb;">
-          <h3 style="color: #374151; margin-top: 0;">Your message summary:</h3>
-          <p style="margin: 5px 0;"><strong>Subject:</strong> ${formData.subject}</p>
-          <p style="margin: 5px 0;"><strong>Sent:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-          <div style="margin-top: 15px; padding: 15px; background-color: #f9fafb; border-radius: 6px;">
-            <p style="margin: 0; color: #6b7280; font-style: italic;">
-              "${formData.message.length > 150 ? `${formData.message.substring(0, 150)}...` : formData.message}"
-            </p>
-          </div>
-        </div>
-
-        <div style="margin-top: 30px; padding: 20px; background-color: #0891b2; border-radius: 8px; text-align: center;">
-          <h3 style="color: white; margin: 0 0 10px 0;">Let's Connect</h3>
-          <p style="color: #e0f2fe; margin: 0; line-height: 1.5;">
-            While you wait for my response, feel free to check out my latest projects
-            or connect with me on LinkedIn for more immediate updates.
-          </p>
-        </div>
-
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; text-align: center;">
-          <p>This is an automated confirmation email from Muhammad Ahmed Shehzad's portfolio.</p>
-          <p>Please do not reply to this email. I will respond to your original message directly.</p>
-        </div>
-      </div>
-    `,
+    html: confirmationHtml(formData),
   };
 
   // The notification to me is the one that must succeed; the confirmation
